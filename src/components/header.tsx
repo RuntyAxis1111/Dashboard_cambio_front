@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { useLocation } from "react-router-dom"
 import { HoverMenu } from "./hover-menu"
-import { useAuth } from "../contexts/AuthContext"
 
 interface HeaderProps {
   activeTab: string
@@ -12,7 +11,6 @@ interface HeaderProps {
 
 export function Header({ activeTab, onTabChange, onItemSelect, data }: HeaderProps) {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
-  const { signOut, user } = useAuth()
   const location = useLocation()
 
   // Ocultar header completo en /assistant
@@ -49,13 +47,7 @@ export function Header({ activeTab, onTabChange, onItemSelect, data }: HeaderPro
           <div className="flex items-center justify-between w-full">
             <h1 className="text-xl font-bold">HYBE LATIN AMERICA – DATA HUB (alpha)</h1>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">{user?.email}</span>
-              <button
-                onClick={signOut}
-                className="text-sm px-3 py-1 border border-black text-black hover:bg-black hover:text-white transition-colors rounded"
-              >
-                Sign Out
-              </button>
+              <span className="text-sm text-gray-600">Demo Mode</span>
             </div>
           </div>
         </div>

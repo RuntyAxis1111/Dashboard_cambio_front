@@ -107,38 +107,6 @@ export function SignInPage() {
     
     await handleEmailAuth(e)
   }
-        password: password,
-        options: {
-          emailRedirectTo: window.location.origin,
-          data: {
-            vip_user: true
-          }
-        }
-      })
-
-      // If user already exists, try to sign in
-      if (signUpError && signUpError.message?.includes('already registered')) {
-        const { error: signInError } = await signInWithEmail(email.trim().toLowerCase(), password)
-        
-        if (signInError) {
-          if (signInError.message?.includes('Email not confirmed') || signInError.message?.includes('email_not_confirmed')) {
-            setError('VIP account exists but email not confirmed. Please contact administrator to activate your account.')
-          } else {
-            setError('Authentication failed. Please contact administrator.')
-          }
-        }
-      } else if (signUpError) {
-        setError('Failed to create VIP account. Please contact administrator.')
-      } else {
-        // New user created successfully
-        setMessage('VIP account created successfully! Please check your email to confirm your account, or contact administrator for immediate access.')
-      }
-    } catch (err) {
-      setError('Authentication failed. Please try again.')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center">

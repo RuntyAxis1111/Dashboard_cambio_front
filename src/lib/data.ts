@@ -216,30 +216,4 @@ export const data = {
       },
     ],
   },
-  mmm: {
-    title: "Robyn – Marketing-Mix Model",
-    description: "Modelo de Marketing-Mix open-source para optimización de presupuesto publicitario",
-    datasets: [
-      {
-        canal: "Facebook",
-        tabla: "PALF_FACEBOOK.FBPAGE_PAGE",
-        campos: ["DATE", "PAGE_IMPRESSIONS_PAID", "PAGE_VIDEO_VIEWS", "PAGE_POST_ENGAGEMENTS"]
-      },
-      {
-        canal: "Instagram", 
-        tabla: "PALF_INSTAGRAM.INSTAGRAM_M",
-        campos: ["DATE", "INTERACTIONS", "MEDIA_COMMENTS_COUNT", "MEDIA_LIKE_COUNT"]
-      },
-      {
-        canal: "TikTok",
-        tabla: "PALF_TIKTOK.TIKBA_PROFILE", 
-        campos: ["DATE", "TOTAL_ENGAGEMENT", "VIDEO_VIEWS", "LIKES", "SHARES"]
-      },
-      {
-        canal: "YouTube",
-        tabla: "PALF_YOUTUBE.YT2_CHANNEL",
-        campos: ["DATE", "VIEWS", "ESTIMATED_REVENUE", "SUBSCRIBERS_GAINED"]
-      }
-    ]
-  }
 }

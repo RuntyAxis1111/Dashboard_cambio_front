@@ -78,6 +78,13 @@ export function ArtistPanel({ artist }: ArtistPanelProps) {
     return (
       <div className="w-full h-full flex items-center justify-center p-8 bg-white">
         <div className="text-center">
+          <div className="mb-6">
+            <img
+              src="/assets/pinguinohybe.png"
+              alt="HYBE Lab Penguin"
+              className="w-20 h-20 mx-auto object-contain opacity-50"
+            />
+          </div>
           <h2 className="text-xl font-semibold text-gray-800">Select an Artist</h2>
           <p className="mt-2 text-gray-500">Please choose an artist from the main menu to view their data.</p>
         </div>

@@ -400,11 +400,11 @@ export function HoverMenu({ tabId, data, onItemSelect, onClose }: HoverMenuProps
     )
   }
 
-  if (tabId === "mmm") {
+  if (tabId === "about") {
     return (
       <div
         role="menu"
-        aria-labelledby="mmm-menu"
+        aria-labelledby="about-menu"
         className={`
         absolute top-full right-0 bg-white border-2 border-black shadow-2xl p-4 z-40 min-w-56
         transition-all duration-300 ease-out backdrop-blur-sm
@@ -428,7 +428,7 @@ export function HoverMenu({ tabId, data, onItemSelect, onClose }: HoverMenuProps
         <ul className="list-none p-0 m-0 relative z-10">
           <li role="menuitem">
             <button
-              onClick={() => handleItemClick("que-es", "mmm-section")}
+              onClick={() => window.location.href = '/about'}
               className={`
                 w-full text-left py-3 px-3 font-bold uppercase text-black border-b border-black/10 
                 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 
@@ -444,29 +444,7 @@ export function HoverMenu({ tabId, data, onItemSelect, onClose }: HoverMenuProps
               <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/5 transform translate-x-full group-hover:translate-x-0 transition-transform duration-200" />
               <span className="relative z-10 flex items-center">
                 <span className="w-2 h-2 bg-black rounded-full mr-3 transform scale-0 group-hover:scale-100 transition-transform duration-150" />
-                ¿Qué es?
-              </span>
-            </button>
-          </li>
-          <li role="menuitem">
-            <button
-              onClick={() => handleItemClick("como-lo-usamos", "mmm-section")}
-              className={`
-                w-full text-left py-3 px-3 font-bold uppercase text-black
-                hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 
-                transition-all duration-200 ease-out rounded-md
-                transform hover:translate-x-2 hover:scale-105
-                ${isVisible ? "translate-x-0 opacity-100" : "translate-x-6 opacity-0"}
-                relative overflow-hidden group no-underline
-              `}
-              style={{
-                transitionDelay: "50ms",
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/5 transform translate-x-full group-hover:translate-x-0 transition-transform duration-200" />
-              <span className="relative z-10 flex items-center">
-                <span className="w-2 h-2 bg-black rounded-full mr-3 transform scale-0 group-hover:scale-100 transition-transform duration-150" />
-                ¿Cómo lo estamos usando?
+                About Lab
               </span>
             </button>
           </li>

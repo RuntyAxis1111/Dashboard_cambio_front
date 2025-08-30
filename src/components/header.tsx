@@ -13,8 +13,8 @@ export function Header({ activeTab, onTabChange, onItemSelect, data }: HeaderPro
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const location = useLocation()
 
-  // Ocultar header completo en /assistant
-  if (location.pathname === '/assistant') {
+  // Ocultar header completo en /about
+  if (location.pathname === '/about') {
     return null
   }
 
@@ -23,7 +23,7 @@ export function Header({ activeTab, onTabChange, onItemSelect, data }: HeaderPro
     { id: "palf", label: "PALF" },
     { id: "stbv", label: "STBV" },
     { id: "communities", label: "COMMUNITIES" },
-    { id: "mmm", label: "MMM" },
+    { id: "about", label: "ABOUT" },
   ]
 
   const handleTabClick = (tabId: string) => {
@@ -45,7 +45,7 @@ export function Header({ activeTab, onTabChange, onItemSelect, data }: HeaderPro
       <div className="flex flex-col items-center justify-center h-full">
         <div className="flex-1 flex items-center justify-center w-full px-4">
           <div className="flex items-center justify-between w-full">
-            <h1 className="text-xl font-bold">HYBE LATIN AMERICA – DATA HUB (alpha)</h1>
+            <h1 className="text-xl font-bold">HYBE LATAM Data & AI Lab</h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">Demo Mode</span>
             </div>
@@ -54,11 +54,11 @@ export function Header({ activeTab, onTabChange, onItemSelect, data }: HeaderPro
 
         <nav className="flex w-full h-8 relative">
           {tabs.map((tab, index) => (
-            <div key={tab.id} className={`${tab.id === 'mmm' ? 'ml-auto' : 'flex-1'} relative flex justify-center items-center`}>
+            <div key={tab.id} className={`${tab.id === 'about' ? 'ml-auto' : 'flex-1'} relative flex justify-center items-center`}>
               <button
                 onClick={() => handleTabClick(tab.id)}
                 className={`
-                  ${tab.id === 'mmm' ? 'px-8' : 'w-full'} h-full font-bold text-sm uppercase transition-all duration-300 ease-out
+                  ${tab.id === 'about' ? 'px-8' : 'w-full'} h-full font-bold text-sm uppercase transition-all duration-300 ease-out
                   transform hover:scale-105
                   ${
                     activeTab === tab.id
@@ -67,7 +67,7 @@ export function Header({ activeTab, onTabChange, onItemSelect, data }: HeaderPro
                   }
                 `}
                 style={{
-                  clipPath: index < tabs.length - 1 && tab.id !== 'mmm' ? "polygon(0 0, calc(100% - 15px) 0, 100% 100%, 0 100%)" : "none",
+                  clipPath: index < tabs.length - 1 && tab.id !== 'about' ? "polygon(0 0, calc(100% - 15px) 0, 100% 100%, 0 100%)" : "none",
                   marginRight: index < tabs.length - 1 ? "-15px" : "0",
                   zIndex: index + 1,
                 }}

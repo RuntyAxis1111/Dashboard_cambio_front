@@ -44,6 +44,9 @@ export function About() {
                   The platform provides real-time dashboards and analytics for strategic 
                   decision-making across multiple social media channels and artist projects.
                 </p>
+                <p className="text-gray-700 leading-relaxed">
+                  <strong>Note:</strong> AI features are currently disabled in this alpha version.
+                </p>
               </div>
               
               {/* Penguin mascot */}

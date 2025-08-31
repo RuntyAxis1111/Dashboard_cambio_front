@@ -14,7 +14,6 @@ interface ContentSectionProps {
 export function ContentSection({ activeTab, selectedItem, data }: ContentSectionProps) {
   const [showCopyMessage, setShowCopyMessage] = useState(false)
 
-
   const generateShareableUrl = () => {
     if (!selectedItem) return null
     
@@ -134,7 +133,7 @@ export function ContentSection({ activeTab, selectedItem, data }: ContentSection
               {/* Success Message */}
               {showCopyMessage && (
                 <div className="absolute top-full right-0 mt-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap z-10 shadow-lg">
-                  ✓ URL copiada al portapapeles
+                  ✓ URL copied to clipboard
                 </div>
               )}
             </div>
@@ -150,18 +149,19 @@ export function ContentSection({ activeTab, selectedItem, data }: ContentSection
           </>
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-              title={`${activeTab.toUpperCase()} Video`}
-              key={activeTab}
-            >
-              <source src={`/${activeTab}.mp4`} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+            <div className="text-center space-y-6">
+              <div className="mb-6">
+                <img
+                  src="/assets/pinguinohybe.png"
+                  alt="HYBE Lab Penguin"
+                  className="w-20 h-20 mx-auto object-contain opacity-50"
+                />
+              </div>
+              <h2 className="text-2xl font-semibold text-gray-800">Select a Project</h2>
+              <p className="text-gray-600 max-w-md">
+                Choose a project from the navigation above to view analytics dashboards and insights.
+              </p>
+            </div>
           </div>
         )}
       </div>

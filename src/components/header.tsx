@@ -13,7 +13,7 @@ export function Header({ activeTab, onTabChange, onItemSelect, data }: HeaderPro
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const location = useLocation()
 
-  // Ocultar header completo en /about
+  // Hide header completely on /about
   if (location.pathname === '/about') {
     return null
   }
@@ -27,6 +27,11 @@ export function Header({ activeTab, onTabChange, onItemSelect, data }: HeaderPro
   ]
 
   const handleTabClick = (tabId: string) => {
+    if (tabId === "about") {
+      window.location.href = '/about'
+      return
+    }
+
     onTabChange(tabId)
 
     if (openDropdown === tabId) {

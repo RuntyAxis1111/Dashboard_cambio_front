@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from "react"
 import { Newspaper, Download, MoreVertical } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../components/ui/tooltip"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu"
-import { useMediaQuery } from "../hooks/use-media-query"
 
 type Tab = "metrics" | "news"
 
@@ -20,13 +19,20 @@ export function ArtistPanel({ artist }: ArtistPanelProps) {
   const [hasMountedNews, setHasMountedNews] = useState(false)
   const [isNewsLoading, setIsNewsLoading] = useState(false)
   const [newsLoadError, setNewsLoadError] = useState(false)
-  const isMobile = useMediaQuery("(max-width: 640px)")
+  const [isMobile, setIsMobile] = useState(false)
 
   const panelContentRef = useRef<HTMLDivElement>(null)
   const tabRefs = useRef<Record<Tab, HTMLButtonElement | null>>({
     metrics: null,
     news: null,
   })
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 640)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   useEffect(() => {
     setActiveTab("metrics")
@@ -77,7 +83,7 @@ export function ArtistPanel({ artist }: ArtistPanelProps) {
   if (!artist) {
     return (
       <div className="w-full h-full flex items-center justify-center p-8 bg-white">
-        <div className="text-center">
+        <div className="text-center space-y-6">
           <div className="mb-6">
             <img
               src="/assets/pinguinohybe.png"
@@ -99,28 +105,28 @@ export function ArtistPanel({ artist }: ArtistPanelProps) {
           <TooltipTrigger asChild>
             <button
               onClick={handleNewsIconClick}
-              aria-label="Últimas noticias"
+              aria-label="Latest news"
               className="opacity-70 hover:opacity-100 active:opacity-40 transition-opacity"
             >
               <Newspaper className="h-[26px] w-[26px]" strokeWidth={1.25} />
             </button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Últimas noticias</p>
+            <p>Latest news</p>
           </TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
             <button
               onClick={handleDownloadClick}
-              aria-label="Descargar PDF"
+              aria-label="Download PDF"
               className="opacity-70 hover:opacity-100 active:opacity-40 transition-opacity"
             >
               <Download className="h-[26px] w-[26px]" strokeWidth={1.25} />
             </button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Descargar PDF</p>
+            <p>Download PDF</p>
           </TooltipContent>
         </Tooltip>
       </div>
@@ -135,18 +141,18 @@ export function ArtistPanel({ artist }: ArtistPanelProps) {
         {isMobile ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button aria-label="Más opciones">
+              <button aria-label="More options">
                 <MoreVertical className="h-[26px] w-[26px]" strokeWidth={1.25} />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem onClick={handleNewsIconClick}>
                 <Newspaper className="mr-2 h-4 w-4" />
-                <span>Últimas noticias</span>
+                <span>Latest news</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleDownloadClick}>
                 <Download className="mr-2 h-4 w-4" />
-                <span>Descargar PDF</span>
+                <span>Download PDF</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -219,7 +225,7 @@ export function ArtistPanel({ artist }: ArtistPanelProps) {
                   {isNewsLoading && <div className="absolute inset-0 bg-gray-200 rounded-xl animate-pulse" />}
                   <iframe
                     src={NEWS_IFRAME_URL}
-                    title="Meltwater – Daddy Yankee News"
+                    title="Latest News Feed"
                     loading="lazy"
                     onLoad={() => setIsNewsLoading(false)}
                     onError={() => {

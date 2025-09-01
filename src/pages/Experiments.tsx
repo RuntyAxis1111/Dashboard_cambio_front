@@ -105,3 +105,5 @@ export default function Experiments() {
     </div>
   );
 }
+
+export { Experiments }

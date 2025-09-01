@@ -383,7 +383,7 @@ export function Experiments() {
                       autoPlay
                       playsInline
                       muted
-                      className="absolute inset-0 w-full h-full object-cover transform scale-x-[-1]"
+                      className="absolute inset-0 w-full h-full object-cover transform scale-x-[-1] z-10"
                       onClick={() => {
                         addLog('👆 Usuario hizo clic en el video')
                         if (videoRef.current) {
@@ -404,12 +404,13 @@ export function Experiments() {
                   {/* Canvas overlay for AI visualization */}
                   <canvas
                     ref={canvasRef}
-                   className="absolute inset-0 w-full h-full object-cover transform scale-x-[-1] pointer-events-none opacity-0"
+                    className="absolute inset-0 w-full h-full object-cover transform scale-x-[-1] pointer-events-none z-20"
+                    style={{ opacity: isAnalyzing ? 0.8 : 0 }}
                   />
                   
                   {/* Error overlay */}
                   {error && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-neutral-900/90 z-20">
+                    <div className="absolute inset-0 flex items-center justify-center bg-neutral-900/90 z-30">
                       <div className="text-center">
                         <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
                         <p className="text-red-400 font-medium mb-2">Error</p>
@@ -429,7 +430,7 @@ export function Experiments() {
                   
                   {/* Default state */}
                   {!isStreaming && !error && (
-                    <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="absolute inset-0 flex items-center justify-center z-30">
                       <div className="text-center">
                         <Camera className="w-12 h-12 text-neutral-500 mx-auto mb-4" />
                         <p className="text-neutral-300 font-medium mb-2">Camera Ready</p>
@@ -440,7 +441,7 @@ export function Experiments() {
                   
                   {/* Analysis Overlay */}
                   {isAnalyzing && (
-                    <div className="absolute top-4 left-4 right-4 z-50">
+                    <div className="absolute top-4 left-4 right-4 z-40">
                       <div className="bg-black/50 backdrop-blur-sm rounded-lg p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">

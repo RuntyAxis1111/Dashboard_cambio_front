@@ -58,37 +58,25 @@ export function EmotionDetection() {
       if (videoRef.current) {
         const video = videoRef.current
         
-        // Set video properties before assigning stream
+        // Assign stream first
+        video.srcObject = stream
+        
+        // Set properties after stream assignment
         video.muted = true
         video.playsInline = true
-        video.autoplay = true
         
-        // Set up event handlers before assigning stream
-        video.onloadedmetadata = () => {
-          console.log('Video metadata loaded')
-          setIsVideoReady(true)
-          video.play()
-            .then(() => {
-              console.log('Video playing successfully')
-            })
-            .catch(error => {
-              console.error('Play failed:', error)
-              setError('No se pudo reproducir el video. Intenta hacer clic en el video.')
-            })
-        }
+        // Wait a bit then try to play
+        setTimeout(async () => {
+          try {
+            await video.play()
+            setIsVideoReady(true)
+            console.log('Video started successfully')
+          } catch (error) {
+            console.log('Autoplay failed, user interaction needed:', error)
+            setIsVideoReady(true) // Still show the video area for manual click
+          }
+        }, 100)
         
-        video.oncanplay = () => {
-          console.log('Video can play')
-          setIsVideoReady(true)
-        }
-        
-        video.onerror = (e) => {
-          console.error('Video error:', e)
-          setError('Error al cargar el video de la cámara')
-        }
-        
-        // Now assign the stream
-        video.srcObject = stream
         streamRef.current = stream
         setIsStreaming(true)
       }
@@ -278,23 +266,43 @@ export function EmotionDetection() {
                         autoPlay
                         playsInline
                         muted
-                        className={`w-full h-full object-cover transform scale-x-[-1] ${
-                          isVideoReady ? 'opacity-100' : 'opacity-0'
-                        }`}
+                        className="w-full h-full object-cover transform scale-x-[-1]"
                         onClick={() => {
-                          // Manual play trigger if autoplay fails
-                          videoRef.current?.play().catch(console.error)
+                          console.log('Video clicked, attempting to play')
+                          if (videoRef.current) {
+                            videoRef.current.play()
+                              .then(() => {
+                                console.log('Manual play successful')
+                                setIsVideoReady(true)
+                              })
+                              .catch(error => {
+                                console.error('Manual play failed:', error)
+                                setError('Haz clic en el video para activar la reproducción')
+                              })
+                          }
                         }}
                       />
                       <canvas ref={canvasRef} className="hidden" />
                       
-                      {/* Loading state while video loads */}
-                      {isStreaming && !isVideoReady && (
+                      {/* Overlay for manual activation if needed */}
+                      {isStreaming && !isVideoReady && !error && (
                         <div className="absolute inset-0 flex items-center justify-center bg-neutral-800">
                           <div className="text-center">
-                            <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                            <p className="text-white text-sm">Cargando video...</p>
-                            <p className="text-neutral-400 text-xs mt-1">Si no aparece, haz clic en el área del video</p>
+                            <Camera className="w-12 h-12 text-blue-400 mx-auto mb-4" />
+                            <p className="text-white text-sm font-medium mb-2">Video listo</p>
+                            <p className="text-neutral-400 text-xs">Haz clic aquí para activar el video</p>
+                            <button
+                              onClick={() => {
+                                if (videoRef.current) {
+                                  videoRef.current.play()
+                                    .then(() => setIsVideoReady(true))
+                                    .catch(console.error)
+                                }
+                              }}
+                              className="mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm transition-colors"
+                            >
+                              Activar Video
+                            </button>
                           </div>
                         </div>
                       )}

@@ -14,11 +14,20 @@ export function EmotionDetection() {
   const [currentEmotion, setCurrentEmotion] = useState<EmotionResult | null>(null)
   const [emotionHistory, setEmotionHistory] = useState<EmotionResult[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [debugInfo, setDebugInfo] = useState<string[]>([])
+  const [streamInfo, setStreamInfo] = useState<any>(null)
   
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Debug logging function
+  const addDebugLog = (message: string) => {
+    const timestamp = new Date().toLocaleTimeString()
+    setDebugInfo(prev => [`[${timestamp}] ${message}`, ...prev.slice(0, 19)]) // Keep last 20 logs
+    console.log(`[DEBUG] ${message}`)
+  }
 
   // Mock emotion detection (simulates real AI analysis)
   const detectEmotion = async (): Promise<EmotionResult> => {
@@ -47,6 +56,8 @@ export function EmotionDetection() {
     try {
       setError(null)
       setIsVideoReady(false)
+      addDebugLog('🎥 Solicitando acceso a la cámara...')
+      
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
           width: { ideal: 640 },
@@ -55,8 +66,21 @@ export function EmotionDetection() {
         } 
       })
       
+      addDebugLog('✅ Stream obtenido exitosamente')
+      
+      // Log stream info
+      const tracks = stream.getVideoTracks()
+      if (tracks.length > 0) {
+        const track = tracks[0]
+        const settings = track.getSettings()
+        setStreamInfo(settings)
+        addDebugLog(`📹 Video track: ${settings.width}x${settings.height}, ${settings.frameRate}fps`)
+      }
+      
       if (videoRef.current) {
         const video = videoRef.current
+        
+        addDebugLog('🔧 Configurando elemento video...')
         
         // Assign stream first
         video.srcObject = stream
@@ -65,35 +89,62 @@ export function EmotionDetection() {
         video.muted = true
         video.playsInline = true
         
+        // Add all event listeners for debugging
+        video.onloadstart = () => addDebugLog('📡 Video: loadstart')
+        video.onloadedmetadata = () => {
+          addDebugLog('📊 Video: metadata cargada')
+          addDebugLog(`📐 Video dimensions: ${video.videoWidth}x${video.videoHeight}`)
+        }
+        video.oncanplay = () => {
+          addDebugLog('▶️ Video: can play')
+          setIsVideoReady(true)
+        }
+        video.onplay = () => addDebugLog('🎬 Video: playing')
+        video.onpause = () => addDebugLog('⏸️ Video: paused')
+        video.onerror = (e) => {
+          const errorMsg = `Video error: ${e}`
+          addDebugLog(`❌ ${errorMsg}`)
+          setError(errorMsg)
+        }
+        video.onstalled = () => addDebugLog('⏳ Video: stalled')
+        video.onwaiting = () => addDebugLog('⌛ Video: waiting')
+        
+        addDebugLog('⏰ Esperando 100ms antes de intentar reproducir...')
+        
         // Wait a bit then try to play
         setTimeout(async () => {
           try {
+            addDebugLog('▶️ Intentando reproducir video...')
             await video.play()
-            setIsVideoReady(true)
-            console.log('Video started successfully')
+            addDebugLog('✅ Video reproduciéndose exitosamente!')
           } catch (error) {
-            console.log('Autoplay failed, user interaction needed:', error)
-            setIsVideoReady(true) // Still show the video area for manual click
+            addDebugLog(`⚠️ Autoplay falló: ${error}`)
+            addDebugLog('👆 Se requiere interacción del usuario')
           }
         }, 100)
         
         streamRef.current = stream
         setIsStreaming(true)
+        addDebugLog('🟢 Estado streaming activado')
       }
     } catch (err) {
-      setError('No se pudo acceder a la cámara. Verifica los permisos.')
-      console.error('Camera access error:', err)
+      const errorMsg = `No se pudo acceder a la cámara: ${err}`
+      setError(errorMsg)
+      addDebugLog(`❌ ${errorMsg}`)
     }
   }
 
   const stopCamera = () => {
+    addDebugLog('🛑 Deteniendo cámara...')
     setIsVideoReady(false)
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop())
       streamRef.current = null
+      addDebugLog('📴 Stream detenido')
     }
     if (videoRef.current) {
       videoRef.current.srcObject = null
+      addDebugLog('🔌 Video desconectado')
     }
     setIsStreaming(false)
     setIsAnalyzing(false)
@@ -101,6 +152,7 @@ export function EmotionDetection() {
       clearInterval(intervalRef.current)
       intervalRef.current = null
     }
+    addDebugLog('✅ Cámara detenida completamente')
   }
 
   const startAnalysis = () => {
@@ -269,15 +321,16 @@ export function EmotionDetection() {
                         className="w-full h-full object-cover transform scale-x-[-1]"
                         onClick={() => {
                           console.log('Video clicked, attempting to play')
+                          addDebugLog('👆 Usuario hizo clic en el video')
                           if (videoRef.current) {
                             videoRef.current.play()
                               .then(() => {
-                                console.log('Manual play successful')
+                                addDebugLog('✅ Reproducción manual exitosa!')
                                 setIsVideoReady(true)
                               })
                               .catch(error => {
-                                console.error('Manual play failed:', error)
-                                setError('Haz clic en el video para activar la reproducción')
+                                addDebugLog(`❌ Reproducción manual falló: ${error}`)
+                                setError(`Error de reproducción: ${error}`)
                               })
                           }
                         }}
@@ -293,10 +346,17 @@ export function EmotionDetection() {
                             <p className="text-neutral-400 text-xs">Haz clic aquí para activar el video</p>
                             <button
                               onClick={() => {
+                                addDebugLog('👆 Usuario hizo clic en "Activar Video"')
                                 if (videoRef.current) {
                                   videoRef.current.play()
-                                    .then(() => setIsVideoReady(true))
-                                    .catch(console.error)
+                                    .then(() => {
+                                      addDebugLog('✅ Video activado manualmente!')
+                                      setIsVideoReady(true)
+                                    })
+                                    .catch(error => {
+                                      addDebugLog(`❌ Error al activar video: ${error}`)
+                                      setError(`Error: ${error}`)
+                                    })
                                 }
                               }}
                               className="mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm transition-colors"
@@ -389,6 +449,59 @@ export function EmotionDetection() {
                   </button>
                 )}
               </div>
+            </div>
+            
+            {/* Debug Panel */}
+            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
+              <h3 className="text-lg font-semibold text-white mb-4">Debug Info</h3>
+              
+              {/* Stream Info */}
+              {streamInfo && (
+                <div className="mb-4 p-3 bg-neutral-800 rounded-lg">
+                  <div className="text-sm font-medium text-white mb-2">Stream Settings:</div>
+                  <div className="text-xs text-neutral-400 space-y-1">
+                    <div>Resolution: {streamInfo.width}x{streamInfo.height}</div>
+                    <div>Frame Rate: {streamInfo.frameRate}fps</div>
+                    <div>Device: {streamInfo.deviceId?.substring(0, 8)}...</div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Video Element State */}
+              {videoRef.current && (
+                <div className="mb-4 p-3 bg-neutral-800 rounded-lg">
+                  <div className="text-sm font-medium text-white mb-2">Video Element:</div>
+                  <div className="text-xs text-neutral-400 space-y-1">
+                    <div>Ready State: {videoRef.current.readyState}</div>
+                    <div>Paused: {videoRef.current.paused ? 'Yes' : 'No'}</div>
+                    <div>Muted: {videoRef.current.muted ? 'Yes' : 'No'}</div>
+                    <div>Has Stream: {videoRef.current.srcObject ? 'Yes' : 'No'}</div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Debug Log */}
+              <div className="max-h-48 overflow-y-auto">
+                <div className="text-sm font-medium text-white mb-2">Debug Log:</div>
+                <div className="space-y-1">
+                  {debugInfo.length === 0 ? (
+                    <div className="text-xs text-neutral-500">No debug info yet</div>
+                  ) : (
+                    debugInfo.map((log, index) => (
+                      <div key={index} className="text-xs text-neutral-300 font-mono bg-neutral-800 p-2 rounded">
+                        {log}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+              
+              <button
+                onClick={() => setDebugInfo([])}
+                className="mt-3 w-full px-3 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-sm transition-colors"
+              >
+                Clear Debug Log
+              </button>
             </div>
             
             {/* Emotion History */}

@@ -25,7 +25,7 @@ export function HybeLLM() {
           <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-purple-600/20 rounded-full flex items-center justify-center">
-                <MessageSquare className="w-4 h-4 text-purple-400" />
+                <Database className="w-4 h-4 text-purple-400" />
               </div>
               <span className="font-medium text-white">Hybe Assistant</span>
             </div>

@@ -1,27 +1,43 @@
 interface DashboardFrameProps {
-  project?: string
-  source?: string
-  band?: string
+  url: string
+  title: string
 }
 
-export function DashboardFrame({ project, source, band }: DashboardFrameProps) {
-  // This would contain the actual dashboard embed logic
-  // For now, showing a placeholder that maintains the existing dashboard structure
-  
-  return (
-    <div className="h-[600px] bg-neutral-800 rounded-lg flex items-center justify-center">
-      <div className="text-center">
-        <div className="text-neutral-500 mb-2">Dashboard Frame</div>
-        <div className="text-sm text-neutral-600">
-          {band 
-            ? `${project} • Band: ${band}`
-            : `${project} • ${source}`
-          }
-        </div>
-        <div className="text-xs text-neutral-700 mt-2">
-          Existing dashboard embed would load here
+export function DashboardFrame({ url, title }: DashboardFrameProps) {
+  const isLookerStudio = url.includes('lookerstudio.google.com')
+  const isExternal = !isLookerStudio
+
+  if (isExternal) {
+    return (
+      <div className="h-[600px] bg-neutral-800 rounded-lg flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-neutral-300 mb-2">External Dashboard</div>
+          <div className="text-sm text-neutral-500 mb-4">{title}</div>
+          <a 
+            href={url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg font-medium transition-colors"
+          >
+            Open in New Tab
+          </a>
         </div>
       </div>
+    )
+  }
+
+  return (
+    <div className="h-[600px] bg-neutral-800 rounded-lg overflow-hidden">
+      <iframe
+        src={url}
+        title={title}
+        className="w-full h-full border-0"
+        loading="lazy"
+        sandbox="allow-scripts allow-same-origin allow-forms"
+        onError={() => {
+          console.error('Failed to load dashboard:', url)
+        }}
+      />
     </div>
   )
 }

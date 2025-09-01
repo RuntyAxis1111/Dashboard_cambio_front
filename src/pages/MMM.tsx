@@ -37,6 +37,19 @@ export function MMM() {
             </button>
           ))}
         </div>
+        
+        {/* MMM Results iframe */}
+        <div className="mt-8">
+          <h3 className="text-sm font-medium text-neutral-300 mb-3">Current Results</h3>
+          <div className="h-64 bg-neutral-800 rounded-lg overflow-hidden">
+            <iframe
+              src="/mmm/results"
+              title="MMM Results"
+              className="w-full h-full border-0"
+              loading="lazy"
+            />
+          </div>
+        </div>
       </div>
       
       {/* Main Content */}

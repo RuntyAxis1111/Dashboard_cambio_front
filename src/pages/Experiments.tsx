@@ -8,3 +8,5 @@ function Experiments() {
 }
 
 export default Experiments;
+
+export { Experiments }

@@ -379,7 +379,7 @@ export function EmotionDetection() {
                         </button>
                       </div>
                     </div>
-                  )}
+                  ) : null}
                   
                   {/* Analysis Overlay */}
                   {isAnalyzing && isVideoReady && (

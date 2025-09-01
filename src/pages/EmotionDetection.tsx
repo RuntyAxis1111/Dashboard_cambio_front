@@ -9,6 +9,7 @@ interface EmotionResult {
 
 export function EmotionDetection() {
   const [isStreaming, setIsStreaming] = useState(false)
+  const [isVideoReady, setIsVideoReady] = useState(false)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [currentEmotion, setCurrentEmotion] = useState<EmotionResult | null>(null)
   const [emotionHistory, setEmotionHistory] = useState<EmotionResult[]>([])
@@ -45,6 +46,7 @@ export function EmotionDetection() {
   const startCamera = async () => {
     try {
       setError(null)
+      setIsVideoReady(false)
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
           width: { ideal: 640 },
@@ -54,39 +56,39 @@ export function EmotionDetection() {
       })
       
       if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        
-        // Multiple approaches to ensure video plays
         const video = videoRef.current
         
-        // Set video properties
+        // Set video properties before assigning stream
         video.muted = true
         video.playsInline = true
         video.autoplay = true
         
-        // Try to play immediately
-        const playPromise = video.play()
-        if (playPromise !== undefined) {
-          playPromise.catch(error => {
-            console.log('Auto-play prevented:', error)
-            // If autoplay fails, we'll show a play button
-          })
-        }
-        
-        // Also try when metadata loads
+        // Set up event handlers before assigning stream
         video.onloadedmetadata = () => {
-          video.play().catch(error => {
-            console.log('Play on metadata load failed:', error)
-          })
+          console.log('Video metadata loaded')
+          setIsVideoReady(true)
+          video.play()
+            .then(() => {
+              console.log('Video playing successfully')
+            })
+            .catch(error => {
+              console.error('Play failed:', error)
+              setError('No se pudo reproducir el video. Intenta hacer clic en el video.')
+            })
         }
         
-        // And when data starts loading
-        video.onloadstart = () => {
-          video.play().catch(error => {
-            console.log('Play on load start failed:', error)
-          })
+        video.oncanplay = () => {
+          console.log('Video can play')
+          setIsVideoReady(true)
         }
         
+        video.onerror = (e) => {
+          console.error('Video error:', e)
+          setError('Error al cargar el video de la cámara')
+        }
+        
+        // Now assign the stream
+        video.srcObject = stream
         streamRef.current = stream
         setIsStreaming(true)
       }
@@ -97,6 +99,7 @@ export function EmotionDetection() {
   }
 
   const stopCamera = () => {
+    setIsVideoReady(false)
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop())
       streamRef.current = null
@@ -275,16 +278,29 @@ export function EmotionDetection() {
                         autoPlay
                         playsInline
                         muted
-                        className="w-full h-full object-cover transform scale-x-[-1]"
-                        onCanPlay={() => {
-                          // Force play when video can play
+                        className={`w-full h-full object-cover transform scale-x-[-1] ${
+                          isVideoReady ? 'opacity-100' : 'opacity-0'
+                        }`}
+                        onClick={() => {
+                          // Manual play trigger if autoplay fails
                           videoRef.current?.play().catch(console.error)
                         }}
                       />
                       <canvas ref={canvasRef} className="hidden" />
                       
+                      {/* Loading state while video loads */}
+                      {isStreaming && !isVideoReady && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-neutral-800">
+                          <div className="text-center">
+                            <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                            <p className="text-white text-sm">Cargando video...</p>
+                            <p className="text-neutral-400 text-xs mt-1">Si no aparece, haz clic en el área del video</p>
+                          </div>
+                        </div>
+                      )}
+                      
                       {/* Analysis Overlay */}
-                      {isAnalyzing && (
+                      {isAnalyzing && isVideoReady && (
                         <div className="absolute top-4 left-4 right-4">
                           <div className="bg-black/50 backdrop-blur-sm rounded-lg p-4">
                             <div className="flex items-center justify-between">
@@ -355,6 +371,15 @@ export function EmotionDetection() {
                   <Download className="w-4 h-4" />
                   Export Results
                 </button>
+                {isStreaming && !isVideoReady && (
+                  <button
+                    onClick={() => videoRef.current?.play().catch(console.error)}
+                    className="w-full flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors"
+                  >
+                    <Play className="w-4 h-4" />
+                    Play Video Manually
+                  </button>
+                )}
               </div>
             </div>
             

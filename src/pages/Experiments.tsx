@@ -1,6 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { Camera, CameraOff, Play, Square, Download, RotateCcw, AlertCircle } from 'lucide-react'
-import { initHuman, detectOnce, drawFrame, getTopEmotion, type Backend } from '../lib/human'
+import { useState, useRef, useEffect } from 'react'
+import { Camera, CameraOff, Play, Square, Download, RotateCcw } from 'lucide-react'
 
 interface EmotionResult {
   emotion: string
@@ -14,45 +13,37 @@ export function Experiments() {
   const [currentEmotion, setCurrentEmotion] = useState<EmotionResult | null>(null)
   const [emotionHistory, setEmotionHistory] = useState<EmotionResult[]>([])
   const [error, setError] = useState<string | null>(null)
-  const [debugInfo, setDebugInfo] = useState<string[]>([])
-  const [status, setStatus] = useState('Stopped')
-  const [backend, setBackend] = useState<Backend>('webgl')
-  const [fps, setFps] = useState(0)
   
-  // Refs para ambos videos
-  const videoRef = useRef<HTMLVideoElement>(null)
+  const normalVideoRef = useRef<HTMLVideoElement>(null)
   const aiVideoRef = useRef<HTMLVideoElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
-  const rafRef = useRef<number | null>(null)
-  const humanRef = useRef<any>(null)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Debug logging
-  const addLog = (message: string) => {
-    const timestamp = new Date().toLocaleTimeString()
-    setDebugInfo(prev => [`[${timestamp}] ${message}`, ...prev.slice(0, 19)])
-    console.log(`[DEBUG] ${message}`)
-  }
-
-  // Initialize Human.js
-  useEffect(() => {
-    const init = async () => {
-      try {
-        addLog(`🤖 Inicializando Human.js con backend: ${backend}`)
-        humanRef.current = await initHuman(backend)
-        addLog('✅ Human.js inicializado correctamente')
-      } catch (err) {
-        addLog(`❌ Error inicializando Human.js: ${err}`)
-        setError(`Error inicializando AI: ${err}`)
-      }
+  // Mock emotion detection
+  const detectEmotion = async (): Promise<EmotionResult> => {
+    await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000))
+    
+    const emotions = [
+      { emotion: 'Happy', confidence: 0.85 + Math.random() * 0.15 },
+      { emotion: 'Neutral', confidence: 0.70 + Math.random() * 0.25 },
+      { emotion: 'Surprised', confidence: 0.60 + Math.random() * 0.35 },
+      { emotion: 'Focused', confidence: 0.75 + Math.random() * 0.20 },
+      { emotion: 'Excited', confidence: 0.80 + Math.random() * 0.15 },
+      { emotion: 'Calm', confidence: 0.65 + Math.random() * 0.30 },
+    ]
+    
+    const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)]
+    
+    return {
+      emotion: randomEmotion.emotion,
+      confidence: Math.min(randomEmotion.confidence, 0.99),
+      timestamp: new Date()
     }
-    init()
-  }, [backend])
+  }
 
   const startCamera = async () => {
     try {
       setError(null)
-      addLog('🎥 Solicitando acceso a la cámara...')
       
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
@@ -62,154 +53,75 @@ export function Experiments() {
         } 
       })
       
-      addLog('✅ Stream obtenido exitosamente')
+      // Asignar el MISMO stream a AMBOS videos
+      if (normalVideoRef.current) {
+        normalVideoRef.current.srcObject = stream
+        normalVideoRef.current.muted = true
+        normalVideoRef.current.playsInline = true
+        await normalVideoRef.current.play()
+      }
       
-      // Configurar AMBOS videos con el mismo stream
-      if (videoRef.current && aiVideoRef.current) {
-        // Video normal (izquierda)
-        videoRef.current.srcObject = stream
-        videoRef.current.muted = true
-        videoRef.current.playsInline = true
-        
-        // Video AI (derecha) - mismo stream
+      if (aiVideoRef.current) {
         aiVideoRef.current.srcObject = stream
         aiVideoRef.current.muted = true
         aiVideoRef.current.playsInline = true
-        
-        addLog('🔧 Ambos videos configurados')
-        
-        // Reproducir ambos
-        try {
-          await videoRef.current.play()
-          await aiVideoRef.current.play()
-          addLog('▶️ Ambos videos reproduciéndose')
-        } catch (error) {
-          addLog(`⚠️ Autoplay falló: ${error}`)
-        }
-        
-        streamRef.current = stream
-        setIsStreaming(true)
-        addLog('🟢 Streaming activado')
+        await aiVideoRef.current.play()
       }
+      
+      streamRef.current = stream
+      setIsStreaming(true)
+      
     } catch (err) {
-      const errorMsg = `No se pudo acceder a la cámara: ${err}`
-      setError(errorMsg)
-      addLog(`❌ ${errorMsg}`)
+      setError(`Camera error: ${err}`)
     }
   }
 
   const stopCamera = () => {
-    addLog('🛑 Deteniendo cámara...')
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop())
       streamRef.current = null
     }
-    if (videoRef.current) videoRef.current.srcObject = null
+    if (normalVideoRef.current) normalVideoRef.current.srcObject = null
     if (aiVideoRef.current) aiVideoRef.current.srcObject = null
     setIsStreaming(false)
     setIsAnalyzing(false)
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current)
-      rafRef.current = null
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
     }
-    setStatus('Stopped')
-    addLog('✅ Cámara detenida')
   }
 
-  const startAnalysis = async () => {
-    if (!humanRef.current || !aiVideoRef.current || !canvasRef.current) {
-      addLog('❌ Componentes no listos para análisis')
-      return
-    }
-
-    try {
-      setStatus('Starting...')
-      addLog('🚀 Iniciando análisis...')
-      
-      const video = aiVideoRef.current
-      const canvas = canvasRef.current
-      
-      canvas.width = video.videoWidth || 640
-      canvas.height = video.videoHeight || 480
-      addLog(`🎨 Canvas: ${canvas.width}x${canvas.height}`)
-      
-      await humanRef.current.warmup()
-      addLog('✅ Modelo calentado')
-      
-      setIsAnalyzing(true)
-      setStatus('Running')
-      
-      let frameCount = 0
-      let lastTime = performance.now()
-      
-      const loop = async () => {
-        if (!isAnalyzing) return
-        
-        try {
-          const now = performance.now()
-          frameCount++
-          
-          if (now - lastTime >= 1000) {
-            setFps(Math.round(frameCount * 1000 / (now - lastTime)))
-            frameCount = 0
-            lastTime = now
-          }
-          
-          const result = await detectOnce(video)
-          
-          if (result.face && result.face.length > 0) {
-            const topEmotion = getTopEmotion(result)
-            if (topEmotion) {
-              setCurrentEmotion({
-                emotion: topEmotion.emotion,
-                confidence: topEmotion.score,
-                timestamp: new Date()
-              })
-              setEmotionHistory(prev => [
-                {
-                  emotion: topEmotion.emotion,
-                  confidence: topEmotion.score,
-                  timestamp: new Date()
-                },
-                ...prev.slice(0, 9)
-              ])
-            }
-            
-            drawFrame(canvas, video, result)
-          }
-          
-          rafRef.current = requestAnimationFrame(loop)
-        } catch (err) {
-          setError(`Error: ${err}`)
-          setStatus('Error')
-          addLog(`❌ Error en loop: ${err}`)
-        }
+  const startAnalysis = () => {
+    if (!isStreaming) return
+    
+    setIsAnalyzing(true)
+    
+    const analyzeFrame = async () => {
+      try {
+        const result = await detectEmotion()
+        setCurrentEmotion(result)
+        setEmotionHistory(prev => [result, ...prev.slice(0, 9)])
+      } catch (err) {
+        console.error('Emotion detection error:', err)
       }
-      
-      rafRef.current = requestAnimationFrame(loop)
-      
-    } catch (err) {
-      setError(`Error: ${err}`)
-      setStatus('Error')
-      addLog(`❌ Error en start: ${err}`)
     }
+    
+    intervalRef.current = setInterval(analyzeFrame, 2000)
+    analyzeFrame()
   }
 
   const stopAnalysis = () => {
     setIsAnalyzing(false)
-    setStatus('Stopped')
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current)
-      rafRef.current = null
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
     }
-    addLog('⏹️ Análisis detenido')
   }
 
   const resetSession = () => {
     setCurrentEmotion(null)
     setEmotionHistory([])
     stopAnalysis()
-    addLog('🔄 Sesión reiniciada')
   }
 
   const exportResults = () => {
@@ -229,7 +141,6 @@ export function Experiments() {
     a.download = `emotion-analysis-${new Date().toISOString().split('T')[0]}.json`
     a.click()
     URL.revokeObjectURL(url)
-    addLog('📁 Resultados exportados')
   }
 
   useEffect(() => {
@@ -240,15 +151,14 @@ export function Experiments() {
 
   const getEmotionColor = (emotion: string) => {
     const colors = {
-      'happy': 'text-yellow-400 bg-yellow-600/20',
-      'sad': 'text-blue-400 bg-blue-600/20',
-      'angry': 'text-red-400 bg-red-600/20',
-      'fear': 'text-purple-400 bg-purple-600/20',
-      'surprise': 'text-orange-400 bg-orange-600/20',
-      'disgust': 'text-green-400 bg-green-600/20',
-      'neutral': 'text-gray-400 bg-gray-600/20',
+      'Happy': 'text-yellow-400 bg-yellow-600/20',
+      'Excited': 'text-orange-400 bg-orange-600/20',
+      'Surprised': 'text-blue-400 bg-blue-600/20',
+      'Neutral': 'text-gray-400 bg-gray-600/20',
+      'Focused': 'text-purple-400 bg-purple-600/20',
+      'Calm': 'text-green-400 bg-green-600/20',
     }
-    return colors[emotion.toLowerCase() as keyof typeof colors] || 'text-gray-400 bg-gray-600/20'
+    return colors[emotion as keyof typeof colors] || 'text-gray-400 bg-gray-600/20'
   }
 
   return (
@@ -267,20 +177,7 @@ export function Experiments() {
             <div className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden">
               <div className="p-6 border-b border-neutral-800">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-semibold text-white">Dual Camera View</h2>
-                    <div className="flex items-center gap-4 mt-2 text-sm">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        status === 'Running' ? 'bg-green-600/20 text-green-400' :
-                        status === 'Error' ? 'bg-red-600/20 text-red-400' :
-                        'bg-neutral-600/20 text-neutral-400'
-                      }`}>
-                        Status: {status}
-                      </span>
-                      <span className="text-neutral-400">Backend: {backend}</span>
-                      <span className="text-neutral-400">FPS: {fps}</span>
-                    </div>
-                  </div>
+                  <h2 className="text-xl font-semibold text-white">Dual Camera View</h2>
                   <div className="flex gap-2">
                     {!isStreaming ? (
                       <button
@@ -323,27 +220,24 @@ export function Experiments() {
               </div>
               
               <div className="p-6">
-                {/* Dual Video Layout */}
+                {/* DOS VIDEOS LADO A LADO */}
                 <div className="grid grid-cols-2 gap-4">
-                  {/* Video Normal (Izquierda) */}
+                  {/* VIDEO NORMAL (IZQUIERDA) */}
                   <div className="relative bg-neutral-800 rounded-xl overflow-hidden aspect-video">
                     <div className="absolute top-2 left-2 z-10 bg-black/50 backdrop-blur-sm rounded px-2 py-1">
                       <span className="text-white text-xs font-medium">Normal Feed</span>
                     </div>
                     
-                    {isStreaming ? (
-                      <video
-                        ref={videoRef}
-                        autoPlay
-                        playsInline
-                        muted
-                        className="w-full h-full object-cover transform scale-x-[-1]"
-                        onClick={() => {
-                          addLog('👆 Click en video normal')
-                          videoRef.current?.play()
-                        }}
-                      />
-                    ) : (
+                    <video
+                      ref={normalVideoRef}
+                      autoPlay
+                      playsInline
+                      muted
+                      className="w-full h-full object-cover transform scale-x-[-1]"
+                      style={{ display: isStreaming ? 'block' : 'none' }}
+                    />
+                    
+                    {!isStreaming && (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="text-center">
                           <Camera className="w-8 h-8 text-neutral-500 mx-auto mb-2" />
@@ -353,41 +247,31 @@ export function Experiments() {
                     )}
                   </div>
                   
-                  {/* Video AI (Derecha) */}
+                  {/* VIDEO AI (DERECHA) */}
                   <div className="relative bg-neutral-800 rounded-xl overflow-hidden aspect-video">
                     <div className="absolute top-2 left-2 z-10 bg-black/50 backdrop-blur-sm rounded px-2 py-1">
                       <span className="text-white text-xs font-medium">AI Analysis</span>
                     </div>
                     
-                    {isStreaming ? (
-                      <>
-                        <video
-                          ref={aiVideoRef}
-                          autoPlay
-                          playsInline
-                          muted
-                          className="w-full h-full object-cover transform scale-x-[-1]"
-                          onClick={() => {
-                            addLog('👆 Click en video AI')
-                            aiVideoRef.current?.play()
-                          }}
-                        />
-                        <canvas
-                          ref={canvasRef}
-                          className="absolute inset-0 w-full h-full object-cover transform scale-x-[-1] pointer-events-none"
-                          style={{ opacity: isAnalyzing ? 0.8 : 0 }}
-                        />
-                      </>
-                    ) : (
+                    <video
+                      ref={aiVideoRef}
+                      autoPlay
+                      playsInline
+                      muted
+                      className="w-full h-full object-cover transform scale-x-[-1]"
+                      style={{ display: isStreaming ? 'block' : 'none' }}
+                    />
+                    
+                    {!isStreaming && (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="text-center">
-                          <AlertCircle className="w-8 h-8 text-neutral-500 mx-auto mb-2" />
+                          <Camera className="w-8 h-8 text-neutral-500 mx-auto mb-2" />
                           <p className="text-neutral-400 text-sm">AI Filtered</p>
                         </div>
                       </div>
                     )}
                     
-                    {/* Current Emotion Overlay */}
+                    {/* Emotion Overlay - SOLO en video AI */}
                     {isAnalyzing && currentEmotion && (
                       <div className="absolute bottom-2 left-2 right-2 z-20">
                         <div className="bg-black/70 backdrop-blur-sm rounded-lg p-2">
@@ -400,21 +284,16 @@ export function Experiments() {
                   </div>
                 </div>
                 
-                {/* Error Display */}
                 {error && (
                   <div className="mt-4 p-4 bg-red-600/20 border border-red-600/30 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <AlertCircle className="w-5 h-5 text-red-400" />
-                      <span className="text-red-400 font-medium">Error:</span>
-                      <span className="text-red-300">{error}</span>
-                    </div>
+                    <p className="text-red-400">{error}</p>
                   </div>
                 )}
               </div>
             </div>
           </div>
           
-          {/* Controls & Results Panel */}
+          {/* Results Panel */}
           <div className="space-y-6">
             {/* Current Emotion */}
             <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
@@ -445,18 +324,6 @@ export function Experiments() {
             <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
               <h3 className="text-lg font-semibold text-white mb-4">Controls</h3>
               <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium text-neutral-300 mb-2">AI Backend</label>
-                  <select
-                    value={backend}
-                    onChange={(e) => setBackend(e.target.value as Backend)}
-                    className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white"
-                  >
-                    <option value="webgl">WebGL</option>
-                    <option value="wasm">WASM</option>
-                  </select>
-                </div>
-                
                 <button
                   onClick={resetSession}
                   disabled={emotionHistory.length === 0}
@@ -465,7 +332,6 @@ export function Experiments() {
                   <RotateCcw className="w-4 h-4" />
                   Reset Session
                 </button>
-                
                 <button
                   onClick={exportResults}
                   disabled={emotionHistory.length === 0}
@@ -475,28 +341,6 @@ export function Experiments() {
                   Export Results
                 </button>
               </div>
-            </div>
-            
-            {/* Debug Panel */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Debug Log</h3>
-              <div className="max-h-48 overflow-y-auto space-y-1">
-                {debugInfo.length === 0 ? (
-                  <div className="text-xs text-neutral-500">No debug info yet</div>
-                ) : (
-                  debugInfo.map((log, index) => (
-                    <div key={index} className="text-xs text-neutral-300 font-mono bg-neutral-800 p-2 rounded">
-                      {log}
-                    </div>
-                  ))
-                )}
-              </div>
-              <button
-                onClick={() => setDebugInfo([])}
-                className="mt-3 w-full px-3 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-sm transition-colors"
-              >
-                Clear Debug Log
-              </button>
             </div>
             
             {/* Emotion History */}

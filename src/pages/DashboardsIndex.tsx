@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom'
-import { Music, BarChart3, Users, Megaphone } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Music, BarChart3, Users, Megaphone, ChevronDown, ExternalLink } from 'lucide-react'
+import { useState } from 'react'
 import { projects } from '../lib/dashboards'
 
 const iconMap = {
@@ -17,6 +18,13 @@ const colorClasses = {
 }
 
 export function DashboardsIndex() {
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const navigate = useNavigate()
+
+  const handleDropdownToggle = (projectId: string) => {
+    setOpenDropdown(openDropdown === projectId ? null : projectId)
+  }
+
   return (
     <div className="p-8">
       <div className="max-w-7xl mx-auto">
@@ -30,46 +38,85 @@ export function DashboardsIndex() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           {projects.map((project) => {
             const IconComponent = iconMap[project.icon as keyof typeof iconMap]
+            const isOpen = openDropdown === project.id
             
             return (
               <div
                 key={project.id}
-                className="group bg-neutral-900 border border-neutral-800 rounded-2xl p-6 hover:border-neutral-700 transition-all duration-200"
+                className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden hover:border-neutral-700 transition-all duration-200"
               >
-                <div className="flex items-start gap-4 mb-6">
-                  <div className={`flex items-center justify-center w-12 h-12 rounded-xl transition-colors ${colorClasses[project.color as keyof typeof colorClasses]}`}>
-                    <IconComponent className="w-6 h-6" />
+                {/* Project Header */}
+                <div className="p-6">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className={`flex items-center justify-center w-12 h-12 rounded-xl transition-colors ${colorClasses[project.color as keyof typeof colorClasses]}`}>
+                      <IconComponent className="w-6 h-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-white mb-1">{project.name}</h3>
+                      <p className="text-neutral-400 text-sm">{project.description}</p>
+                    </div>
+                    <button
+                      onClick={() => handleDropdownToggle(project.id)}
+                      className="p-2 hover:bg-neutral-800 rounded-lg transition-colors"
+                    >
+                      <ChevronDown className={`w-5 h-5 text-neutral-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                    </button>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-white mb-1">{project.name}</h3>
-                    <p className="text-neutral-400 text-sm">{project.description}</p>
+                  
+                  {/* Quick Access - Always visible */}
+                  <div className="flex gap-2">
+                    <Link
+                      to={`/dashboard/${project.id}/${project.sections[0]?.dashboards[0]?.id || ''}`}
+                      className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-sm font-medium transition-colors"
+                    >
+                      Quick View
+                    </Link>
+                    <Link
+                      to="/projects"
+                      className="px-3 py-1.5 border border-neutral-700 hover:bg-neutral-800 rounded-lg text-sm font-medium transition-colors"
+                    >
+                      View All
+                    </Link>
                   </div>
                 </div>
                 
-                <div className="space-y-4">
-                  {project.sections.map((section) => (
-                    <div key={section.id}>
-                      <h4 className="text-sm font-medium text-neutral-300 mb-2">{section.name}</h4>
-                      <div className="space-y-1">
-                        {section.dashboards.map((dashboard) => (
-                          <Link
-                            key={dashboard.id}
-                            to={
-                              project.id === 'artists' 
-                                ? `/dashboard/artists/${dashboard.id}`
-                                : section.type === 'band'
-                                ? `/dashboard/${project.id}/band/${dashboard.id}`
-                                : `/dashboard/${project.id}/${dashboard.id}`
-                            }
-                            className="block px-3 py-2 rounded-lg text-sm text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
-                          >
-                            {dashboard.name}
-                          </Link>
-                        ))}
+                {/* Dropdown Content */}
+                {isOpen && (
+                  <div className="border-t border-neutral-800 bg-neutral-800/30">
+                    <div className="p-4 space-y-4">
+                      {project.sections.map((section) => (
+                        <div key={section.id}>
+                          <h4 className="text-sm font-medium text-neutral-300 mb-2 flex items-center gap-2">
+                            {section.type === 'social' && <Hash className="w-3 h-3" />}
+                            {section.type === 'band' && <Music className="w-3 h-3" />}
+                            {section.type === 'artist' && <Megaphone className="w-3 h-3" />}
+                            {section.name}
+                          </h4>
+                          <div className="grid grid-cols-2 gap-1">
+                            {section.dashboards.map((dashboard) => (
+                              <Link
+                                key={dashboard.id}
+                                to={
+                                  project.id === 'artists' 
+                                    ? `/dashboard/artists/${dashboard.id}`
+                                    : section.type === 'band'
+                                    ? `/dashboard/${project.id}/band/${dashboard.id}`
+                                    : `/dashboard/${project.id}/${dashboard.id}`
+                                }
+                                className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-neutral-400 hover:text-white hover:bg-neutral-700 transition-colors group"
+                              >
+                                <span>{dashboard.name}</span>
+                                <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                       </div>
                     </div>
                   ))}
-                </div>
+                )}
               </div>
             )
           })}

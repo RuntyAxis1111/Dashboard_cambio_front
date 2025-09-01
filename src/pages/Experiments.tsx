@@ -1,3 +1,5 @@
+import React, { useRef, useState, useEffect } from 'react';
+
 function Experiments() {
   const videoRef = useRef<HTMLVideoElement>(null);
 

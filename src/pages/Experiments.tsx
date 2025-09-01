@@ -162,6 +162,7 @@ export function Experiments() {
         const mockResult = {
           emotion: 'Error',
           confidence: 0,
+          allEmotions: [],
           timestamp: new Date()
         }
         setCurrentEmotion(mockResult)
@@ -244,8 +245,7 @@ export function Experiments() {
                     {!isStreaming ? (
                       <button
                         onClick={startCamera}
-                        disabled={!isAIReady}
-                        disabled={loadingProgress > 0 && loadingProgress < 100}
+                        disabled={!isAIReady && (loadingProgress > 0 && loadingProgress < 100)}
                         className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-colors"
                       >
                         <Camera className="w-4 h-4" />
@@ -463,6 +463,10 @@ export function Experiments() {
                   ))}
                 </div>
               </div>
+            )}
+            
+            {/* Controls */}
+            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
               <h3 className="text-lg font-semibold text-white mb-4">Controls</h3>
               <div className="space-y-3">
                 <button

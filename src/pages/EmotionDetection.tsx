@@ -352,7 +352,7 @@ export function EmotionDetection() {
                   <canvas ref={canvasRef} className="hidden" />
                   
                   {/* Overlay for manual activation if needed */}
-                  {isStreaming && !isVideoReady && !error && (
+                  {isStreaming && !isVideoReady && !error ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-neutral-800/90 z-10">
                       <div className="text-center">
                         <Camera className="w-12 h-12 text-blue-400 mx-auto mb-4" />
@@ -398,7 +398,7 @@ export function EmotionDetection() {
                         </div>
                       </div>
                     </div>
-                  )}
+                  ) : null}
                 </div>
               </div>
             </div>

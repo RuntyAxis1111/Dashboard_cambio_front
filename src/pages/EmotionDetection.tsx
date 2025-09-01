@@ -55,6 +55,10 @@ export function EmotionDetection() {
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream
+        // Wait for video to load and play
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current?.play().catch(console.error)
+        }
         streamRef.current = stream
         setIsStreaming(true)
       }

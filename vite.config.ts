@@ -11,6 +11,12 @@ export default defineConfig({
   preview: { 
     headers: { 'Permissions-Policy': 'camera=(self)' } 
   },
+  server: { 
+    headers: { 'Permissions-Policy': 'camera=(self)' } 
+  },
+  preview: { 
+    headers: { 'Permissions-Policy': 'camera=(self)' } 
+  },
   build: {
     outDir: 'dist',
     sourcemap: false,

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { Music, BarChart3, Users, Megaphone, ChevronDown, ExternalLink } from 'lucide-react'
+import { Music, BarChart3, Users, Megaphone, ChevronDown, ExternalLink, Hash } from 'lucide-react'
 import { useState } from 'react'
 import { projects } from '../lib/dashboards'
 
@@ -113,9 +113,7 @@ export function DashboardsIndex() {
                         </div>
                       ))}
                     </div>
-                      </div>
-                    </div>
-                  ))}
+                  </div>
                 )}
               </div>
             )

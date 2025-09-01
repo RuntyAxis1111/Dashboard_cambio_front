@@ -1,208 +1,107 @@
-import { useState, useRef, useEffect } from 'react'
-import { Camera, CameraOff, Play, Square } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react';
+import { initHuman, warmup, detectOnce, drawFrame, getTopEmotion, type Backend } from '../lib/human';
 
-export function Experiments() {
-  const [isStreaming, setIsStreaming] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [logs, setLogs] = useState<string[]>([])
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const streamRef = useRef<MediaStream | null>(null)
+export default function Experiments() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rafRef = useRef<number | null>(null);
 
-  const addLog = (message: string) => {
-    const timestamp = new Date().toLocaleTimeString()
-    setLogs(prev => [`[${timestamp}] ${message}`, ...prev.slice(0, 9)])
-    console.log(message)
+  const [running, setRunning] = useState(false);
+  const [backend, setBackend] = useState<Backend>('webgl');
+  const [fps, setFps] = useState(0);
+  const [label, setLabel] = useState<string>('—');
+
+  useEffect(() => {
+    return () => stop();
+  }, []);
+
+  async function start() {
+    if (!videoRef.current || !canvasRef.current) return;
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 640 }, height: { ideal: 480 } },
+      audio: false
+    });
+    videoRef.current.srcObject = stream;
+    await videoRef.current.play();
+
+    await initHuman(backend);
+    await warmup(videoRef.current);
+
+    setRunning(true);
+    let last = performance.now();
+
+    const loop = async () => {
+      if (!running || !videoRef.current || !canvasRef.current) return;
+
+      const res = await detectOnce(videoRef.current);
+      drawFrame(canvasRef.current, videoRef.current, res);
+
+      const top = getTopEmotion(res);
+      const ctx = canvasRef.current.getContext('2d')!;
+      ctx.fillStyle = 'rgba(0,0,0,.6)';
+      ctx.fillRect(12, 12, 220, 46);
+      ctx.fillStyle = '#9BE6C9';
+      ctx.font = '600 16px system-ui';
+      const text = top ? `Emotion: ${top.emotion} (${(top.score*100).toFixed(0)}%)` : 'Emotion: —';
+      ctx.fillText(text, 22, 42);
+      setLabel(top ? top.emotion : '—');
+
+      const now = performance.now();
+      setFps(Math.round(1000 / (now - last)));
+      last = now;
+
+      rafRef.current = requestAnimationFrame(loop);
+    };
+    rafRef.current = requestAnimationFrame(loop);
   }
 
-  const startCamera = async () => {
-    try {
-      setError(null)
-      addLog('🎥 Solicitando acceso a la cámara...')
-      
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          width: { ideal: 640 },
-          height: { ideal: 480 },
-          facingMode: 'user'
-        } 
-      })
-      
-      addLog('✅ Stream obtenido exitosamente')
-      
-      if (videoRef.current) {
-        const video = videoRef.current
-        
-        // Configurar video
-        video.srcObject = stream
-        video.muted = true
-        video.playsInline = true
-        
-        addLog('🔧 Video configurado, intentando reproducir...')
-        
-        // Intentar reproducir
-        try {
-          await video.play()
-          addLog('✅ Video reproduciéndose automáticamente!')
-          setIsStreaming(true)
-        } catch (playError) {
-          addLog(`⚠️ Autoplay falló: ${playError}`)
-          addLog('👆 Haz clic en el video para activarlo')
-          setIsStreaming(true) // Marcar como streaming aunque no se reproduzca
-        }
-        
-        streamRef.current = stream
-      }
-    } catch (err) {
-      const errorMsg = `❌ Error de cámara: ${err}`
-      setError(errorMsg)
-      addLog(errorMsg)
+  function stop() {
+    setRunning(false);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    const v = videoRef.current;
+    if (v?.srcObject) {
+      (v.srcObject as MediaStream).getTracks().forEach(t => t.stop());
+      v.srcObject = null;
     }
   }
 
-  const stopCamera = () => {
-    addLog('🛑 Deteniendo cámara...')
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop())
-      streamRef.current = null
-    }
-    if (videoRef.current) {
-      videoRef.current.srcObject = null
-    }
-    setIsStreaming(false)
-    addLog('✅ Cámara detenida')
-  }
-
-  const playVideo = async () => {
-    if (videoRef.current) {
-      try {
-        await videoRef.current.play()
-        addLog('✅ Video activado manualmente!')
-      } catch (err) {
-        addLog(`❌ Error al reproducir: ${err}`)
-      }
-    }
+  async function restartWithBackend(b: Backend) {
+    stop();
+    setBackend(b);
+    await start();
   }
 
   return (
-    <div className="p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Camera Test</h1>
-          <p className="text-neutral-400">
-            Prueba simple de cámara - sin complicaciones
-          </p>
-        </div>
-        
-        {/* Controls */}
-        <div className="mb-6 flex gap-4">
-          {!isStreaming ? (
-            <button
-              onClick={startCamera}
-              className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-medium transition-colors text-lg"
-            >
-              <Camera className="w-5 h-5" />
-              Iniciar Cámara
-            </button>
-          ) : (
-            <>
-              <button
-                onClick={playVideo}
-                className="flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-500 rounded-lg font-medium transition-colors text-lg"
-              >
-                <Play className="w-5 h-5" />
-                Activar Video
-              </button>
-              <button
-                onClick={stopCamera}
-                className="flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-500 rounded-lg font-medium transition-colors text-lg"
-              >
-                <CameraOff className="w-5 h-5" />
-                Detener
-              </button>
-            </>
-          )}
-        </div>
-        
-        {/* Video Container */}
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 mb-6">
-          <h2 className="text-xl font-semibold text-white mb-4">Video Feed</h2>
-          
-          <div className="relative bg-black rounded-xl overflow-hidden" style={{ height: '400px' }}>
-            {/* Video Element */}
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              onClick={playVideo}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                transform: 'scaleX(-1)',
-                backgroundColor: '#ff0000', // Fondo rojo para debug
-                border: '3px solid #00ff00', // Borde verde para ver el elemento
-                cursor: 'pointer'
-              }}
-            />
-            
-            {/* Status Overlay */}
-            <div className="absolute top-4 left-4 bg-black/70 rounded-lg p-3">
-              <div className="text-white text-sm">
-                <div>Estado: {isStreaming ? '🟢 Streaming' : '🔴 Detenido'}</div>
-                <div>Stream: {streamRef.current ? '✅ Activo' : '❌ Ninguno'}</div>
-                <div>Video: {videoRef.current?.srcObject ? '✅ Conectado' : '❌ Sin fuente'}</div>
-              </div>
-            </div>
-            
-            {/* Error Display */}
-            {error && (
-              <div className="absolute inset-0 flex items-center justify-center bg-red-900/80">
-                <div className="text-center text-white">
-                  <CameraOff className="w-12 h-12 mx-auto mb-4" />
-                  <p className="font-medium mb-2">Error</p>
-                  <p className="text-sm">{error}</p>
-                </div>
-              </div>
-            )}
-            
-            {/* Instructions */}
-            {!isStreaming && !error && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center text-white">
-                  <Camera className="w-16 h-16 mx-auto mb-4 text-neutral-400" />
-                  <p className="text-lg font-medium mb-2">Cámara Lista</p>
-                  <p className="text-neutral-400">Haz clic en "Iniciar Cámara"</p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-        
-        {/* Debug Logs */}
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Debug Log</h3>
-          <div className="bg-black rounded-lg p-4 h-48 overflow-y-auto">
-            {logs.length === 0 ? (
-              <div className="text-neutral-500 text-sm">No hay logs aún...</div>
-            ) : (
-              <div className="space-y-1">
-                {logs.map((log, index) => (
-                  <div key={index} className="text-green-400 text-sm font-mono">
-                    {log}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          <button
-            onClick={() => setLogs([])}
-            className="mt-3 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-sm transition-colors"
-          >
-            Limpiar Log
+    <div style={{ padding: 16 }}>
+      <h1 style={{ marginBottom: 8 }}>AI • Experiments — Emotion Detection</h1>
+
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
+        <button
+          onClick={running ? stop : start}
+          style={{ padding: '8px 12px', borderRadius: 10, background: running ? '#dc2626' : '#16a34a', color: '#fff', border: 'none' }}
+        >
+          {running ? 'Stop' : 'Start'}
+        </button>
+
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => restartWithBackend('webgl')}
+            style={{ padding:'8px 12px', borderRadius:10, border:'1px solid #333', background: backend==='webgl'?'#111827':'#0b0f14', color:'#e5e7eb' }}>
+            Backend: WebGL
+          </button>
+          <button onClick={() => restartWithBackend('wasm')}
+            style={{ padding:'8px 12px', borderRadius:10, border:'1px solid #333', background: backend==='wasm'?'#111827':'#0b0f14', color:'#e5e7eb' }}>
+            Backend: WASM
           </button>
         </div>
+
+        <span style={{ color:'#9ca3af' }}>FPS: {fps}</span>
+        <span style={{ color:'#9BE6C9' }}>Top Emotion: {label}</span>
       </div>
+
+      <video ref={videoRef} playsInline autoPlay muted style={{ display:'none' }} />
+      <canvas ref={canvasRef} width={640} height={480} style={{ width:'100%', borderRadius:12, border:'1px solid #222' }} />
+      <p style={{ marginTop:8, color:'#9ca3af' }}>Tip: si baja el FPS, prueba WASM o baja resolución.</p>
     </div>
-  )
+  );
 }

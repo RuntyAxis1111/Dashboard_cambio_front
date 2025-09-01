@@ -5,7 +5,11 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server: {
+  server: { 
+    headers: { 'Permissions-Policy': 'camera=(self)' } 
+  },
+  preview: { 
+    headers: { 'Permissions-Policy': 'camera=(self)' } 
   },
   build: {
     outDir: 'dist',

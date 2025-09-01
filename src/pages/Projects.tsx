@@ -1,5 +1,5 @@
 import { Link, useState } from 'react-router-dom'
-import { Music, BarChart3, Users, Megaphone, ExternalLink, ChevronDown, Search } from 'lucide-react'
+import { Music, BarChart3, Users, Megaphone, ExternalLink, ChevronDown, Search, Hash } from 'lucide-react'
 import { projects } from '../lib/dashboards'
 
 const iconMap = {
@@ -201,10 +201,12 @@ export function Projects() {
                   className="flex items-center justify-between p-3 rounded-lg hover:bg-neutral-800 transition-colors group"
                 >
                   <span className="text-neutral-300 group-hover:text-white">News (Meltwater)</span>
-                  </div>
-                </div>
+                  <ExternalLink className="w-4 h-4 text-neutral-500 group-hover:text-neutral-300" />
+                </a>
               </div>
             </div>
+          </div>
+        </div>
       </div>
     </div>
   )

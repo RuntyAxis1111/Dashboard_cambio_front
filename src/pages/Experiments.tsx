@@ -19,60 +19,36 @@ export default function Experiments() {
 
   async function start() {
     try {
-      setError('');
-      setStatus('Requesting camera...');
-      
-    if (!videoRef.current || !canvasRef.current) return;
+      const loop = async () => {
+        if (!running || !videoRef.current || !canvasRef.current) return;
 
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { width: { ideal: 640 }, height: { ideal: 480 } },
-      audio: false
-    });
-      setStatus('Camera obtained, setting up video...');
-      
-      setStatus('Video playing, loading AI models...');
-    videoRef.current.srcObject = stream;
-      setStatus('AI models loaded, warming up...');
+        const res = await detectOnce(videoRef.current);
+        drawFrame(canvasRef.current, videoRef.current, res);
 
-      setStatus('Video playing, loading AI models...');
-      setStatus('Running detection...');
+        const top = getTopEmotion(res);
+        const ctx = canvasRef.current.getContext('2d')!;
+        ctx.fillStyle = 'rgba(0,0,0,.6)';
+        ctx.fillRect(12, 12, 220, 46);
+        ctx.fillStyle = '#9BE6C9';
+        ctx.font = '600 16px system-ui';
+        const text = top ? `Emotion: ${top.emotion} (${(top.score*100).toFixed(0)}%)` : 'Emotion: —';
+        ctx.fillText(text, 22, 42);
+        setLabel(top ? top.emotion : '—');
 
-    await initHuman(backend);
-    await warmup(videoRef.current);
+        const now = performance.now();
+        setFps(Math.round(1000 / (now - last)));
+        last = now;
 
-    setRunning(true);
-    let last = performance.now();
-        if (!videoRef.current || !canvasRef.current) return;
-    const loop = async () => {
-      if (!running || !videoRef.current || !canvasRef.current) return;
-
-      const res = await detectOnce(videoRef.current);
-      drawFrame(canvasRef.current, videoRef.current, res);
-
-      const top = getTopEmotion(res);
-      const ctx = canvasRef.current.getContext('2d')!;
-      ctx.fillStyle = 'rgba(0,0,0,.6)';
-      ctx.fillRect(12, 12, 220, 46);
-      ctx.fillStyle = '#9BE6C9';
-      ctx.font = '600 16px system-ui';
-      const text = top ? `Emotion: ${top.emotion} (${(top.score*100).toFixed(0)}%)` : 'Emotion: —';
-      ctx.fillText(text, 22, 42);
-      setLabel(top ? top.emotion : '—');
-
-      const now = performance.now();
-      setFps(Math.round(1000 / (now - last)));
         if (running) {
           rafRef.current = requestAnimationFrame(loop);
         }
-
+      };
       rafRef.current = requestAnimationFrame(loop);
     } catch (err) {
       setError(`Error: ${err}`);
       setStatus('Error occurred');
       console.error('Start error:', err);
     }
-    };
-    rafRef.current = requestAnimationFrame(loop);
   }
 
   function stop() {

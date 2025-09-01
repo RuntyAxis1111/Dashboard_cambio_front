@@ -14,15 +14,43 @@ export default function Experiments() {
   const [status, setStatus] = useState<string>('Ready');
   const [debugLogs, setDebugLogs] = useState<string[]>([]);
   const [videoInfo, setVideoInfo] = useState<any>(null);
-      addLog('✅ Camera stream obtained');
   const [humanLoaded, setHumanLoaded] = useState(false);
 
   // Debug logging function
-        addLog('❌ Video ref is null');
   const addLog = (message: string) => {
     const timestamp = new Date().toLocaleTimeString();
     const logEntry = `[${timestamp}] ${message}`;
     setDebugLogs(prev => [logEntry, ...prev.slice(0, 9)]); // Keep last 10 logs
+    console.log(logEntry);
+  };
+
+  useEffect(() => {
+    addLog('🚀 Component mounted');
+    
+    async function initializeHuman() {
+      try {
+        addLog('🧠 Initializing Human.js...');
+        await initHuman(backend);
+        addLog('🔥 Starting warmup...');
+        // Note: warmup needs video element, so we'll do it in start()
+        addLog('✅ Human.js initialized');
+        setHumanLoaded(true);
+      } catch (err) {
+        addLog(`❌ Human.js init error: ${err}`);
+        setError(`Human.js initialization failed: ${err}`);
+      }
+    }
+    
+    initializeHuman();
+    return () => stop();
+  }, [backend]);
+
+  async function start() {
+    addLog('▶️ Start function called');
+    
+      
+      addLog('✅ Camera stream obtained');
+    if (!videoRef.current || !canvasRef.current) {
       addLog('🔗 Stream assigned to video element');
       
       // Get video track info
@@ -32,26 +60,19 @@ export default function Experiments() {
         setVideoInfo(settings);
         addLog(`📊 Video settings: ${settings.width}x${settings.height}`);
       }
-    console.log(logEntry);
-  };
+      
+      addLog('❌ Video ref or canvas ref is null');
       addLog('▶️ Video playing');
-
-  useEffect(() => {
-      addLog('🧠 Initializing Human.js...');
-    addLog('🚀 Component mounted');
-      addLog('✅ Human.js initialized');
-      setHumanLoaded(true);
-    return () => stop();
+      
       addLog('🔥 Starting warmup...');
-  }, []);
+      return;
       addLog('✅ Warmup completed');
-
-  async function start() {
-    addLog('▶️ Start function called');
-      addLog('🎯 Starting detection loop');
+    }
     
     try {
+      addLog('🎯 Starting detection loop');
       addLog('📹 Requesting camera access...');
+      
       const loop = async () => {
         if (!running || !videoRef.current || !canvasRef.current) return;
           if (!res) {
@@ -61,6 +82,11 @@ export default function Experiments() {
           
 
         const res = await detectOnce(videoRef.current);
+        if (!res) {
+          addLog('⚠️ No detection result');
+          return;
+        }
+        
         drawFrame(canvasRef.current, videoRef.current, res);
 
         const top = getTopEmotion(res);
@@ -81,8 +107,11 @@ export default function Experiments() {
           addLog('⏹️ Loop stopped - missing refs or not running');
           addLog(`❌ Loop error: ${loopError}`);
           rafRef.current = requestAnimationFrame(loop);
+        } else {
+          addLog('⏹️ Loop stopped - not running');
         }
       };
+      
       rafRef.current = requestAnimationFrame(loop);
     } catch (err) {
       addLog(`❌ Start error: ${err}`);
@@ -99,18 +128,22 @@ export default function Experiments() {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     const v = videoRef.current;
       addLog('⏹️ Animation frame cancelled');
+    }
     if (v?.srcObject) {
       (v.srcObject as MediaStream).getTracks().forEach(t => t.stop());
       v.srcObject = null;
+      addLog('📴 Camera stream stopped');
       addLog('📴 Camera stream stopped');
     }
     setStatus('Stopped');
     setFps(0);
     setLabel('—');
     addLog('✅ Stop completed');
+    addLog('✅ Stop completed');
   }
 
   async function restartWithBackend(b: Backend) {
+    addLog(`🔄 Restarting with backend: ${b}`);
     addLog(`🔄 Restarting with backend: ${b}`);
     stop();
     setBackend(b);

@@ -5,6 +5,7 @@ import { initHuman, detectOnce, getTopEmotion, warmup } from '../lib/human'
 interface EmotionResult {
   emotion: string
   confidence: number
+  allEmotions: { emotion: string; score: number }[]
   timestamp: Date
 }
 
@@ -32,12 +33,21 @@ export function Experiments() {
     try {
       // Detect using real AI
       const result = await detectOnce(aiVideoRef.current)
-      const topEmotion = getTopEmotion(result)
+      
+      // Get ALL emotions with scores
+      const emotions = result?.face?.[0]?.emotion || []
+      const allEmotions = emotions.map((e: any) => ({
+        emotion: e.emotion,
+        score: e.score
+      })).sort((a: any, b: any) => b.score - a.score)
+      
+      const topEmotion = allEmotions[0]
       
       if (topEmotion) {
         return {
           emotion: topEmotion.emotion,
           confidence: topEmotion.score,
+          allEmotions: allEmotions,
           timestamp: new Date()
         }
       } else {
@@ -45,6 +55,7 @@ export function Experiments() {
         return {
           emotion: 'No Face',
           confidence: 0,
+          allEmotions: [],
           timestamp: new Date()
         }
       }
@@ -369,16 +380,51 @@ export function Experiments() {
             <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
               <h3 className="text-lg font-semibold text-white mb-4">Current Emotion</h3>
               {currentEmotion ? (
-                <div className="text-center">
-                  <div className={`inline-flex items-center gap-2 px-4 py-3 rounded-xl text-lg font-semibold ${getEmotionColor(currentEmotion.emotion)}`}>
-                    {currentEmotion.emotion}
+                <div className="space-y-4">
+                  {/* Main emotion display */}
+                  <div className="text-center">
+                    <div className={`inline-flex items-center gap-2 px-4 py-3 rounded-xl text-lg font-semibold ${getEmotionColor(currentEmotion.emotion)}`}>
+                      {currentEmotion.emotion}
+                    </div>
+                    <div className="mt-3 text-2xl font-bold text-white">
+                      {Math.round(currentEmotion.confidence * 100)}%
+                    </div>
+                    <div className="text-sm text-neutral-500">
+                      Primary Emotion
+                    </div>
                   </div>
-                  <div className="mt-3 text-2xl font-bold text-white">
-                    {Math.round(currentEmotion.confidence * 100)}%
-                  </div>
-                  <div className="text-sm text-neutral-500">
-                    Confidence Level
-                  </div>
+                  
+                  {/* All emotions breakdown */}
+                  {currentEmotion.allEmotions && currentEmotion.allEmotions.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-medium text-neutral-300 mb-3">AI Analysis Breakdown</h4>
+                      <div className="space-y-2">
+                        {currentEmotion.allEmotions.slice(0, 6).map((emotion, index) => (
+                          <div key={emotion.emotion} className="flex items-center gap-3">
+                            <div className="w-16 text-xs text-neutral-400 text-right">
+                              {emotion.emotion}
+                            </div>
+                            <div className="flex-1 bg-neutral-800 rounded-full h-2 overflow-hidden">
+                              <div 
+                                className={`h-full transition-all duration-500 ${
+                                  index === 0 ? 'bg-blue-500' :
+                                  index === 1 ? 'bg-green-500' :
+                                  index === 2 ? 'bg-yellow-500' :
+                                  index === 3 ? 'bg-purple-500' :
+                                  index === 4 ? 'bg-red-500' :
+                                  'bg-gray-500'
+                                }`}
+                                style={{ width: `${emotion.score * 100}%` }}
+                              />
+                            </div>
+                            <div className="w-12 text-xs text-neutral-300 text-right">
+                              {Math.round(emotion.score * 100)}%
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="text-center py-8">
@@ -390,8 +436,33 @@ export function Experiments() {
               )}
             </div>
             
-            {/* Controls */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
+            {/* Detailed Analysis */}
+            {currentEmotion?.allEmotions && currentEmotion.allEmotions.length > 0 && (
+              <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
+                <h3 className="text-lg font-semibold text-white mb-4">Neural Network Output</h3>
+                <div className="space-y-3">
+                  {currentEmotion.allEmotions.map((emotion, index) => (
+                    <div key={emotion.emotion} className="flex items-center justify-between p-2 bg-neutral-800 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${
+                          index === 0 ? 'bg-blue-500' :
+                          index === 1 ? 'bg-green-500' :
+                          index === 2 ? 'bg-yellow-500' :
+                          index === 3 ? 'bg-purple-500' :
+                          index === 4 ? 'bg-red-500' :
+                          'bg-gray-500'
+                        }`} />
+                        <span className="text-white text-sm font-medium">{emotion.emotion}</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm text-white font-mono">
+                          {(emotion.score * 100).toFixed(1)}%
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
               <h3 className="text-lg font-semibold text-white mb-4">Controls</h3>
               <div className="space-y-3">
                 <button

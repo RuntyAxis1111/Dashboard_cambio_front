@@ -15,6 +15,8 @@ export function Experiments() {
   const [emotionHistory, setEmotionHistory] = useState<EmotionResult[]>([])
   const [error, setError] = useState<string | null>(null)
   const [isAIReady, setIsAIReady] = useState(false)
+  const [loadingProgress, setLoadingProgress] = useState(0)
+  const [loadingStage, setLoadingStage] = useState('')
   
   const normalVideoRef = useRef<HTMLVideoElement>(null)
   const aiVideoRef = useRef<HTMLVideoElement>(null)
@@ -56,6 +58,8 @@ export function Experiments() {
     try {
       setError(null)
       setIsAIReady(false)
+      setLoadingProgress(0)
+      setLoadingStage('Requesting camera access...')
       
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
@@ -64,6 +68,9 @@ export function Experiments() {
           facingMode: 'user'
         } 
       })
+      
+      setLoadingProgress(20)
+      setLoadingStage('Setting up video streams...')
       
       // Asignar el MISMO stream a AMBOS videos
       if (normalVideoRef.current) {
@@ -80,12 +87,23 @@ export function Experiments() {
         await aiVideoRef.current.play()
       }
       
+      setLoadingProgress(40)
+      setLoadingStage('Initializing AI models...')
+      
       // Initialize AI after video is ready
       try {
+        setLoadingProgress(60)
+        setLoadingStage('Loading neural networks...')
         await initHuman('webgl')
+        
+        setLoadingProgress(80)
+        setLoadingStage('Warming up AI engine...')
         if (aiVideoRef.current) {
           await warmup(aiVideoRef.current)
         }
+        
+        setLoadingProgress(100)
+        setLoadingStage('AI ready!')
         setIsAIReady(true)
       } catch (aiError) {
         console.warn('AI initialization failed, falling back to mock:', aiError)
@@ -94,6 +112,8 @@ export function Experiments() {
       
       streamRef.current = stream
       setIsStreaming(true)
+      setLoadingProgress(100)
+      setLoadingStage('Ready!')
       
     } catch (err) {
       setError(`Camera error: ${err}`)
@@ -214,10 +234,11 @@ export function Experiments() {
                       <button
                         onClick={startCamera}
                         disabled={!isAIReady}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg font-medium transition-colors"
+                        disabled={loadingProgress > 0 && loadingProgress < 100}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-colors"
                       >
                         <Camera className="w-4 h-4" />
-                        {isAIReady ? 'Start Analysis' : 'Loading AI...'}
+                        {loadingProgress > 0 && loadingProgress < 100 ? 'Loading...' : 'Start Camera'}
                       </button>
                     ) : (
                       <>
@@ -252,6 +273,23 @@ export function Experiments() {
               </div>
               
               <div className="p-6">
+                {/* Loading Progress Bar */}
+                {loadingProgress > 0 && loadingProgress < 100 && (
+                  <div className="mb-6 p-4 bg-neutral-800 rounded-xl">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-white font-medium">Loading AI Models</span>
+                      <span className="text-blue-400 font-bold">{loadingProgress}%</span>
+                    </div>
+                    <div className="w-full bg-neutral-700 rounded-full h-2 mb-2">
+                      <div 
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${loadingProgress}%` }}
+                      />
+                    </div>
+                    <div className="text-sm text-neutral-400">{loadingStage}</div>
+                  </div>
+                )}
+                
                 {/* DOS VIDEOS LADO A LADO */}
                 <div className="grid grid-cols-2 gap-4">
                   {/* VIDEO NORMAL (IZQUIERDA) */}

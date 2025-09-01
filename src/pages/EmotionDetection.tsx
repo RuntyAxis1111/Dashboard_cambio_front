@@ -293,7 +293,7 @@ export function EmotionDetection() {
                       autoPlay
                       playsInline
                       muted
-                      className="absolute inset-0 w-full h-full object-cover transform scale-x-[-1] bg-red-500"
+                      className="absolute inset-0 w-full h-full object-cover transform scale-x-[-1] bg-red-500 z-40"
                       onClick={() => {
                         addDebugLog('👆 Usuario hizo clic en el video')
                         if (videoRef.current) {
@@ -343,38 +343,10 @@ export function EmotionDetection() {
                   )}
                   
                   {/* Manual activation overlay */}
-                  {isStreaming && !isVideoReady && !error && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-10">
-                      <div className="text-center">
-                        <Camera className="w-12 h-12 text-blue-400 mx-auto mb-4" />
-                        <p className="text-white text-lg font-medium mb-2">¡HAZ CLIC AQUÍ!</p>
-                        <p className="text-neutral-300 text-sm mb-4">Para activar el video de la cámara</p>
-                        <button
-                          onClick={() => {
-                            addDebugLog('👆 Usuario hizo clic en "Activar Video"')
-                            if (videoRef.current) {
-                              videoRef.current.play()
-                                .then(() => {
-                                  addDebugLog('✅ Video activado manualmente!')
-                                  setIsVideoReady(true)
-                                })
-                                .catch(error => {
-                                  addDebugLog(`❌ Error al activar video: ${error}`)
-                                  setError(`Error: ${error}`)
-                                })
-                            }
-                          }}
-                          className="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg text-lg font-medium transition-colors"
-                        >
-                          ▶️ ACTIVAR VIDEO
-                        </button>
-                      </div>
-                    </div>
-                  )}
                   
                   {/* Analysis Overlay */}
-                  {isAnalyzing && isVideoReady && (
-                    <div className="absolute top-4 left-4 right-4 z-30">
+                  {isAnalyzing && (
+                    <div className="absolute top-4 left-4 right-4 z-50">
                       <div className="bg-black/50 backdrop-blur-sm rounded-lg p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">

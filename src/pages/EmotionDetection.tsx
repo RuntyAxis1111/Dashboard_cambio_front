@@ -55,10 +55,38 @@ export function EmotionDetection() {
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream
-        // Wait for video to load and play
-        videoRef.current.onloadedmetadata = () => {
-          videoRef.current?.play().catch(console.error)
+        
+        // Multiple approaches to ensure video plays
+        const video = videoRef.current
+        
+        // Set video properties
+        video.muted = true
+        video.playsInline = true
+        video.autoplay = true
+        
+        // Try to play immediately
+        const playPromise = video.play()
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.log('Auto-play prevented:', error)
+            // If autoplay fails, we'll show a play button
+          })
         }
+        
+        // Also try when metadata loads
+        video.onloadedmetadata = () => {
+          video.play().catch(error => {
+            console.log('Play on metadata load failed:', error)
+          })
+        }
+        
+        // And when data starts loading
+        video.onloadstart = () => {
+          video.play().catch(error => {
+            console.log('Play on load start failed:', error)
+          })
+        }
+        
         streamRef.current = stream
         setIsStreaming(true)
       }
@@ -247,7 +275,11 @@ export function EmotionDetection() {
                         autoPlay
                         playsInline
                         muted
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transform scale-x-[-1]"
+                        onCanPlay={() => {
+                          // Force play when video can play
+                          videoRef.current?.play().catch(console.error)
+                        }}
                       />
                       <canvas ref={canvasRef} className="hidden" />
                       

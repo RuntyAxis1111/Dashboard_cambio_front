@@ -286,8 +286,34 @@ export function EmotionDetection() {
               
               <div className="p-6">
                 <div className="relative bg-neutral-800 rounded-xl overflow-hidden aspect-video">
-                  {error ? (
-                    <div className="absolute inset-0 flex items-center justify-center">
+                  {/* Video element - ALWAYS visible when streaming */}
+                  {isStreaming && (
+                    <video
+                      ref={videoRef}
+                      autoPlay
+                      playsInline
+                      muted
+                      className="absolute inset-0 w-full h-full object-cover transform scale-x-[-1] bg-red-500"
+                      onClick={() => {
+                        addDebugLog('👆 Usuario hizo clic en el video')
+                        if (videoRef.current) {
+                          videoRef.current.play()
+                            .then(() => {
+                              addDebugLog('✅ Reproducción manual exitosa!')
+                              setIsVideoReady(true)
+                            })
+                            .catch(error => {
+                              addDebugLog(`❌ Reproducción manual falló: ${error}`)
+                              setError(`Error de reproducción: ${error}`)
+                            })
+                        }
+                      }}
+                    />
+                  )}
+                  
+                  {/* Error overlay */}
+                  {error && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-neutral-900/90 z-20">
                       <div className="text-center">
                         <CameraOff className="w-12 h-12 text-red-400 mx-auto mb-4" />
                         <p className="text-red-400 font-medium mb-2">Camera Error</p>
@@ -303,7 +329,10 @@ export function EmotionDetection() {
                         </button>
                       </div>
                     </div>
-                  ) : !isStreaming ? (
+                  )}
+                  
+                  {/* Default state */}
+                  {!isStreaming && !error && (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="text-center">
                         <Camera className="w-12 h-12 text-neutral-500 mx-auto mb-4" />
@@ -311,94 +340,58 @@ export function EmotionDetection() {
                         <p className="text-neutral-500 text-sm">Click "Start Camera" to begin</p>
                       </div>
                     </div>
-                  ) : (
-                    <>
-                      {/* Video element - always present when streaming */}
-                    <video
-                      ref={videoRef}
-                      autoPlay
-                      playsInline
-                      muted
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        transform: 'scaleX(-1)',
-                        zIndex: 1,
-                        backgroundColor: '#262626'
-                      }}
-                      onClick={() => {
-                        console.log('Video clicked, attempting to play')
-                        addDebugLog('👆 Usuario hizo clic en el video')
-                        if (videoRef.current) {
-                          videoRef.current.play()
-                            .then(() => {
-                              addDebugLog('✅ Reproducción manual exitosa!')
-                              setIsVideoReady(true)
-                            })
-                            .catch(error => {
-                              addDebugLog(`❌ Reproducción manual falló: ${error}`)
-                              setError(`Error de reproducción: ${error}`)
-                            })
-                        }
-                      }}
-                    />
-                      
-                      <canvas ref={canvasRef} className="hidden" />
-                      
-                      {/* Overlay for manual activation if needed */}
-                      {!isVideoReady && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-neutral-800/90 z-10">
-                          <div className="text-center">
-                            <Camera className="w-12 h-12 text-blue-400 mx-auto mb-4" />
-                            <p className="text-white text-sm font-medium mb-2">Video listo</p>
-                            <p className="text-neutral-400 text-xs">Haz clic aquí para activar el video</p>
-                            <button
-                              onClick={() => {
-                                addDebugLog('👆 Usuario hizo clic en "Activar Video"')
-                                if (videoRef.current) {
-                                  videoRef.current.play()
-                                    .then(() => {
-                                      addDebugLog('✅ Video activado manualmente!')
-                                      setIsVideoReady(true)
-                                    })
-                                    .catch(error => {
-                                      addDebugLog(`❌ Error al activar video: ${error}`)
-                                      setError(`Error: ${error}`)
-                                    })
-                                }
-                              }}
-                              className="mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm transition-colors"
-                            >
-                              Activar Video
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Analysis Overlay */}
-                      {isAnalyzing && isVideoReady && (
-                        <div className="absolute top-4 left-4 right-4 z-20">
-                          <div className="bg-black/50 backdrop-blur-sm rounded-lg p-4">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                                <span className="text-white text-sm font-medium">Analyzing...</span>
-                              </div>
-                              {currentEmotion && (
-                                <div className={`px-3 py-1 rounded-full text-sm font-medium ${getEmotionColor(currentEmotion.emotion)}`}>
-                                  {currentEmotion.emotion} ({Math.round(currentEmotion.confidence * 100)}%)
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </>
                   )}
+                  
+                  {/* Manual activation overlay */}
+                  {isStreaming && !isVideoReady && !error && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-10">
+                      <div className="text-center">
+                        <Camera className="w-12 h-12 text-blue-400 mx-auto mb-4" />
+                        <p className="text-white text-lg font-medium mb-2">¡HAZ CLIC AQUÍ!</p>
+                        <p className="text-neutral-300 text-sm mb-4">Para activar el video de la cámara</p>
+                        <button
+                          onClick={() => {
+                            addDebugLog('👆 Usuario hizo clic en "Activar Video"')
+                            if (videoRef.current) {
+                              videoRef.current.play()
+                                .then(() => {
+                                  addDebugLog('✅ Video activado manualmente!')
+                                  setIsVideoReady(true)
+                                })
+                                .catch(error => {
+                                  addDebugLog(`❌ Error al activar video: ${error}`)
+                                  setError(`Error: ${error}`)
+                                })
+                            }
+                          }}
+                          className="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg text-lg font-medium transition-colors"
+                        >
+                          ▶️ ACTIVAR VIDEO
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Analysis Overlay */}
+                  {isAnalyzing && isVideoReady && (
+                    <div className="absolute top-4 left-4 right-4 z-30">
+                      <div className="bg-black/50 backdrop-blur-sm rounded-lg p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                            <span className="text-white text-sm font-medium">Analyzing...</span>
+                          </div>
+                          {currentEmotion && (
+                            <div className={`px-3 py-1 rounded-full text-sm font-medium ${getEmotionColor(currentEmotion.emotion)}`}>
+                              {currentEmotion.emotion} ({Math.round(currentEmotion.confidence * 100)}%)
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <canvas ref={canvasRef} className="hidden" />
                 </div>
               </div>
             </div>

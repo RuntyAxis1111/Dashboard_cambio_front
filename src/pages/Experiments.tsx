@@ -273,8 +273,13 @@ export function Experiments() {
     const ctx = canvasRef.current.getContext('2d')
     if (!ctx) return
     
-    ctx.fillStyle = 'red'
-    ctx.fillRect(10, 10, 100, 100)
+   // Clear canvas first
+   ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+   // Draw a small test circle instead of blocking rectangle
+   ctx.fillStyle = 'rgba(255, 0, 0, 0.5)'
+   ctx.beginPath()
+   ctx.arc(50, 50, 20, 0, 2 * Math.PI)
+   ctx.fill()
     addLog('🎨 Test canvas: cuadrado rojo dibujado')
   }
 
@@ -399,7 +404,7 @@ export function Experiments() {
                   {/* Canvas overlay for AI visualization */}
                   <canvas
                     ref={canvasRef}
-                    className="absolute inset-0 w-full h-full object-cover transform scale-x-[-1] pointer-events-none"
+                   className="absolute inset-0 w-full h-full object-cover transform scale-x-[-1] pointer-events-none opacity-0"
                   />
                   
                   {/* Error overlay */}

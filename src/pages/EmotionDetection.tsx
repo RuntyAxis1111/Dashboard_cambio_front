@@ -401,10 +401,17 @@ export function EmotionDetection() {
                   <div className="flex justify-between">
                     <span className="text-neutral-400">Most Common</span>
                     <span className="text-white font-medium">
-                      {emotionHistory.reduce((acc, r) => {
-                        acc[r.emotion] = (acc[r.emotion] || 0) + 1
-                        return acc
-                      }, {} as Record<string, number>)}
+                      {(() => {
+                        const emotionCounts = emotionHistory.reduce((acc, r) => {
+                          acc[r.emotion] = (acc[r.emotion] || 0) + 1
+                          return acc
+                        }, {} as Record<string, number>)
+                        
+                        const mostCommon = Object.entries(emotionCounts)
+                          .sort(([,a], [,b]) => b - a)[0]
+                        
+                        return mostCommon ? mostCommon[0] : 'None'
+                      })()}
                     </span>
                   </div>
                 </div>

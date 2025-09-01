@@ -7,6 +7,7 @@ import { AIStudio } from './pages/AIStudio'
 import { MMM } from './pages/MMM'
 import { HybeLLM } from './pages/HybeLLM'
 import { Experiments } from './pages/Experiments'
+import { EmotionDetection } from './pages/EmotionDetection'
 import { Subscriptions } from './pages/Subscriptions'
 import { DataExplorer } from './pages/DataExplorer'
 import { Projects } from './pages/Projects'
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/ai/mmm" element={<MMM />} />
         <Route path="/ai/llm" element={<HybeLLM />} />
         <Route path="/ai/experiments" element={<Experiments />} />
+        <Route path="/ai/emotion-detection" element={<EmotionDetection />} />
         <Route path="/subscriptions" element={<Subscriptions />} />
         <Route path="/data" element={<DataExplorer />} />
         <Route path="/projects" element={<Projects />} />

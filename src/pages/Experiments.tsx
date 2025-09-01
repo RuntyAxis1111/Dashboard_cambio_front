@@ -1,4 +1,5 @@
 import { Beaker, ExternalLink } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export function Experiments() {
   const experiments = [
@@ -8,7 +9,8 @@ export function Experiments() {
       description: 'Analyze emotional sentiment in social media content and fan reactions',
       status: 'Beta',
       category: 'Content Analysis',
-      lastUpdated: '2024-01-15'
+      lastUpdated: '2024-01-15',
+      href: '/ai/emotion-detection'
     },
     {
       id: 'concert-analytics',
@@ -16,7 +18,8 @@ export function Experiments() {
       description: 'Real-time audience engagement and venue performance metrics',
       status: 'Alpha',
       category: 'Live Events',
-      lastUpdated: '2024-01-10'
+      lastUpdated: '2024-01-10',
+      href: null
     },
     {
       id: 'trend-prediction',
@@ -24,7 +27,8 @@ export function Experiments() {
       description: 'Forecast viral content potential and optimal posting times',
       status: 'Coming Soon',
       category: 'Forecasting',
-      lastUpdated: '2024-01-05'
+      lastUpdated: '2024-01-05',
+      href: null
     }
   ]
 
@@ -69,10 +73,18 @@ export function Experiments() {
                   <div className="text-xs text-neutral-500">{experiment.category}</div>
                   <div className="text-xs text-neutral-600">Updated {experiment.lastUpdated}</div>
                 </div>
-                {experiment.status !== 'Coming Soon' && (
-                  <button className="flex items-center gap-1 px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-sm transition-colors">
+                {experiment.href ? (
+                  <Link 
+                    to={experiment.href}
+                    className="flex items-center gap-1 px-3 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium transition-colors"
+                  >
                     <ExternalLink className="w-3 h-3" />
                     Open
+                  </Link>
+                ) : experiment.status !== 'Coming Soon' && (
+                  <button className="flex items-center gap-1 px-3 py-2 bg-neutral-600 cursor-not-allowed rounded-lg text-sm font-medium">
+                    <ExternalLink className="w-3 h-3" />
+                    Demo Only
                   </button>
                 )}
               </div>

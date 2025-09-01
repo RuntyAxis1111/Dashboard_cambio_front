@@ -61,20 +61,3 @@ export function Topbar() {
     </>
   )
 }
-            </div>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <button className="p-2 rounded-lg hover:bg-neutral-800 transition-colors">
-            <Bell className="w-5 h-5 text-neutral-400" />
-          </button>
-          <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-neutral-800 transition-colors">
-            <User className="w-5 h-5 text-neutral-400" />
-            <span className="text-sm text-neutral-400">Demo User</span>
-          </button>
-        </div>
-      </div>
-    </header>
-  )
-}

@@ -5,3 +5,6 @@ function Experiments() {
     <div>
     </div>
   );
+}
+
+export default Experiments;

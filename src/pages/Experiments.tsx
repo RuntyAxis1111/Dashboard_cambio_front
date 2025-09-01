@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Camera, CameraOff, Play, Square, Download, RotateCcw } from 'lucide-react'
+import { initHuman, detectOnce, getTopEmotion, warmup } from '../lib/human'
 
 interface EmotionResult {
   emotion: string
@@ -13,37 +14,48 @@ export function Experiments() {
   const [currentEmotion, setCurrentEmotion] = useState<EmotionResult | null>(null)
   const [emotionHistory, setEmotionHistory] = useState<EmotionResult[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [isAIReady, setIsAIReady] = useState(false)
   
   const normalVideoRef = useRef<HTMLVideoElement>(null)
   const aiVideoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Mock emotion detection
+  // Real AI emotion detection
   const detectEmotion = async (): Promise<EmotionResult> => {
-    await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000))
-    
-    const emotions = [
-      { emotion: 'Happy', confidence: 0.85 + Math.random() * 0.15 },
-      { emotion: 'Neutral', confidence: 0.70 + Math.random() * 0.25 },
-      { emotion: 'Surprised', confidence: 0.60 + Math.random() * 0.35 },
-      { emotion: 'Focused', confidence: 0.75 + Math.random() * 0.20 },
-      { emotion: 'Excited', confidence: 0.80 + Math.random() * 0.15 },
-      { emotion: 'Calm', confidence: 0.65 + Math.random() * 0.30 },
-    ]
-    
-    const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)]
-    
-    return {
-      emotion: randomEmotion.emotion,
-      confidence: Math.min(randomEmotion.confidence, 0.99),
-      timestamp: new Date()
+    if (!aiVideoRef.current || !isAIReady) {
+      throw new Error('AI not ready or video not available')
+    }
+
+    try {
+      // Detect using real AI
+      const result = await detectOnce(aiVideoRef.current)
+      const topEmotion = getTopEmotion(result)
+      
+      if (topEmotion) {
+        return {
+          emotion: topEmotion.emotion,
+          confidence: topEmotion.score,
+          timestamp: new Date()
+        }
+      } else {
+        // Fallback if no face detected
+        return {
+          emotion: 'No Face',
+          confidence: 0,
+          timestamp: new Date()
+        }
+      }
+    } catch (error) {
+      console.error('AI detection error:', error)
+      throw error
     }
   }
 
   const startCamera = async () => {
     try {
       setError(null)
+      setIsAIReady(false)
       
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
@@ -66,6 +78,18 @@ export function Experiments() {
         aiVideoRef.current.muted = true
         aiVideoRef.current.playsInline = true
         await aiVideoRef.current.play()
+      }
+      
+      // Initialize AI after video is ready
+      try {
+        await initHuman('webgl')
+        if (aiVideoRef.current) {
+          await warmup(aiVideoRef.current)
+        }
+        setIsAIReady(true)
+      } catch (aiError) {
+        console.warn('AI initialization failed, falling back to mock:', aiError)
+        setIsAIReady(false)
       }
       
       streamRef.current = stream
@@ -92,7 +116,7 @@ export function Experiments() {
   }
 
   const startAnalysis = () => {
-    if (!isStreaming) return
+    if (!isStreaming || !isAIReady) return
     
     setIsAnalyzing(true)
     
@@ -103,6 +127,13 @@ export function Experiments() {
         setEmotionHistory(prev => [result, ...prev.slice(0, 9)])
       } catch (err) {
         console.error('Emotion detection error:', err)
+        // Fallback to mock if AI fails
+        const mockResult = {
+          emotion: 'Error',
+          confidence: 0,
+          timestamp: new Date()
+        }
+        setCurrentEmotion(mockResult)
       }
     }
     
@@ -182,10 +213,11 @@ export function Experiments() {
                     {!isStreaming ? (
                       <button
                         onClick={startCamera}
+                        disabled={!isAIReady}
                         className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg font-medium transition-colors"
                       >
                         <Camera className="w-4 h-4" />
-                        Start Camera
+                        {isAIReady ? 'Start Analysis' : 'Loading AI...'}
                       </button>
                     ) : (
                       <>

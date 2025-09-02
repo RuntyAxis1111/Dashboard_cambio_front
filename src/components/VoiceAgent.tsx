@@ -41,105 +41,49 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
       
       addDebugLog(`🤖 Agent ID: ${agentId}`)
       
-      // Get signed URL from our API
-      addDebugLog('📡 Solicitando signed URL...')
+      // Para desarrollo, llamamos directamente a ElevenLabs API
+      // En producción, esto debería ir a través de nuestro endpoint serverless
+      addDebugLog('📡 Llamando directamente a ElevenLabs API...')
       
-      // Try different endpoint paths for development vs production
-      const endpoints = [
-        '/api/elevenlabs/signed-url'
-      ]
-      
-      let response
-      let lastError
-      
-      for (const endpoint of endpoints) {
-        try {
-          addDebugLog(`🔗 Probando endpoint: ${endpoint}`)
-          response = await fetch(endpoint, { // Changed to GET to match backend
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
-          
-          addDebugLog(`📊 ${endpoint} - Status: ${response.status}`)
-          
-          if (response.ok) {
-            addDebugLog(`✅ Endpoint funcionando: ${endpoint}`)
-            break
-          } else {
-            addDebugLog(`❌ ${endpoint} falló con status ${response.status}`)
-            lastError = `HTTP ${response.status}`
-          }
-        } catch (fetchError) {
-          addDebugLog(`❌ ${endpoint} - Error de fetch: ${fetchError}`)
-          lastError = fetchError
-          response = null
-        }
+      const apiKey = import.meta.env.VITE_ELEVENLABS_API_KEY
+      if (!apiKey) {
+        throw new Error('API Key de ElevenLabs no configurada')
       }
       
-      if (!response || !response.ok) {
-        throw new Error(`Todos los endpoints fallaron. Último error: ${lastError}`)
-      }
+      const url = `https://api.elevenlabs.io/v1/convai/conversation/get-signed-url?agent_id=${agentId}`
+      addDebugLog(`🌐 URL: ${url}`)
       
-      addDebugLog(`📊 Response status: ${response.status}`)
-      
-      // Log response headers safely
-      const headers: Record<string, string> = {}
-      response.headers.forEach((value, key) => {
-        headers[key] = value
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'xi-api-key': apiKey,
+        },
       })
-      addDebugLog(`📋 Response headers: ${JSON.stringify(headers)}`)
-
+      
+      addDebugLog(`📊 ElevenLabs response status: ${response.status}`)
+      
       if (!response.ok) {
-        let responseText
-        try {
-          responseText = await response.text()
-        } catch (textError) {
-          addDebugLog(`❌ Error leyendo response text: ${textError}`)
-          responseText = 'No se pudo leer la respuesta'
+        const errorText = await response.text()
+        addDebugLog(`❌ ElevenLabs error: ${errorText}`)
+        
+        let errorMessage = `ElevenLabs API error: ${response.status}`
+        if (response.status === 401) {
+          errorMessage = 'Invalid API key - check xi-api-key header'
+        } else if (response.status === 403) {
+          errorMessage = 'Origin not allowed - check agent allowlist settings'
+        } else if (response.status === 404) {
+          errorMessage = 'Agent not found - check agent_id'
         }
         
-        addDebugLog(`❌ Response error text: ${responseText}`)
-        
-        let errorData
-        try {
-          errorData = JSON.parse(responseText)
-          addDebugLog(`📋 Error data parsed: ${JSON.stringify(errorData)}`)
-        } catch (parseError) {
-          addDebugLog(`⚠️ No se pudo parsear JSON de error: ${parseError}`)
-          throw new Error(`HTTP ${response.status}: ${responseText}`)
-        }
-        
-        throw new Error(errorData.error || 'Failed to get signed URL')
-      }
-
-      let responseText
-      try {
-        responseText = await response.text()
-      } catch (textError) {
-        addDebugLog(`❌ Error leyendo response exitoso: ${textError}`)
-        throw new Error('No se pudo leer la respuesta del servidor')
+        throw new Error(errorMessage)
       }
       
-      addDebugLog(`📄 Response text: ${responseText}`)
+      const data = await response.json()
+      addDebugLog(`✅ ElevenLabs response: ${JSON.stringify(data)}`)
       
-      let data
-      try {
-        data = JSON.parse(responseText)
-        addDebugLog(`✅ JSON parseado exitosamente: ${JSON.stringify(data)}`)
-      } catch (parseError) {
-        addDebugLog(`❌ Error parsing JSON response: ${parseError}`)
-        addDebugLog(`📄 Raw response: ${responseText}`)
-        throw new Error('Invalid JSON response from server')
-      }
-
-      const { signedUrl } = data
-      addDebugLog(`🔗 Signed URL obtenida: ${signedUrl ? 'Sí' : 'No'}`)
-      
+      const signedUrl = data.signed_url
       if (!signedUrl) {
-        addDebugLog(`❌ Data recibida: ${JSON.stringify(data)}`)
-        throw new Error('No signed URL in response')
+        throw new Error('No signed_url in ElevenLabs response')
       }
       
       // Connect to ElevenLabs WebSocket

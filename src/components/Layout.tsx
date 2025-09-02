@@ -1,12 +1,16 @@
 import { ReactNode } from 'react'
+import { useState } from 'react'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
+import { VoiceAgent } from './VoiceAgent'
 
 interface LayoutProps {
   children: ReactNode
 }
 
 export function Layout({ children }: LayoutProps) {
+  const [isVoiceAgentOpen, setIsVoiceAgentOpen] = useState(false)
+
   return (
     <div className="h-screen bg-white text-black grid grid-cols-[260px_1fr] overflow-hidden">
       <Sidebar />
@@ -16,6 +20,10 @@ export function Layout({ children }: LayoutProps) {
           {children}
         </main>
       </div>
+      <VoiceAgent 
+        isOpen={isVoiceAgentOpen} 
+        onToggle={() => setIsVoiceAgentOpen(!isVoiceAgentOpen)} 
+      />
     </div>
   )
 }

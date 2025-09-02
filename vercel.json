@@ -1,5 +1,5 @@
 {
-  "devCommand": "vite --port 3000",
+  "devCommand": "npm run dev:vite",
   "framework": null,
   "headers": [
     {

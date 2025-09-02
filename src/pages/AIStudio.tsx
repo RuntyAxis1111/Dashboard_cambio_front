@@ -26,7 +26,7 @@ export function AIStudio() {
       title: 'AI Emotion Detection',
       description: 'Real-time emotion analysis using advanced computer vision and machine learning models.',
       icon: Beaker,
-      href: '/ai/experiments',
+      href: '/ai/emotion-detection',
       color: 'green',
       status: 'Beta'
     }

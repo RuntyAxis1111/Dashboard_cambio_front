@@ -46,9 +46,7 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
       
       // Try different endpoint paths for development vs production
       const endpoints = [
-        '/api/elevenlabs/signed-url',
-        '/api/elevenlabs/signed-url.js',
-        '/.netlify/functions/signed-url'
+        '/api/elevenlabs/signed-url'
       ]
       
       let response
@@ -57,12 +55,11 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
       for (const endpoint of endpoints) {
         try {
           addDebugLog(`🔗 Probando endpoint: ${endpoint}`)
-          response = await fetch(endpoint, {
-            method: 'POST',
+          response = await fetch(endpoint, { // Changed to GET to match backend
+            method: 'GET',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ agentId })
           })
           
           addDebugLog(`📊 ${endpoint} - Status: ${response.status}`)
@@ -154,24 +151,52 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
         setIsConnected(true)
         setConnectionStatus('Connected')
         addDebugLog('✅ WebSocket conectado exitosamente')
+        
+        // Send initial conversation setup
+        const initMessage = {
+          type: 'conversation_initiation_client_data',
+          conversation_config_override: { 
+            agent: { 
+              first_message: 'Hola', 
+              language: 'es' 
+            } 
+          }
+        }
+        
+        addDebugLog('📤 Enviando mensaje de inicialización...')
+        ws.send(JSON.stringify(initMessage))
+        addDebugLog('✅ Mensaje de inicialización enviado')
       }
 
       ws.onmessage = async (event) => {
         try {
           addDebugLog(`📨 Mensaje recibido: ${event.data.substring(0, 100)}...`)
-          const message = JSON.parse(event.data)
           
-          if (message.type === 'audio' && message.audio_event) {
+          // Handle different message types according to ElevenLabs protocol
+          const message = JSON.parse(event.data)
+          addDebugLog(`📋 Tipo de mensaje: ${message.type}`)
+          
+          if (message.type === 'audio_event' && message.audio_base_64) {
             addDebugLog('🔊 Audio recibido del agente')
-            const audioData = message.audio_event.audio_base_64
-            if (audioData) {
-              await playAudioResponse(audioData)
-            }
+            await playAudioResponse(message.audio_base_64)
+          }
+          
+          if (message.type === 'agent_response_event') {
+            addDebugLog(`🤖 Respuesta del agente: ${message.agent_response}`)
+          }
+          
+          if (message.type === 'user_transcription_event') {
+            addDebugLog(`👤 Transcripción usuario: ${message.user_transcription}`)
           }
           
           if (message.type === 'interruption') {
             addDebugLog('⏸️ Interrupción recibida')
             setIsSpeaking(false)
+          }
+          
+          if (message.type === 'ping') {
+            addDebugLog('🏓 Ping recibido, enviando pong')
+            ws.send(JSON.stringify({ type: 'pong' }))
           }
           
         } catch (err) {
@@ -305,6 +330,7 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
       
       // Send audio to agent
       const message = {
+        type: 'user_audio_chunk',
         user_audio_chunk: base64Audio
       }
       

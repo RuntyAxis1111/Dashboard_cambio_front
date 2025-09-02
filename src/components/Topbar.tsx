@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, Bell, User, Command, Mic } from 'lucide-react'
+import { Search, Bell, User, Command } from 'lucide-react'
 import { CommandPalette } from './CommandPalette'
-import { VoiceAgent } from './VoiceAgent'
 
 export function Topbar() {
   const [showCommandPalette, setShowCommandPalette] = useState(false)
-  const [showVoiceAgent, setShowVoiceAgent] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -41,13 +39,6 @@ export function Topbar() {
           </div>
           
           <div className="flex items-center gap-3">
-            <button 
-              onClick={() => setShowVoiceAgent(true)}
-              className="p-2 rounded-lg hover:bg-gray-200 transition-colors"
-              title="Voice AI Assistant"
-            >
-              <Mic className="w-5 h-5 text-gray-600" />
-            </button>
             <button className="p-2 rounded-lg hover:bg-gray-200 transition-colors">
               <Bell className="w-5 h-5 text-gray-600" />
             </button>
@@ -66,11 +57,6 @@ export function Topbar() {
           navigate(path)
           setShowCommandPalette(false)
         }}
-      />
-      
-      <VoiceAgent 
-        isOpen={showVoiceAgent} 
-        onClose={() => setShowVoiceAgent(false)}
       />
     </>
   )

@@ -85,14 +85,6 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
         throw new Error(`Todos los endpoints fallaron. Último error: ${lastError}`)
       }
       
-      const response = await fetch('/api/elevenlabs/signed-url', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ agentId })
-      })
-
       addDebugLog(`📊 Response status: ${response.status}`)
       
       // Log response headers safely

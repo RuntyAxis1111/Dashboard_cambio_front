@@ -5,6 +5,7 @@ import { DashboardFrame } from '../components/DashboardFrame'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { ActionBar } from '../components/ActionBar'
 import { getDashboardUrl, projects, artists } from '../lib/dashboards'
+import { PenguinFAB } from '../components/VoiceAgent'
 
 export function DashboardDetail() {
   const { project, source, band } = useParams()
@@ -80,38 +81,74 @@ export function DashboardDetail() {
         </div>
       </div>
     )
+    
+    return (
+      <>
+        <div className="flex flex-col h-full">
+          <div className="border-b border-gray-300 bg-gray-100">
+            <div className="p-6">
+              <Breadcrumb items={breadcrumbItems} />
+              <h1 className="text-2xl font-semibold text-black mt-4">{title}</h1>
+            </div>
+          </div>
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <img 
+                  src="/assets/pinguinohybe.png" 
+                  alt="HYBE Penguin" 
+                  className="w-12 h-12 object-contain opacity-50"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                  }}
+                />
+              </div>
+              <h3 className="text-lg font-medium text-black mb-2">Dashboard not found</h3>
+              <p className="text-gray-600">This dashboard is not available yet</p>
+            </div>
+          </div>
+        </div>
+        <PenguinFAB />
+      </>
+    )
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="border-b border-gray-300 bg-gray-100">
-        <div className="p-6">
-          <Breadcrumb items={breadcrumbItems} />
-          <div className="flex items-center justify-between mt-4">
-            <div>
-              <h1 className="text-2xl font-semibold text-black">{title}</h1>
-              <p className="text-gray-600 mt-1">
-                Range: {searchParams.get('from') || 'Last 30 days'} → {searchParams.get('to') || 'Today'}
-                {searchParams.get('country') && ` • ${searchParams.get('country')}`}
-              </p>
+    <>
+      <div className="flex flex-col h-full">
+        <div className="border-b border-gray-300 bg-gray-100">
+          <div className="p-6">
+            <Breadcrumb items={breadcrumbItems} />
+            <div className="flex items-center justify-between mt-4">
+              <div>
+                <h1 className="text-2xl font-semibold text-black">{title}</h1>
+                <p className="text-gray-600 mt-1">
+                  Range: {searchParams.get('from') || 'Last 30 days'} → {searchParams.get('to') || 'Today'}
+                  {searchParams.get('country') && ` • ${searchParams.get('country')}`}
+                </p>
+              </div>
+              <ActionBar />
             </div>
-            <ActionBar />
+          </div>
+        </div>
+        
+        <div className="flex-1 p-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {kpis.map((kpi, index) => (
+              <KpiTile key={index} {...kpi} />
+            ))}
+          </div>
+          
+          <div className="bg-gray-100 border border-gray-300 rounded-2xl overflow-hidden">
+            <Tabs tabs={tabs} />
+            <DashboardFrame url={dashboardUrl} title={title} />
           </div>
         </div>
       </div>
       
-      <div className="flex-1 p-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {kpis.map((kpi, index) => (
-            <KpiTile key={index} {...kpi} />
-          ))}
-        </div>
-        
-        <div className="bg-gray-100 border border-gray-300 rounded-2xl overflow-hidden">
-          <Tabs tabs={tabs} />
-          <DashboardFrame url={dashboardUrl} title={title} />
-        </div>
-      </div>
-    </div>
+      {/* Penguin Voice Agent FAB */}
+      <PenguinFAB />
+    </>
   )
 }

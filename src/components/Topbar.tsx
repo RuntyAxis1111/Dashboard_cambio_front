@@ -21,17 +21,17 @@ export function Topbar() {
 
   return (
     <>
-      <header className="bg-neutral-900 border-b border-neutral-800 px-6 py-4">
+      <header className="bg-gray-100 border-b border-gray-300 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setShowCommandPalette(true)}
-              className="relative flex items-center gap-3 bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 text-sm text-neutral-500 hover:border-neutral-600 transition-colors w-80"
+              className="relative flex items-center gap-3 bg-white border border-gray-300 rounded-lg px-4 py-2 text-sm text-gray-500 hover:border-gray-400 transition-colors w-80"
             >
               <Search className="w-4 h-4" />
               <span>Search or press ⌘K</span>
               <div className="ml-auto">
-                <kbd className="px-2 py-1 text-xs bg-neutral-700 rounded border border-neutral-600">
+                <kbd className="px-2 py-1 text-xs bg-gray-200 rounded border border-gray-300">
                   ⌘K
                 </kbd>
               </div>
@@ -39,12 +39,12 @@ export function Topbar() {
           </div>
           
           <div className="flex items-center gap-3">
-            <button className="p-2 rounded-lg hover:bg-neutral-800 transition-colors">
-              <Bell className="w-5 h-5 text-neutral-400" />
+            <button className="p-2 rounded-lg hover:bg-gray-200 transition-colors">
+              <Bell className="w-5 h-5 text-gray-600" />
             </button>
-            <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-neutral-800 transition-colors">
-              <User className="w-5 h-5 text-neutral-400" />
-              <span className="text-sm text-neutral-400">Demo User</span>
+            <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-200 transition-colors">
+              <User className="w-5 h-5 text-gray-600" />
+              <span className="text-sm text-gray-600">Demo User</span>
             </button>
           </div>
         </div>

@@ -8,7 +8,7 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <div className="h-screen bg-neutral-950 text-neutral-100 grid grid-cols-[260px_1fr] overflow-hidden">
+    <div className="h-screen bg-white text-black grid grid-cols-[260px_1fr] overflow-hidden">
       <Sidebar />
       <div className="flex flex-col overflow-hidden">
         <Topbar />

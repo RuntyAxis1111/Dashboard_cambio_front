@@ -35,11 +35,11 @@ export function Sidebar() {
   const location = useLocation()
 
   return (
-    <aside className="bg-neutral-900 border-r border-neutral-800 flex flex-col">
-      <div className="p-6 border-b border-neutral-800">
-        <h1 className="text-lg font-semibold text-white">
+    <aside className="bg-gray-100 border-r border-gray-300 flex flex-col">
+      <div className="p-6 border-b border-gray-300">
+        <h1 className="text-lg font-semibold text-black">
           HYBE LATAM<br />
-          <span className="text-neutral-400 text-sm font-normal">Data & AI Lab</span>
+          <span className="text-gray-600 text-sm font-normal">Data & AI Lab</span>
         </h1>
       </div>
       
@@ -55,8 +55,8 @@ export function Sidebar() {
                 className={`
                   flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
                   ${isActive 
-                    ? 'bg-neutral-800 text-white' 
-                    : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50'
+                    ? 'bg-gray-200 text-black' 
+                    : 'text-gray-600 hover:text-black hover:bg-gray-200'
                   }
                 `}
               >
@@ -73,8 +73,8 @@ export function Sidebar() {
                       className={`
                         flex items-center gap-2 px-3 py-1.5 rounded text-xs transition-colors
                         ${location.pathname === child.href
-                          ? 'text-white bg-neutral-700'
-                          : 'text-neutral-500 hover:text-neutral-300'
+                          ? 'text-black bg-gray-300'
+                          : 'text-gray-500 hover:text-gray-700'
                         }
                       `}
                     >
@@ -89,8 +89,8 @@ export function Sidebar() {
         })}
       </nav>
       
-      <div className="p-4 border-t border-neutral-800">
-        <div className="text-xs text-neutral-500">
+      <div className="p-4 border-t border-gray-300">
+        <div className="text-xs text-gray-500">
           Demo Mode
         </div>
       </div>

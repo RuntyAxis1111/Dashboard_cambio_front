@@ -1,4 +1,4 @@
-import { ElevenLabsClient } from '@11labs/client';
+import ElevenLabsClient from '@11labs/client';
 
 interface ConversationConfig {
   agentId?: string;

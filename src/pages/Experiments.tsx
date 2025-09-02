@@ -228,7 +228,7 @@ export function Experiments() {
     <div className="p-8 bg-white min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-black mb-2">AI Experiments</h1>
+          <h1 className="text-3xl font-bold text-black mb-2">AI Emotion Detection</h1>
           <p className="text-gray-600">
             Real-time emotion detection using advanced AI models
           </p>

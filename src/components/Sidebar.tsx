@@ -22,7 +22,7 @@ const navigation = [
     children: [
       { name: 'MMM', href: '/ai/mmm', icon: TrendingUp },
       { name: 'Hybe LLM', href: '/ai/llm', icon: MessageSquare },
-      { name: 'Experiments', href: '/ai/experiments', icon: Beaker },
+      { name: 'AI Emotion Detection', href: '/ai/experiments', icon: Beaker },
     ]
   },
   { name: 'Subscriptions', href: '/subscriptions', icon: Bell },

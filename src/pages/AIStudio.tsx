@@ -22,9 +22,9 @@ export function AIStudio() {
       status: 'Available'
     },
     {
-      name: 'Experiments',
-      title: 'AI Experiments',
-      description: 'Explore cutting-edge AI prototypes and experimental features for advanced analytics and insights.',
+      name: 'AI Emotion Detection',
+      title: 'AI Emotion Detection',
+      description: 'Real-time emotion analysis using advanced computer vision and machine learning models.',
       icon: Beaker,
       href: '/ai/experiments',
       color: 'green',

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Mic, MicOff, Volume2, VolumeX, MessageCircle, X } from 'lucide-react'
+import { Mic, MicOff, Volume2, VolumeX, MessageCircle, X, AlertCircle } from 'lucide-react'
 
 interface VoiceAgentProps {
   isOpen: boolean
@@ -12,6 +12,7 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [connectionStatus, setConnectionStatus] = useState<string>('Disconnected')
+  const [debugLogs, setDebugLogs] = useState<string[]>([])
   
   const wsRef = useRef<WebSocket | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
@@ -20,12 +21,28 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
 
   const agentId = import.meta.env.VITE_ELEVENLABS_AGENT_ID
 
+  // Debug logging function
+  const addDebugLog = (message: string) => {
+    const timestamp = new Date().toLocaleTimeString()
+    const logMessage = `[${timestamp}] ${message}`
+    console.log(logMessage)
+    setDebugLogs(prev => [logMessage, ...prev.slice(0, 9)]) // Keep last 10 logs
+  }
+
   const connectToAgent = async () => {
     try {
       setError(null)
       setConnectionStatus('Connecting...')
+      addDebugLog('🔄 Iniciando conexión a ElevenLabs...')
+      
+      if (!agentId) {
+        throw new Error('Agent ID no configurado en variables de entorno')
+      }
+      
+      addDebugLog(`🤖 Agent ID: ${agentId}`)
       
       // Get signed URL from our API
+      addDebugLog('📡 Solicitando signed URL...')
       const response = await fetch('/api/elevenlabs/signed-url', {
         method: 'POST',
         headers: {
@@ -34,29 +51,61 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
         body: JSON.stringify({ agentId })
       })
 
+      addDebugLog(`📊 Response status: ${response.status}`)
+      addDebugLog(`📋 Response headers: ${JSON.stringify(Object.fromEntries(response.headers.entries()))}`)
+
       if (!response.ok) {
-        const errorData = await response.json()
+        const responseText = await response.text()
+        addDebugLog(`❌ Response error text: ${responseText}`)
+        
+        let errorData
+        try {
+          errorData = JSON.parse(responseText)
+        } catch (parseError) {
+          addDebugLog(`⚠️ No se pudo parsear JSON de error: ${parseError}`)
+          throw new Error(`HTTP ${response.status}: ${responseText}`)
+        }
+        
         throw new Error(errorData.error || 'Failed to get signed URL')
       }
 
-      const { signedUrl } = await response.json()
+      const responseText = await response.text()
+      addDebugLog(`📄 Response text: ${responseText}`)
+      
+      let data
+      try {
+        data = JSON.parse(responseText)
+      } catch (parseError) {
+        addDebugLog(`❌ Error parsing JSON response: ${parseError}`)
+        addDebugLog(`📄 Raw response: ${responseText}`)
+        throw new Error('Invalid JSON response from server')
+      }
+
+      const { signedUrl } = data
+      addDebugLog(`🔗 Signed URL obtenida: ${signedUrl ? 'Sí' : 'No'}`)
+      
+      if (!signedUrl) {
+        throw new Error('No signed URL in response')
+      }
       
       // Connect to ElevenLabs WebSocket
+      addDebugLog('🔌 Conectando a WebSocket...')
       const ws = new WebSocket(signedUrl)
       wsRef.current = ws
 
       ws.onopen = () => {
         setIsConnected(true)
         setConnectionStatus('Connected')
-        console.log('Connected to ElevenLabs agent')
+        addDebugLog('✅ WebSocket conectado exitosamente')
       }
 
       ws.onmessage = async (event) => {
         try {
+          addDebugLog(`📨 Mensaje recibido: ${event.data.substring(0, 100)}...`)
           const message = JSON.parse(event.data)
           
           if (message.type === 'audio' && message.audio_event) {
-            // Handle audio response from agent
+            addDebugLog('🔊 Audio recibido del agente')
             const audioData = message.audio_event.audio_base_64
             if (audioData) {
               await playAudioResponse(audioData)
@@ -64,37 +113,43 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
           }
           
           if (message.type === 'interruption') {
+            addDebugLog('⏸️ Interrupción recibida')
             setIsSpeaking(false)
           }
           
         } catch (err) {
+          addDebugLog(`❌ Error procesando mensaje: ${err}`)
           console.error('Error processing message:', err)
         }
       }
 
-      ws.onclose = () => {
+      ws.onclose = (event) => {
         setIsConnected(false)
         setConnectionStatus('Disconnected')
         setIsListening(false)
         setIsSpeaking(false)
-        console.log('Disconnected from ElevenLabs agent')
+        addDebugLog(`🔌 WebSocket cerrado: ${event.code} - ${event.reason}`)
       }
 
       ws.onerror = (error) => {
         setError('Connection error')
         setConnectionStatus('Error')
+        addDebugLog(`❌ Error de WebSocket: ${error}`)
         console.error('WebSocket error:', error)
       }
 
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Connection failed')
+      const errorMessage = err instanceof Error ? err.message : 'Connection failed'
+      setError(errorMessage)
       setConnectionStatus('Error')
+      addDebugLog(`💥 Error de conexión: ${errorMessage}`)
     }
   }
 
   const playAudioResponse = async (audioBase64: string) => {
     try {
       setIsSpeaking(true)
+      addDebugLog('🎵 Reproduciendo respuesta de audio...')
       
       // Decode base64 audio
       const audioData = atob(audioBase64)
@@ -106,6 +161,7 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
       // Create audio context if needed
       if (!audioContextRef.current) {
         audioContextRef.current = new AudioContext()
+        addDebugLog('🎧 AudioContext creado')
       }
       
       const audioBuffer = await audioContextRef.current.decodeAudioData(audioArray.buffer)
@@ -115,11 +171,14 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
       
       source.onended = () => {
         setIsSpeaking(false)
+        addDebugLog('🔇 Audio terminado')
       }
       
       source.start()
+      addDebugLog('▶️ Audio iniciado')
       
     } catch (err) {
+      addDebugLog(`❌ Error reproduciendo audio: ${err}`)
       console.error('Error playing audio:', err)
       setIsSpeaking(false)
     }
@@ -127,6 +186,7 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
 
   const startListening = async () => {
     try {
+      addDebugLog('🎤 Iniciando grabación...')
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       
       const mediaRecorder = new MediaRecorder(stream, {
@@ -139,10 +199,12 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
           audioChunksRef.current.push(event.data)
+          addDebugLog(`📊 Chunk de audio: ${event.data.size} bytes`)
         }
       }
       
       mediaRecorder.onstop = async () => {
+        addDebugLog('⏹️ Grabación detenida, procesando audio...')
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm;codecs=opus' })
         await sendAudioToAgent(audioBlob)
         stream.getTracks().forEach(track => track.stop())
@@ -150,30 +212,39 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
       
       mediaRecorder.start()
       setIsListening(true)
+      addDebugLog('🔴 Grabación iniciada')
       
       // Stop recording after 5 seconds
       setTimeout(() => {
         if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
           mediaRecorderRef.current.stop()
           setIsListening(false)
+          addDebugLog('⏰ Grabación detenida por timeout')
         }
       }, 5000)
       
     } catch (err) {
-      setError('Microphone access denied')
+      const errorMessage = `Microphone access denied: ${err}`
+      setError(errorMessage)
+      addDebugLog(`❌ Error de micrófono: ${errorMessage}`)
       console.error('Error accessing microphone:', err)
     }
   }
 
   const sendAudioToAgent = async (audioBlob: Blob) => {
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+      addDebugLog('❌ WebSocket no está abierto')
       return
     }
 
     try {
+      addDebugLog(`📤 Enviando audio: ${audioBlob.size} bytes`)
+      
       // Convert audio blob to base64
       const arrayBuffer = await audioBlob.arrayBuffer()
       const base64Audio = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))
+      
+      addDebugLog(`📦 Audio convertido a base64: ${base64Audio.length} caracteres`)
       
       // Send audio to agent
       const message = {
@@ -181,13 +252,16 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
       }
       
       wsRef.current.send(JSON.stringify(message))
+      addDebugLog('✅ Audio enviado al agente')
       
     } catch (err) {
+      addDebugLog(`❌ Error enviando audio: ${err}`)
       console.error('Error sending audio:', err)
     }
   }
 
   const disconnect = () => {
+    addDebugLog('🔌 Desconectando...')
     if (wsRef.current) {
       wsRef.current.close()
     }
@@ -196,6 +270,11 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
     }
     setIsListening(false)
     setIsSpeaking(false)
+    addDebugLog('✅ Desconectado')
+  }
+
+  const clearDebugLogs = () => {
+    setDebugLogs([])
   }
 
   useEffect(() => {
@@ -226,7 +305,7 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 w-80 bg-white border border-gray-300 rounded-2xl shadow-2xl overflow-hidden z-50">
+    <div className="fixed bottom-6 right-6 w-96 bg-white border border-gray-300 rounded-2xl shadow-2xl overflow-hidden z-50">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-4">
         <div className="flex items-center justify-between">
@@ -260,7 +339,11 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
       <div className="p-4 space-y-4">
         {error && (
           <div className="p-3 bg-red-100 border border-red-300 rounded-lg">
-            <p className="text-red-700 text-sm">{error}</p>
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-red-600" />
+              <p className="text-red-700 text-sm font-medium">Error</p>
+            </div>
+            <p className="text-red-600 text-xs mt-1">{error}</p>
           </div>
         )}
 
@@ -269,9 +352,10 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
             <p className="text-gray-600 mb-4">¡Hola! Soy tu asistente de voz Pingüino Hybe.</p>
             <button
               onClick={connectToAgent}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors"
+              disabled={connectionStatus === 'Connecting...'}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
             >
-              Conectar Agente
+              {connectionStatus === 'Connecting...' ? 'Conectando...' : 'Conectar Agente'}
             </button>
           </div>
         ) : (
@@ -290,7 +374,7 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
                     isListening 
                       ? 'bg-red-600 text-white' 
-                      : 'bg-green-600 hover:bg-green-500 text-white disabled:opacity-50'
+                      : 'bg-green-600 hover:bg-green-500 text-white disabled:opacity-50 disabled:cursor-not-allowed'
                   }`}
                 >
                   {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
@@ -308,8 +392,30 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
 
             <div className="text-center">
               <p className="text-xs text-gray-500">
-                Mantén presionado "Hablar" y pregúntame sobre los datos de HYBE LATAM
+                Haz clic en "Hablar" y pregúntame sobre los datos de HYBE LATAM
               </p>
+            </div>
+          </div>
+        )}
+
+        {/* Debug Panel */}
+        {debugLogs.length > 0 && (
+          <div className="border-t border-gray-200 pt-4">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="text-sm font-medium text-gray-700">Debug Logs</h4>
+              <button
+                onClick={clearDebugLogs}
+                className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                Clear
+              </button>
+            </div>
+            <div className="max-h-32 overflow-y-auto bg-gray-50 rounded-lg p-2">
+              {debugLogs.map((log, index) => (
+                <div key={index} className="text-xs text-gray-600 font-mono mb-1">
+                  {log}
+                </div>
+              ))}
             </div>
           </div>
         )}

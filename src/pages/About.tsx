@@ -41,7 +41,7 @@ export function About() {
           </div>
           
           <div className="text-center">
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-8 inline-block">
+            <div className="bg-white border border-gray-300 rounded-2xl p-8 inline-block">
               <img 
                 src="/assets/pinguinohybe.png" 
                 alt="HYBE Penguin Mascot" 
@@ -52,11 +52,11 @@ export function About() {
                   target.nextElementSibling?.classList.remove('hidden');
                 }}
               />
-              <div className="hidden w-48 h-48 mx-auto mb-4 bg-neutral-800 rounded-xl flex items-center justify-center">
-                <span className="text-neutral-500 text-sm">Penguin Mascot</span>
+              <div className="hidden w-48 h-48 mx-auto mb-4 bg-gray-200 rounded-xl flex items-center justify-center">
+                <span className="text-gray-500 text-sm">Penguin Mascot</span>
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Meet Our Mascot</h3>
-              <p className="text-neutral-400 text-sm">
+              <h3 className="text-lg font-semibold text-black mb-2">Meet Our Mascot</h3>
+              <p className="text-gray-600 text-sm">
                 The HYBE Penguin - our friendly lab companion (static asset)
               </p>
             </div>

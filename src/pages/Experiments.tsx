@@ -214,22 +214,22 @@ export function Experiments() {
 
   const getEmotionColor = (emotion: string) => {
     const colors = {
-      'Happy': 'text-yellow-400 bg-yellow-600/20',
-      'Excited': 'text-orange-400 bg-orange-600/20',
-      'Surprised': 'text-blue-400 bg-blue-600/20',
-      'Neutral': 'text-gray-400 bg-gray-600/20',
-      'Focused': 'text-purple-400 bg-purple-600/20',
-      'Calm': 'text-green-400 bg-green-600/20',
+      'Happy': 'text-yellow-700 bg-yellow-200',
+      'Excited': 'text-orange-700 bg-orange-200',
+      'Surprised': 'text-blue-700 bg-blue-200',
+      'Neutral': 'text-gray-700 bg-gray-200',
+      'Focused': 'text-purple-700 bg-purple-200',
+      'Calm': 'text-green-700 bg-green-200',
     }
-    return colors[emotion as keyof typeof colors] || 'text-gray-400 bg-gray-600/20'
+    return colors[emotion as keyof typeof colors] || 'text-gray-700 bg-gray-200'
   }
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-white min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">AI Experiments</h1>
-          <p className="text-neutral-400">
+          <h1 className="text-3xl font-bold text-black mb-2">AI Experiments</h1>
+          <p className="text-gray-600">
             Real-time emotion detection using advanced AI models
           </p>
         </div>
@@ -237,10 +237,10 @@ export function Experiments() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Dual Video Feed */}
           <div className="lg:col-span-2">
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden">
-              <div className="p-6 border-b border-neutral-800">
+            <div className="bg-gray-100 border border-gray-300 rounded-2xl overflow-hidden">
+              <div className="p-6 border-b border-gray-300">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-white">Dual Camera View</h2>
+                  <h2 className="text-xl font-semibold text-black">Dual Camera View</h2>
                   <div className="flex gap-2">
                     {!isStreaming ? (
                       <button
@@ -286,27 +286,27 @@ export function Experiments() {
               <div className="p-6">
                 {/* Loading Progress Bar */}
                 {loadingProgress > 0 && loadingProgress < 100 && (
-                  <div className="mb-6 p-4 bg-neutral-800 rounded-xl">
+                  <div className="mb-6 p-4 bg-gray-200 rounded-xl">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-white font-medium">Loading AI Models</span>
+                      <span className="text-black font-medium">Loading AI Models</span>
                       <span className="text-blue-400 font-bold">{loadingProgress}%</span>
                     </div>
-                    <div className="w-full bg-neutral-700 rounded-full h-2 mb-2">
+                    <div className="w-full bg-gray-300 rounded-full h-2 mb-2">
                       <div 
                         className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${loadingProgress}%` }}
                       />
                     </div>
-                    <div className="text-sm text-neutral-400">{loadingStage}</div>
+                    <div className="text-sm text-gray-600">{loadingStage}</div>
                   </div>
                 )}
                 
                 {/* DOS VIDEOS LADO A LADO */}
                 <div className="grid grid-cols-2 gap-4">
                   {/* VIDEO NORMAL (IZQUIERDA) */}
-                  <div className="relative bg-neutral-800 rounded-xl overflow-hidden aspect-video">
-                    <div className="absolute top-2 left-2 z-10 bg-black/50 backdrop-blur-sm rounded px-2 py-1">
-                      <span className="text-white text-xs font-medium">Normal Feed</span>
+                  <div className="relative bg-gray-200 rounded-xl overflow-hidden aspect-video">
+                    <div className="absolute top-2 left-2 z-10 bg-white/80 backdrop-blur-sm rounded px-2 py-1">
+                      <span className="text-black text-xs font-medium">Normal Feed</span>
                     </div>
                     
                     <video
@@ -321,17 +321,17 @@ export function Experiments() {
                     {!isStreaming && (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="text-center">
-                          <Camera className="w-8 h-8 text-neutral-500 mx-auto mb-2" />
-                          <p className="text-neutral-400 text-sm">Normal Video</p>
+                          <Camera className="w-8 h-8 text-gray-500 mx-auto mb-2" />
+                          <p className="text-gray-600 text-sm">Normal Video</p>
                         </div>
                       </div>
                     )}
                   </div>
                   
                   {/* VIDEO AI (DERECHA) */}
-                  <div className="relative bg-neutral-800 rounded-xl overflow-hidden aspect-video">
-                    <div className="absolute top-2 left-2 z-10 bg-black/50 backdrop-blur-sm rounded px-2 py-1">
-                      <span className="text-white text-xs font-medium">AI Analysis</span>
+                  <div className="relative bg-gray-200 rounded-xl overflow-hidden aspect-video">
+                    <div className="absolute top-2 left-2 z-10 bg-white/80 backdrop-blur-sm rounded px-2 py-1">
+                      <span className="text-black text-xs font-medium">AI Analysis</span>
                     </div>
                     
                     <video
@@ -346,8 +346,8 @@ export function Experiments() {
                     {!isStreaming && (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="text-center">
-                          <Camera className="w-8 h-8 text-neutral-500 mx-auto mb-2" />
-                          <p className="text-neutral-400 text-sm">AI Filtered</p>
+                          <Camera className="w-8 h-8 text-gray-500 mx-auto mb-2" />
+                          <p className="text-gray-600 text-sm">AI Filtered</p>
                         </div>
                       </div>
                     )}
@@ -355,7 +355,7 @@ export function Experiments() {
                     {/* Emotion Overlay - SOLO en video AI */}
                     {isAnalyzing && currentEmotion && (
                       <div className="absolute bottom-2 left-2 right-2 z-20">
-                        <div className="bg-black/70 backdrop-blur-sm rounded-lg p-2">
+                        <div className="bg-white/90 backdrop-blur-sm rounded-lg p-2 border border-gray-300">
                           <div className={`text-center text-sm font-medium ${getEmotionColor(currentEmotion.emotion)}`}>
                             {currentEmotion.emotion} ({Math.round(currentEmotion.confidence * 100)}%)
                           </div>
@@ -366,8 +366,8 @@ export function Experiments() {
                 </div>
                 
                 {error && (
-                  <div className="mt-4 p-4 bg-red-600/20 border border-red-600/30 rounded-lg">
-                    <p className="text-red-400">{error}</p>
+                  <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded-lg">
+                    <p className="text-red-700">{error}</p>
                   </div>
                 )}
               </div>
@@ -377,8 +377,8 @@ export function Experiments() {
           {/* Results Panel */}
           <div className="space-y-6">
             {/* Current Emotion */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Current Emotion</h3>
+            <div className="bg-gray-100 border border-gray-300 rounded-2xl p-6">
+              <h3 className="text-lg font-semibold text-black mb-4">Current Emotion</h3>
               {currentEmotion ? (
                 <div className="space-y-4">
                   {/* Main emotion display */}
@@ -386,10 +386,10 @@ export function Experiments() {
                     <div className={`inline-flex items-center gap-2 px-4 py-3 rounded-xl text-lg font-semibold ${getEmotionColor(currentEmotion.emotion)}`}>
                       {currentEmotion.emotion}
                     </div>
-                    <div className="mt-3 text-2xl font-bold text-white">
+                    <div className="mt-3 text-2xl font-bold text-black">
                       {Math.round(currentEmotion.confidence * 100)}%
                     </div>
-                    <div className="text-sm text-neutral-500">
+                    <div className="text-sm text-gray-600">
                       Primary Emotion
                     </div>
                   </div>
@@ -397,14 +397,14 @@ export function Experiments() {
                   {/* All emotions breakdown */}
                   {currentEmotion.allEmotions && currentEmotion.allEmotions.length > 0 && (
                     <div>
-                      <h4 className="text-sm font-medium text-neutral-300 mb-3">AI Analysis Breakdown</h4>
+                      <h4 className="text-sm font-medium text-gray-700 mb-3">AI Analysis Breakdown</h4>
                       <div className="space-y-2">
                         {currentEmotion.allEmotions.slice(0, 6).map((emotion, index) => (
                           <div key={emotion.emotion} className="flex items-center gap-3">
-                            <div className="w-16 text-xs text-neutral-400 text-right">
+                            <div className="w-16 text-xs text-gray-600 text-right">
                               {emotion.emotion}
                             </div>
-                            <div className="flex-1 bg-neutral-800 rounded-full h-2 overflow-hidden">
+                            <div className="flex-1 bg-gray-300 rounded-full h-2 overflow-hidden">
                               <div 
                                 className={`h-full transition-all duration-500 ${
                                   index === 0 ? 'bg-blue-500' :
@@ -417,7 +417,7 @@ export function Experiments() {
                                 style={{ width: `${emotion.score * 100}%` }}
                               />
                             </div>
-                            <div className="w-12 text-xs text-neutral-300 text-right">
+                            <div className="w-12 text-xs text-black text-right">
                               {Math.round(emotion.score * 100)}%
                             </div>
                           </div>
@@ -428,21 +428,21 @@ export function Experiments() {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <div className="w-16 h-16 bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Camera className="w-8 h-8 text-neutral-500" />
+                  <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Camera className="w-8 h-8 text-gray-500" />
                   </div>
-                  <p className="text-neutral-500">Start analysis to see results</p>
+                  <p className="text-gray-600">Start analysis to see results</p>
                 </div>
               )}
             </div>
             
             {/* Detailed Analysis */}
             {currentEmotion?.allEmotions && currentEmotion.allEmotions.length > 0 && (
-              <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Neural Network Output</h3>
+              <div className="bg-gray-100 border border-gray-300 rounded-2xl p-6">
+                <h3 className="text-lg font-semibold text-black mb-4">Neural Network Output</h3>
                 <div className="space-y-3">
                   {currentEmotion.allEmotions.map((emotion, index) => (
-                    <div key={emotion.emotion} className="flex items-center justify-between p-2 bg-neutral-800 rounded-lg">
+                    <div key={emotion.emotion} className="flex items-center justify-between p-2 bg-gray-200 rounded-lg">
                       <div className="flex items-center gap-2">
                         <div className={`w-2 h-2 rounded-full ${
                           index === 0 ? 'bg-blue-500' :
@@ -452,10 +452,10 @@ export function Experiments() {
                           index === 4 ? 'bg-red-500' :
                           'bg-gray-500'
                         }`} />
-                        <span className="text-white text-sm font-medium">{emotion.emotion}</span>
+                        <span className="text-black text-sm font-medium">{emotion.emotion}</span>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm text-white font-mono">
+                        <div className="text-sm text-black font-mono">
                           {(emotion.score * 100).toFixed(1)}%
                         </div>
                       </div>
@@ -466,13 +466,13 @@ export function Experiments() {
             )}
             
             {/* Controls */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Controls</h3>
+            <div className="bg-gray-100 border border-gray-300 rounded-2xl p-6">
+              <h3 className="text-lg font-semibold text-black mb-4">Controls</h3>
               <div className="space-y-3">
                 <button
                   onClick={resetSession}
                   disabled={emotionHistory.length === 0}
-                  className="w-full flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
+                  className="w-full flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors text-black"
                 >
                   <RotateCcw className="w-4 h-4" />
                   Reset Session
@@ -480,7 +480,7 @@ export function Experiments() {
                 <button
                   onClick={exportResults}
                   disabled={emotionHistory.length === 0}
-                  className="w-full flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
+                  className="w-full flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors text-black"
                 >
                   <Download className="w-4 h-4" />
                   Export Results
@@ -489,21 +489,21 @@ export function Experiments() {
             </div>
             
             {/* Emotion History */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Recent Analysis</h3>
+            <div className="bg-gray-100 border border-gray-300 rounded-2xl p-6">
+              <h3 className="text-lg font-semibold text-black mb-4">Recent Analysis</h3>
               <div className="space-y-2 max-h-64 overflow-y-auto">
                 {emotionHistory.length === 0 ? (
-                  <p className="text-neutral-500 text-sm text-center py-4">No analysis yet</p>
+                  <p className="text-gray-600 text-sm text-center py-4">No analysis yet</p>
                 ) : (
                   emotionHistory.map((result, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-neutral-800 rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-200 rounded-lg">
                       <div className="flex items-center gap-3">
                         <div className={`w-3 h-3 rounded-full ${getEmotionColor(result.emotion).split(' ')[1]}`} />
-                        <span className="text-white font-medium">{result.emotion}</span>
+                        <span className="text-black font-medium">{result.emotion}</span>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm text-white">{Math.round(result.confidence * 100)}%</div>
-                        <div className="text-xs text-neutral-500">
+                        <div className="text-sm text-black">{Math.round(result.confidence * 100)}%</div>
+                        <div className="text-xs text-gray-600">
                           {result.timestamp.toLocaleTimeString()}
                         </div>
                       </div>

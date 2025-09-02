@@ -39,11 +39,11 @@ export function AIStudio() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-white">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">AI Studio</h1>
-          <p className="text-neutral-400">
+          <h1 className="text-3xl font-bold text-black mb-2">AI Studio</h1>
+          <p className="text-gray-600">
             Model. Simulate. Ask the data.
           </p>
         </div>
@@ -53,23 +53,23 @@ export function AIStudio() {
             <Link
               key={tool.name}
               to={tool.href}
-              className="group bg-neutral-900 border border-neutral-800 rounded-2xl p-8 hover:border-neutral-700 transition-all duration-200 hover:scale-105"
+              className="group bg-gray-100 border border-gray-300 rounded-2xl p-8 hover:border-gray-400 transition-all duration-200 hover:scale-105"
             >
               <div className="flex items-center justify-between mb-6">
-                <div className={`flex items-center justify-center w-16 h-16 rounded-xl transition-colors ${colorClasses[tool.color as keyof typeof colorClasses]}`}>
+                <div className={`flex items-center justify-center w-16 h-16 rounded-xl transition-colors bg-${tool.color}-200`}>
                   <tool.icon className="w-8 h-8" />
                 </div>
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                   tool.status === 'Beta' 
-                    ? 'bg-orange-600/20 text-orange-400' 
-                    : 'bg-green-600/20 text-green-400'
+                    ? 'bg-orange-200 text-orange-700' 
+                    : 'bg-green-200 text-green-700'
                 }`}>
                   {tool.status}
                 </span>
               </div>
               
-              <h3 className="text-xl font-semibold text-white mb-3">{tool.title}</h3>
-              <p className="text-neutral-400 leading-relaxed">
+              <h3 className="text-xl font-semibold text-black mb-3">{tool.title}</h3>
+              <p className="text-gray-600 leading-relaxed">
                 {tool.description}
               </p>
             </Link>

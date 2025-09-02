@@ -26,11 +26,11 @@ export function DashboardsIndex() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-white">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Dashboards</h1>
-          <p className="text-neutral-400">
+          <h1 className="text-3xl font-bold text-black mb-2">Dashboards</h1>
+          <p className="text-gray-600">
             Access analytics and performance metrics for all your projects
           </p>
         </div>
@@ -43,7 +43,7 @@ export function DashboardsIndex() {
             return (
               <div
                 key={project.id}
-                className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden hover:border-neutral-700 transition-all duration-200"
+                className="bg-gray-100 border border-gray-300 rounded-2xl overflow-hidden hover:border-gray-400 transition-all duration-200"
               >
                 {/* Project Header */}
                 <div className="p-6">
@@ -52,14 +52,14 @@ export function DashboardsIndex() {
                       <IconComponent className="w-6 h-6" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-white mb-1">{project.name}</h3>
-                      <p className="text-neutral-400 text-sm">{project.description}</p>
+                      <h3 className="text-xl font-semibold text-black mb-1">{project.name}</h3>
+                      <p className="text-gray-600 text-sm">{project.description}</p>
                     </div>
                     <button
                       onClick={() => handleDropdownToggle(project.id)}
-                      className="p-2 hover:bg-neutral-800 rounded-lg transition-colors"
+                      className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
                     >
-                      <ChevronDown className={`w-5 h-5 text-neutral-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                     </button>
                   </div>
                   
@@ -67,13 +67,13 @@ export function DashboardsIndex() {
                   <div className="flex gap-2">
                     <Link
                       to={`/dashboard/${project.id}/${project.sections[0]?.dashboards[0]?.id || ''}`}
-                      className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-sm font-medium transition-colors"
+                      className="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-medium transition-colors text-black"
                     >
                       Quick View
                     </Link>
                     <Link
                       to="/projects"
-                      className="px-3 py-1.5 border border-neutral-700 hover:bg-neutral-800 rounded-lg text-sm font-medium transition-colors"
+                      className="px-3 py-1.5 border border-gray-300 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors text-black"
                     >
                       View All
                     </Link>
@@ -82,11 +82,11 @@ export function DashboardsIndex() {
                 
                 {/* Dropdown Content */}
                 {isOpen && (
-                  <div className="border-t border-neutral-800 bg-neutral-800/30">
+                  <div className="border-t border-gray-300 bg-gray-200">
                     <div className="p-4 space-y-4">
                       {project.sections.map((section) => (
                         <div key={section.id}>
-                          <h4 className="text-sm font-medium text-neutral-300 mb-2 flex items-center gap-2">
+                          <h4 className="text-sm font-medium text-black mb-2 flex items-center gap-2">
                             {section.type === 'social' && <Hash className="w-3 h-3" />}
                             {section.type === 'band' && <Music className="w-3 h-3" />}
                             {section.type === 'artist' && <Megaphone className="w-3 h-3" />}
@@ -103,7 +103,7 @@ export function DashboardsIndex() {
                                     ? `/dashboard/${project.id}/band/${dashboard.id}`
                                     : `/dashboard/${project.id}/${dashboard.id}`
                                 }
-                                className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-neutral-400 hover:text-white hover:bg-neutral-700 transition-colors group"
+                                className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-gray-600 hover:text-black hover:bg-gray-300 transition-colors group"
                               >
                                 <span>{dashboard.name}</span>
                                 <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />

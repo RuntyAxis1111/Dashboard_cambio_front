@@ -9,10 +9,10 @@ export function DashboardFrame({ url, title }: DashboardFrameProps) {
 
   if (isExternal) {
     return (
-      <div className="h-[600px] bg-neutral-800 rounded-lg flex items-center justify-center">
+      <div className="h-[600px] bg-gray-200 rounded-lg flex items-center justify-center">
         <div className="text-center">
-          <div className="text-neutral-300 mb-2">External Dashboard</div>
-          <div className="text-sm text-neutral-500 mb-4">{title}</div>
+          <div className="text-black mb-2">External Dashboard</div>
+          <div className="text-sm text-gray-600 mb-4">{title}</div>
           <a 
             href={url} 
             target="_blank" 
@@ -27,7 +27,7 @@ export function DashboardFrame({ url, title }: DashboardFrameProps) {
   }
 
   return (
-    <div className="h-[600px] bg-neutral-800 rounded-lg overflow-hidden">
+    <div className="h-[600px] bg-gray-200 rounded-lg overflow-hidden">
       <iframe
         src={url}
         title={title}

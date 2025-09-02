@@ -55,15 +55,15 @@ export function DashboardDetail() {
   if (!dashboardUrl) {
     return (
       <div className="flex flex-col h-full">
-        <div className="border-b border-neutral-800 bg-neutral-900/50">
+        <div className="border-b border-gray-300 bg-gray-100">
           <div className="p-6">
             <Breadcrumb items={breadcrumbItems} />
-            <h1 className="text-2xl font-semibold text-white mt-4">{title}</h1>
+            <h1 className="text-2xl font-semibold text-black mt-4">{title}</h1>
           </div>
         </div>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="w-16 h-16 bg-neutral-800 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
               <img 
                 src="/assets/pinguinohybe.png" 
                 alt="HYBE Penguin" 
@@ -74,8 +74,8 @@ export function DashboardDetail() {
                 }}
               />
             </div>
-            <h3 className="text-lg font-medium text-white mb-2">Dashboard not found</h3>
-            <p className="text-neutral-400">This dashboard is not available yet</p>
+            <h3 className="text-lg font-medium text-black mb-2">Dashboard not found</h3>
+            <p className="text-gray-600">This dashboard is not available yet</p>
           </div>
         </div>
       </div>
@@ -84,13 +84,13 @@ export function DashboardDetail() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="border-b border-neutral-800 bg-neutral-900/50">
+      <div className="border-b border-gray-300 bg-gray-100">
         <div className="p-6">
           <Breadcrumb items={breadcrumbItems} />
           <div className="flex items-center justify-between mt-4">
             <div>
-              <h1 className="text-2xl font-semibold text-white">{title}</h1>
-              <p className="text-neutral-400 mt-1">
+              <h1 className="text-2xl font-semibold text-black">{title}</h1>
+              <p className="text-gray-600 mt-1">
                 Range: {searchParams.get('from') || 'Last 30 days'} → {searchParams.get('to') || 'Today'}
                 {searchParams.get('country') && ` • ${searchParams.get('country')}`}
               </p>
@@ -107,7 +107,7 @@ export function DashboardDetail() {
           ))}
         </div>
         
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden">
+        <div className="bg-gray-100 border border-gray-300 rounded-2xl overflow-hidden">
           <Tabs tabs={tabs} />
           <DashboardFrame url={dashboardUrl} title={title} />
         </div>

@@ -38,9 +38,7 @@ export async function detectOnce(video: HTMLVideoElement) {
 
 export function drawFrame(canvas: HTMLCanvasElement, video: HTMLVideoElement, result: any) {
   if (!human) throw new Error('Human not initialized');
-  human.draw.canvas(canvas, video);
-  human.draw.face(canvas, result.face);
-  human.draw.iris(canvas, result.face);
+  human.draw.all(canvas, result);
 }
 
 export function getTopEmotion(result: any): { emotion: string; score: number } | null {

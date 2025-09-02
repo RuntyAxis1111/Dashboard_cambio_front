@@ -43,6 +43,48 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
       
       // Get signed URL from our API
       addDebugLog('📡 Solicitando signed URL...')
+      
+      // Try different endpoint paths for development vs production
+      const endpoints = [
+        '/api/elevenlabs/signed-url',
+        '/api/elevenlabs/signed-url.js',
+        '/.netlify/functions/signed-url'
+      ]
+      
+      let response
+      let lastError
+      
+      for (const endpoint of endpoints) {
+        try {
+          addDebugLog(`🔗 Probando endpoint: ${endpoint}`)
+          response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ agentId })
+          })
+          
+          addDebugLog(`📊 ${endpoint} - Status: ${response.status}`)
+          
+          if (response.ok) {
+            addDebugLog(`✅ Endpoint funcionando: ${endpoint}`)
+            break
+          } else {
+            addDebugLog(`❌ ${endpoint} falló con status ${response.status}`)
+            lastError = `HTTP ${response.status}`
+          }
+        } catch (fetchError) {
+          addDebugLog(`❌ ${endpoint} - Error de fetch: ${fetchError}`)
+          lastError = fetchError
+          response = null
+        }
+      }
+      
+      if (!response || !response.ok) {
+        throw new Error(`Todos los endpoints fallaron. Último error: ${lastError}`)
+      }
+      
       const response = await fetch('/api/elevenlabs/signed-url', {
         method: 'POST',
         headers: {
@@ -52,15 +94,29 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
       })
 
       addDebugLog(`📊 Response status: ${response.status}`)
-      addDebugLog(`📋 Response headers: ${JSON.stringify(Object.fromEntries(response.headers.entries()))}`)
+      
+      // Log response headers safely
+      const headers: Record<string, string> = {}
+      response.headers.forEach((value, key) => {
+        headers[key] = value
+      })
+      addDebugLog(`📋 Response headers: ${JSON.stringify(headers)}`)
 
       if (!response.ok) {
-        const responseText = await response.text()
+        let responseText
+        try {
+          responseText = await response.text()
+        } catch (textError) {
+          addDebugLog(`❌ Error leyendo response text: ${textError}`)
+          responseText = 'No se pudo leer la respuesta'
+        }
+        
         addDebugLog(`❌ Response error text: ${responseText}`)
         
         let errorData
         try {
           errorData = JSON.parse(responseText)
+          addDebugLog(`📋 Error data parsed: ${JSON.stringify(errorData)}`)
         } catch (parseError) {
           addDebugLog(`⚠️ No se pudo parsear JSON de error: ${parseError}`)
           throw new Error(`HTTP ${response.status}: ${responseText}`)
@@ -69,12 +125,20 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
         throw new Error(errorData.error || 'Failed to get signed URL')
       }
 
-      const responseText = await response.text()
+      let responseText
+      try {
+        responseText = await response.text()
+      } catch (textError) {
+        addDebugLog(`❌ Error leyendo response exitoso: ${textError}`)
+        throw new Error('No se pudo leer la respuesta del servidor')
+      }
+      
       addDebugLog(`📄 Response text: ${responseText}`)
       
       let data
       try {
         data = JSON.parse(responseText)
+        addDebugLog(`✅ JSON parseado exitosamente: ${JSON.stringify(data)}`)
       } catch (parseError) {
         addDebugLog(`❌ Error parsing JSON response: ${parseError}`)
         addDebugLog(`📄 Raw response: ${responseText}`)
@@ -85,6 +149,7 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
       addDebugLog(`🔗 Signed URL obtenida: ${signedUrl ? 'Sí' : 'No'}`)
       
       if (!signedUrl) {
+        addDebugLog(`❌ Data recibida: ${JSON.stringify(data)}`)
         throw new Error('No signed URL in response')
       }
       

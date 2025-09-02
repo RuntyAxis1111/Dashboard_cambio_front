@@ -24,8 +24,8 @@ export default function App() {
         <Route path="/ai" element={<AIStudio />} />
         <Route path="/ai/mmm" element={<MMM />} />
         <Route path="/ai/llm" element={<HybeLLM />} />
-        <Route path="/ai/emotion-detection" element={<EmotionDetection />} />
         <Route path="/ai/experiments" element={<Experiments />} />
+        <Route path="/ai/emotion-detection" element={<EmotionDetection />} />
         <Route path="/subscriptions" element={<Subscriptions />} />
         <Route path="/data" element={<DataExplorer />} />
         <Route path="/projects" element={<Projects />} />

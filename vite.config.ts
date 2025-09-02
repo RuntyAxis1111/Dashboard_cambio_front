@@ -6,16 +6,18 @@ import path from 'path'
 export default defineConfig({
   plugins: [react()],
   server: { 
-    headers: { 'Permissions-Policy': 'camera=(self)' } 
+    headers: { 
+      'Permissions-Policy': 'camera=(self), microphone=(self)' 
+    },
+    host: 'localhost',
+    port: 5173
   },
   preview: { 
-    headers: { 'Permissions-Policy': 'camera=(self)' } 
-  },
-  server: { 
-    headers: { 'Permissions-Policy': 'camera=(self)' } 
-  },
-  preview: { 
-    headers: { 'Permissions-Policy': 'camera=(self)' } 
+    headers: { 
+      'Permissions-Policy': 'camera=(self), microphone=(self)' 
+    },
+    host: 'localhost',
+    port: 4173
   },
   build: {
     outDir: 'dist',

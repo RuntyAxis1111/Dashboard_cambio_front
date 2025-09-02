@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Camera, CameraOff, Play, Square, Download, RotateCcw } from 'lucide-react'
-import { initHuman, detectOnce, getTopEmotion, warmup } from '../lib/human'
+import { initHuman, detectOnce, warmup } from '../lib/human'
 
 interface EmotionResult {
   emotion: string

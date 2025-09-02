@@ -1,11 +1,11 @@
-import Human from '@vladmandic/human';
+import * as Human from '@vladmandic/human';
 
-let human: Human | null = null;
+let human: any | null = null;
 export type Backend = 'webgl' | 'wasm';
 
 export async function initHuman(backend: Backend = 'webgl') {
   if (human && (human.config.backend as Backend) === backend) return human;
-  human = new Human({
+  human = new (Human as any).Human({
     backend,
     modelBasePath: 'https://cdn.jsdelivr.net/npm/@vladmandic/human/models',
     cacheSensitivity: 0,
@@ -44,6 +44,6 @@ export function drawFrame(canvas: HTMLCanvasElement, video: HTMLVideoElement, re
 export function getTopEmotion(result: any): { emotion: string; score: number } | null {
   const emotions = result?.face?.[0]?.emotion;
   if (!emotions?.length) return null;
-  const top = emotions.slice().sort((a:any,b:any)=>b.score-a.score)[0];
+  const top = emotions.slice().sort((a: any, b: any) => b.score - a.score)[0];
   return { emotion: top.emotion, score: top.score };
 }

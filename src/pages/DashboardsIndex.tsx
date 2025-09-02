@@ -2,7 +2,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Music, BarChart3, Users, Megaphone, ChevronDown, ExternalLink, Hash } from 'lucide-react'
 import { useState } from 'react'
 import { projects } from '../lib/dashboards'
-import { PenguinFAB } from '../components/VoiceAgent'
 
 const iconMap = {
   Music,
@@ -121,9 +120,6 @@ export function DashboardsIndex() {
           })}
         </div>
       </div>
-      
-      {/* Penguin Voice Agent FAB */}
-      <PenguinFAB />
     </div>
   )
 }

@@ -1,6 +1,5 @@
-import { useState } from 'react'
-import { Plus, Bell, Mail, Webhook, MoreHorizontal } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
+import { Home, BarChart3, Brain, Bell, Search, Info } from 'lucide-react'
 
 export function Sidebar() {
   const location = useLocation()
@@ -10,12 +9,12 @@ export function Sidebar() {
   }
 
   const navItems = [
-    { path: '/', label: 'Home', icon: '🏠' },
-    { path: '/dashboards', label: 'Dashboards', icon: '📊' },
-    { path: '/ai-studio', label: 'AI Studio', icon: '🤖' },
-    { path: '/subscriptions', label: 'Subscriptions', icon: '🔔' },
-    { path: '/data-explorer', label: 'Data Explorer', icon: '🔍' },
-    { path: '/about', label: 'About', icon: 'ℹ️' }
+    { path: '/', label: 'Home', icon: Home },
+    { path: '/dashboards', label: 'Dashboards', icon: BarChart3 },
+    { path: '/ai', label: 'AI Studio', icon: Brain },
+    { path: '/subscriptions', label: 'Subscriptions', icon: Bell },
+    { path: '/data', label: 'Data Explorer', icon: Search },
+    { path: '/about', label: 'About', icon: Info }
   ]
 
   return (
@@ -27,21 +26,24 @@ export function Sidebar() {
       
       <nav className="flex-1 p-4">
         <ul className="space-y-2">
-          {navItems.map((item) => (
-            <li key={item.path}>
-              <Link
-                to={item.path}
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  isActive(item.path)
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <span>{item.icon}</span>
-                {item.label}
-              </Link>
-            </li>
-          ))}
+          {navItems.map((item) => {
+            const IconComponent = item.icon
+            return (
+              <li key={item.path}>
+                <Link
+                  to={item.path}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isActive(item.path)
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <IconComponent className="w-4 h-4" />
+                  {item.label}
+                </Link>
+              </li>
+            )
+          })}
         </ul>
       </nav>
       

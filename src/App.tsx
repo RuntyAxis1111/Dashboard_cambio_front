@@ -27,7 +27,6 @@ export default function App() {
         <Route path="/ai/emotion-detection" element={<Experiments />} />
         <Route path="/subscriptions" element={<Subscriptions />} />
         <Route path="/data" element={<DataExplorer />} />
-        <Route path="/projects" element={<Projects />} />
         <Route path="/about" element={<About />} />
       </Routes>
     </Layout>

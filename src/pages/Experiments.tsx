@@ -169,7 +169,7 @@ export function Experiments() {
       }
     }
     
-    intervalRef.current = setInterval(analyzeFrame, 2000)
+    intervalRef.current = setInterval(analyzeFrame, 2000) as unknown as number
     analyzeFrame()
   }
 

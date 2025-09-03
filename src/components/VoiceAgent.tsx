@@ -28,6 +28,7 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
     setErrorMessage('')
 
     try {
+      // 1. Guardar en Supabase
       const { error } = await supabase
         .from('llamadas_solicitudes')
         .insert([
@@ -41,6 +42,30 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
         throw error
       }
 
+      // 2. Enviar webhook a N8N
+      try {
+        const webhookResponse = await fetch('https://runtyaxis.app.n8n.cloud/webhook/47d3362a-3589-4981-bbcc-4732937933e0', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            nombre: nombre.trim(),
+            numero_telefono: numeroTelefono.trim(),
+            timestamp: new Date().toISOString(),
+            source: 'pingüino_hybe'
+          })
+        })
+        
+        if (!webhookResponse.ok) {
+          console.warn('Webhook N8N falló, pero datos guardados en Supabase')
+        } else {
+          console.log('✅ Webhook N8N enviado exitosamente')
+        }
+      } catch (webhookError) {
+        console.warn('Error enviando webhook N8N:', webhookError)
+        // No fallar todo el proceso si el webhook falla
+      }
       setSubmitStatus('success')
       setNombre('')
       setNumeroTelefono('')

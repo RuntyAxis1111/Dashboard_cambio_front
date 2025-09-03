@@ -1,10 +1,10 @@
 export function About() {
   return (
-    <div className="p-8">
+    <div className="p-8 bg-white">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-white mb-4">About HYBE LATAM Data & AI Lab</h1>
-          <p className="text-xl text-neutral-400">
+          <h1 className="text-3xl font-bold text-black mb-4">About HYBE LATAM Data & AI Lab</h1>
+          <p className="text-xl text-gray-600">
             Advanced analytics and AI-powered insights for the Latin American music industry
           </p>
         </div>
@@ -12,8 +12,8 @@ export function About() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-semibold text-white mb-4">Our Mission</h2>
-              <p className="text-neutral-300 leading-relaxed">
+              <h2 className="text-2xl font-semibold text-black mb-4">Our Mission</h2>
+              <p className="text-gray-600 leading-relaxed">
                 HYBE LATAM Data & AI Lab is the central hub for data-driven decision making 
                 in the Latin American music market. We provide comprehensive analytics, 
                 AI-powered insights, and advanced modeling tools to optimize artist performance 
@@ -22,8 +22,8 @@ export function About() {
             </div>
             
             <div>
-              <h3 className="text-lg font-semibold text-white mb-3">Platform Features</h3>
-              <ul className="space-y-2 text-neutral-300">
+              <h3 className="text-lg font-semibold text-black mb-3">Platform Features</h3>
+              <ul className="space-y-2 text-gray-600">
                 <li>• Real-time social media analytics</li>
                 <li>• Marketing mix modeling and optimization</li>
                 <li>• Conversational data analysis with Hybe LLM</li>
@@ -33,8 +33,8 @@ export function About() {
             </div>
             
             <div>
-              <h3 className="text-lg font-semibold text-white mb-3">Version</h3>
-              <p className="text-neutral-400">
+              <h3 className="text-lg font-semibold text-black mb-3">Version</h3>
+              <p className="text-gray-600">
                 Product Alpha • No AI features currently enabled
               </p>
             </div>
@@ -63,8 +63,8 @@ export function About() {
           </div>
         </div>
         
-        <div className="mt-12 pt-8 border-t border-neutral-800 text-center">
-          <p className="text-neutral-500 text-sm">
+        <div className="mt-12 pt-8 border-t border-gray-300 text-center">
+          <p className="text-gray-500 text-sm">
             © 2024 HYBE LATAM Data & AI Lab. All rights reserved.
           </p>
         </div>

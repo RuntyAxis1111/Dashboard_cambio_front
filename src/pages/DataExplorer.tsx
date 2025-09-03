@@ -18,13 +18,13 @@ export function DataExplorer() {
               <Database className="w-12 h-12 text-gray-500" />
             </div>
             <h2 className="text-2xl font-bold text-black mb-4">Data Explorer</h2>
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 border border-orange-300 rounded-lg mb-4">
-              <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-              <span className="text-orange-800 font-medium">En desarrollo</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 border border-blue-300 rounded-lg mb-4">
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+              <span className="text-blue-800 font-medium">En desarrollo</span>
             </div>
             <p className="text-gray-600 max-w-md mx-auto">
-              Herramienta para explorar datasets, esquemas y fuentes de datos. 
-              Esta funcionalidad estará disponible próximamente.
+              Funcionalidad para explorar datasets, esquemas y fuentes de datos. 
+              Estará disponible próximamente.
             </p>
           </div>
         </div>

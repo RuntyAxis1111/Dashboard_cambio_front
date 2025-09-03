@@ -10,7 +10,6 @@ import { Experiments } from './pages/Experiments'
 import { EmotionDetection } from './pages/EmotionDetection'
 import { Subscriptions } from './pages/Subscriptions'
 import { DataExplorer } from './pages/DataExplorer'
-import { Projects } from './pages/Projects'
 import { About } from './pages/About'
 
 export default function App() {

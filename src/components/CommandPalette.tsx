@@ -35,7 +35,6 @@ export function CommandPalette({ isOpen, onClose, onNavigate }: CommandPalettePr
     { title: 'Emotion Detection', path: '/ai/emotion-detection', icon: <BarChart3 className="w-4 h-4" />, category: 'AI Studio' },
     { title: 'Subscriptions', path: '/subscriptions', icon: <BarChart3 className="w-4 h-4" />, category: 'Navigation' },
     { title: 'Data Explorer', path: '/data', icon: <BarChart3 className="w-4 h-4" />, category: 'Navigation' },
-    { title: 'Projects', path: '/projects', icon: <BarChart3 className="w-4 h-4" />, category: 'Navigation' },
     { title: 'About', path: '/about', icon: <BarChart3 className="w-4 h-4" />, category: 'Navigation' },
   ]
 

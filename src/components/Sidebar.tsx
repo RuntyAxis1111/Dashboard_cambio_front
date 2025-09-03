@@ -27,7 +27,6 @@ const navigation = [
   },
   { name: 'Subscriptions', href: '/subscriptions', icon: Bell },
   { name: 'Data Explorer', href: '/data', icon: Database },
-  { name: 'Projects', href: '/projects', icon: FolderOpen },
   { name: 'About', href: '/about', icon: Info },
 ]
 

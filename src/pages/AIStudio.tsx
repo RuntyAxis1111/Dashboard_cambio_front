@@ -10,7 +10,7 @@ export function AIStudio() {
       icon: TrendingUp,
       href: '/ai/mmm',
       color: 'blue',
-      status: 'Available'
+      status: 'Preview'
     },
     {
       name: 'Hybe LLM',
@@ -19,7 +19,7 @@ export function AIStudio() {
       icon: MessageSquare,
       href: '/ai/llm',
       color: 'purple',
-      status: 'Available'
+      status: 'Preview'
     },
     {
       name: 'AI Emotion Detection',
@@ -28,7 +28,7 @@ export function AIStudio() {
       icon: Beaker,
       href: '/ai/emotion-detection',
       color: 'green',
-      status: 'Beta'
+      status: 'Available'
     }
   ]
 
@@ -60,9 +60,11 @@ export function AIStudio() {
                   <tool.icon className="w-8 h-8" />
                 </div>
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  tool.status === 'Beta' 
-                    ? 'bg-orange-200 text-orange-700' 
-                    : 'bg-green-200 text-green-700'
+                  tool.status === 'Available' 
+                    ? 'bg-green-200 text-green-700'
+                    : tool.status === 'Beta'
+                    ? 'bg-orange-200 text-orange-700'
+                    : 'bg-gray-200 text-gray-700'
                 }`}>
                   {tool.status}
                 </span>

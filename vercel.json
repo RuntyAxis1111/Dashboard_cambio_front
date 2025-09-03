@@ -9,8 +9,8 @@
     }
   ],
   "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs18.x"
+    "api/elevenlabs/signed-url.js": {
+      "runtime": "nodejs20.x"
     }
   },
   "rewrites": [

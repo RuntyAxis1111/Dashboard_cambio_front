@@ -4,6 +4,15 @@ import { TrendingUp, MessageSquare, Beaker } from 'lucide-react'
 export function AIStudio() {
   const tools = [
     {
+      name: 'AI Emotion Detection',
+      title: 'AI Emotion Detection',
+      description: 'Real-time emotion analysis using advanced computer vision and machine learning models.',
+      icon: Beaker,
+      href: '/ai/emotion-detection',
+      color: 'green',
+      status: 'Available'
+    },
+    {
       name: 'MMM',
       title: 'Marketing Mix Modeling',
       description: 'Optimize your media spend allocation across channels with advanced attribution modeling and scenario planning.',
@@ -21,15 +30,6 @@ export function AIStudio() {
       color: 'purple',
       status: 'Preview'
     },
-    {
-      name: 'AI Emotion Detection',
-      title: 'AI Emotion Detection',
-      description: 'Real-time emotion analysis using advanced computer vision and machine learning models.',
-      icon: Beaker,
-      href: '/ai/emotion-detection',
-      color: 'green',
-      status: 'Available'
-    }
   ]
 
   const colorClasses = {

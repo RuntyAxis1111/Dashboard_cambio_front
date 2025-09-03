@@ -11,15 +11,12 @@ export default defineConfig({
   preview: { 
     headers: { 'Permissions-Policy': 'camera=(self)' } 
   },
-  server: { 
-    headers: { 'Permissions-Policy': 'camera=(self)' } 
-  },
-  preview: { 
-    headers: { 'Permissions-Policy': 'camera=(self)' } 
-  },
   build: {
     outDir: 'dist',
     sourcemap: false,
+    target: 'es2015',
+    minify: 'terser',
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks: undefined,

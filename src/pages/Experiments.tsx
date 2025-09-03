@@ -22,7 +22,7 @@ export function Experiments() {
   const normalVideoRef = useRef<HTMLVideoElement>(null)
   const aiVideoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const intervalRef = useRef<number | null>(null)
 
   // Real AI emotion detection
   const detectEmotion = async (): Promise<EmotionResult> => {

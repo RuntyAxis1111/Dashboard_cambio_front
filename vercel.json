@@ -1,20 +1,11 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run build:vercel",
   "outputDirectory": "dist",
   "framework": "vite",
   "installCommand": "npm install --force",
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Permissions-Policy", "value": "camera=(self)" },
-        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" }
-      ]
-    }
-  ],
   "rewrites": [
     {
-      "source": "/((?!api/.*).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]

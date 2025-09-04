@@ -12,6 +12,8 @@ import { DataExplorer } from './pages/DataExplorer'
 import { About } from './pages/About'
 
 export default function App() {
+  console.log('🎯 App component rendering...')
+  
   return (
     <Layout>
       <Routes>

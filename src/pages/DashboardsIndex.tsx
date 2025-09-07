@@ -127,16 +127,3 @@ export function DashboardsIndex() {
     </div>
   )
 }
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      </div>
-    </div>
-  )
-}

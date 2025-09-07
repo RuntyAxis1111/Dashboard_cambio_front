@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Music, BarChart3, Users, Megaphone, ChevronDown, ExternalLink, Hash } from 'lucide-react'
 import { useState } from 'react'
 import { projects } from '../lib/dashboards'
+import { SectionCard } from '../components/SectionCard'
 
 const iconMap = {
   Music,
@@ -18,11 +19,31 @@ const colorClasses = {
 }
 
 export function DashboardsIndex() {
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  // Controlled state for all section cards - multi-open mode
+  const [openMap, setOpenMap] = useState<Record<string, boolean>>({})
+  
+  // Flag to easily switch to accordion mode (only one open at a time)
+  const accordionMode = false
   const navigate = useNavigate()
 
-  const handleDropdownToggle = (projectId: string) => {
-    setOpenDropdown(openDropdown === projectId ? null : projectId)
+  const handleToggle = (projectId: string) => {
+    setOpenMap(prev => {
+      if (accordionMode) {
+        // Accordion mode: close all others, toggle current
+        const newMap: Record<string, boolean> = {}
+        Object.keys(prev).forEach(key => {
+          newMap[key] = false
+        })
+        newMap[projectId] = !prev[projectId]
+        return newMap
+      } else {
+        // Multi-open mode: just toggle current
+        return {
+          ...prev,
+          [projectId]: !prev[projectId]
+        }
+      }
+    })
   }
 
   return (
@@ -38,78 +59,74 @@ export function DashboardsIndex() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           {projects.map((project) => {
             const IconComponent = iconMap[project.icon as keyof typeof iconMap]
-            const isOpen = openDropdown === project.id
+            const isOpen = openMap[project.id] || false
             
             return (
-              <div
+              <SectionCard
                 key={project.id}
-                className="bg-gray-100 border border-gray-300 rounded-2xl overflow-hidden hover:border-gray-400 transition-all duration-200"
+                id={project.id}
+                title={project.name}
+                description={project.description}
+                icon={<IconComponent className="w-6 h-6" />}
+                color={project.color}
+                open={isOpen}
+                onToggle={() => handleToggle(project.id)}
               >
-                {/* Project Header */}
-                <div className="p-6">
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className={`flex items-center justify-center w-12 h-12 rounded-xl transition-colors ${colorClasses[project.color as keyof typeof colorClasses]}`}>
-                      <IconComponent className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-black mb-1">{project.name}</h3>
-                      <p className="text-gray-600 text-sm">{project.description}</p>
-                    </div>
-                    <button
-                      onClick={() => handleDropdownToggle(project.id)}
-                      className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
-                    >
-                      <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-                    </button>
-                  </div>
-                  
-                  {/* Quick Access - Always visible */}
-                  <div className="flex gap-2">
-                    <Link
-                      to={`/dashboard/${project.id}/${project.sections[0]?.dashboards[0]?.id || ''}`}
-                      className="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-medium transition-colors text-black"
-                    >
-                      Quick View
-                    </Link>
-                    <Link
-                      to="/projects"
-                      className="px-3 py-1.5 border border-gray-300 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors text-black"
-                    >
-                      View All
-                    </Link>
-                  </div>
+                {/* Quick Access buttons - always visible */}
+                <div className="flex gap-2 mb-4">
+                  <Link
+                    to={`/dashboard/${project.id}/${project.sections[0]?.dashboards[0]?.id || ''}`}
+                    className="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-medium transition-colors text-black"
+                  >
+                    Quick View
+                  </Link>
+                  <Link
+                    to="/projects"
+                    className="px-3 py-1.5 border border-gray-300 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors text-black"
+                  >
+                    View All
+                  </Link>
                 </div>
                 
-                {/* Dropdown Content */}
-                {isOpen && (
-                  <div className="border-t border-gray-300 bg-gray-200">
-                    <div className="p-4 space-y-4">
-                      {project.sections.map((section) => (
-                        <div key={section.id}>
-                          <h4 className="text-sm font-medium text-black mb-2 flex items-center gap-2">
-                            {section.type === 'social' && <Hash className="w-3 h-3" />}
-                            {section.type === 'band' && <Music className="w-3 h-3" />}
-                            {section.type === 'artist' && <Megaphone className="w-3 h-3" />}
-                            {section.name}
-                          </h4>
-                          <div className="grid grid-cols-2 gap-1">
-                            {section.dashboards.map((dashboard) => (
-                              <Link
-                                key={dashboard.id}
-                                to={
-                                  project.id === 'artists' 
-                                    ? `/dashboard/artists/${dashboard.id}`
-                                    : section.type === 'band'
-                                    ? `/dashboard/${project.id}/band/${dashboard.id}`
-                                    : `/dashboard/${project.id}/${dashboard.id}`
-                                }
-                                className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-gray-600 hover:text-black hover:bg-gray-300 transition-colors group"
-                              >
-                                <span>{dashboard.name}</span>
-                                <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                              </Link>
-                            ))}
-                          </div>
+                {/* Collapsible content - sections and dashboards */}
+                <div className="space-y-4">
+                  {project.sections.map((section) => (
+                    <div key={section.id}>
+                      <h4 className="text-sm font-medium text-black mb-2 flex items-center gap-2">
+                        {section.type === 'social' && <Hash className="w-3 h-3" />}
+                        {section.type === 'band' && <Music className="w-3 h-3" />}
+                        {section.type === 'artist' && <Megaphone className="w-3 h-3" />}
+                        {section.name}
+                      </h4>
+                      <div className="grid grid-cols-2 gap-1">
+                        {section.dashboards.map((dashboard) => (
+                          <Link
+                            key={dashboard.id}
+                            to={
+                              project.id === 'artists' 
+                                ? `/dashboard/artists/${dashboard.id}`
+                                : section.type === 'band'
+                                ? `/dashboard/${project.id}/band/${dashboard.id}`
+                                : `/dashboard/${project.id}/${dashboard.id}`
+                            }
+                            className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-gray-600 hover:text-black hover:bg-gray-300 transition-colors group"
+                          >
+                            <span>{dashboard.name}</span>
+                            <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </SectionCard>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
                         </div>
                       ))}
                     </div>

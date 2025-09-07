@@ -14,6 +14,36 @@ import { About } from './pages/About'
 export default function App() {
   console.log('🎯 App component rendering...')
   
+  try {
+    return (
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/dashboards" element={<DashboardsIndex />} />
+          <Route path="/dashboard/:project/:source" element={<DashboardDetail />} />
+          <Route path="/dashboard/:project/band/:band" element={<DashboardDetail />} />
+          <Route path="/ai" element={<AIStudio />} />
+          <Route path="/ai/mmm" element={<MMM />} />
+          <Route path="/ai/llm" element={<HybeLLM />} />
+          <Route path="/ai/emotion-detection" element={<Experiments />} />
+          <Route path="/subscriptions" element={<Subscriptions />} />
+          <Route path="/data" element={<DataExplorer />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </Layout>
+    )
+  } catch (error) {
+    console.error('❌ Error in App component:', error)
+    return (
+      <div style={{ padding: '20px', fontFamily: 'Arial', color: 'red' }}>
+        <h2>App Component Error</h2>
+        <p>Error: {error.message}</p>
+        <pre>{error.stack}</pre>
+      </div>
+    )
+  }
+}
+  
   return (
     <Layout>
       <Routes>

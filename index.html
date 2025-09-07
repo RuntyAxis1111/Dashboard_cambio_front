@@ -27,9 +27,40 @@
   <body>
     <div id="root">
       <div class="loading-fallback">
-        <div>Loading HYBE LATAM Data & AI Lab...</div>
+        <div>
+          <h2>Loading HYBE LATAM Data & AI Lab...</h2>
+          <p>If this message persists, check the browser console for errors.</p>
+          <div style="margin-top: 20px;">
+            <button onclick="window.location.reload()" style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer;">
+              Reload Page
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Fallback error detection
+      setTimeout(() => {
+        const root = document.getElementById('root');
+        if (root && root.innerHTML.includes('loading-fallback')) {
+          console.error('❌ App failed to load after 10 seconds');
+          root.innerHTML = `
+            <div style="padding: 20px; font-family: Arial; text-align: center;">
+              <h2 style="color: red;">App Failed to Load</h2>
+              <p>The application failed to initialize. Please check:</p>
+              <ul style="text-align: left; max-width: 400px; margin: 0 auto;">
+                <li>Browser console for JavaScript errors</li>
+                <li>Network tab for failed resource loads</li>
+                <li>Try refreshing the page</li>
+              </ul>
+              <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Reload Page
+              </button>
+            </div>
+          `;
+        }
+      }, 10000);
+    </script>
   </body>
 </html>

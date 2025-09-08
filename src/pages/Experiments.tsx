@@ -32,7 +32,7 @@ export function Experiments() {
   // Audio explanation functionality
   const audioFiles = {
     english: '/IAemotionenglish.mp3',
-    spanish: '', // Disabled - file not available
+    spanish: '/IAemotionespanol.mp3',
     korean: '/IAemotionkorean.mp3'
   }
 
@@ -312,7 +312,7 @@ export function Experiments() {
                   {/* Play/Pause Button */}
                   <button
                     onClick={playAudioExplanation}
-                    disabled={!audioFiles[selectedLanguage]}
+                    disabled={!audioFiles[selectedLanguage] || selectedLanguage === 'spanish'}
                     className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors"
                   >
                     {isPlayingAudio ? (
@@ -328,7 +328,7 @@ export function Experiments() {
                     )}
                   </button>
                   
-                  {!audioFiles[selectedLanguage] && (
+                  {(!audioFiles[selectedLanguage] || selectedLanguage === 'spanish') && (
                     <p className="text-sm text-orange-600 mt-2">
                       Audio not available for {languageLabels[selectedLanguage]}
                     </p>

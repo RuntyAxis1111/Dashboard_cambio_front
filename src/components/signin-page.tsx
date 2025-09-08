@@ -137,7 +137,7 @@ export function SignInPage() {
 
               <div className="mt-6 text-center">
                 <p className="text-xs text-gray-400 leading-relaxed">
-                  By signing in, you agree to access HYBE LATAM's internal tools and analytics platform.
+                  Al iniciar sesión, aceptas acceder a las herramientas internas y plataforma de análisis de HYBE LATAM.
                 </p>
               </div>
 
@@ -145,22 +145,22 @@ export function SignInPage() {
               <div className="mt-6 flex items-center justify-center gap-4 text-xs text-gray-500">
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                  <span>Secure</span>
+                  <span>Seguro</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                  <span>Encrypted</span>
+                  <span>Encriptado</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                  <span>Private</span>
+                  <span>Privado</span>
                 </div>
               </div>
             </div>
 
             <div className="mt-8 text-center">
               <p className="text-xs text-gray-500">
-                Access restricted to authorized HYBE personnel and partners
+                Acceso restringido a personal autorizado de HYBE y socios
               </p>
             </div>
           </div>

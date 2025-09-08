@@ -28,24 +28,18 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
     setErrorMessage('')
 
     try {
-      // 1. Guardar en Supabase (solo si está configurado)
-      const hasSupabaseConfig = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY
-      
-      if (hasSupabaseConfig) {
-        const { error } = await supabase
-          .from('llamadas_solicitudes')
-          .insert([
-            {
-              nombre: nombre.trim(),
-              numero_telefono: numeroTelefono.trim()
-            }
-          ])
+      // 1. Guardar en Supabase
+      const { error } = await supabase
+        .from('llamadas_solicitudes')
+        .insert([
+          {
+            nombre: nombre.trim(),
+            numero_telefono: numeroTelefono.trim()
+          }
+        ])
 
-        if (error) {
-          console.warn('Supabase error (will continue with webhook):', error)
-        }
-      } else {
-        console.log('Supabase not configured, skipping database save')
+      if (error) {
+        console.warn('Supabase error (will continue with webhook):', error)
       }
 
       // 2. Enviar webhook a N8N

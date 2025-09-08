@@ -72,23 +72,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
       })
       if (error) {
         console.error('Error signing in with Google:', error)
-        // If Supabase is not configured, show a friendly message
-        if (error.message.includes('not configured')) {
-          alert('Authentication is not configured in this environment. Please contact your administrator.')
-          return
-        }
         throw error
       }
     } catch (error) {
       console.error('Authentication error:', error)
-      alert('Authentication is not available in this environment.')
+      alert('Error de autenticación. Por favor intenta de nuevo.')
     }
   }
 
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut()
-      if (error && !error.message.includes('not configured')) {
+      if (error) {
         console.error('Error signing out:', error)
         throw error
       }

@@ -1,9 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, Bell, User, Command } from 'lucide-react'
+import { Search, Bell, User } from 'lucide-react'
+import { User as SupabaseUser } from '@supabase/supabase-js'
 import { CommandPalette } from './CommandPalette'
 
-export function Topbar() {
+interface TopbarProps {
+  user: SupabaseUser | null
+}
+
+export function Topbar({ user }: TopbarProps) {
   const [showCommandPalette, setShowCommandPalette] = useState(false)
   const navigate = useNavigate()
 
@@ -42,10 +47,12 @@ export function Topbar() {
             <button className="p-2 rounded-lg hover:bg-gray-200 transition-colors">
               <Bell className="w-5 h-5 text-gray-600" />
             </button>
-            <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-200 transition-colors">
+            <div className="flex items-center gap-2 p-2 rounded-lg">
               <User className="w-5 h-5 text-gray-600" />
-              <span className="text-sm text-gray-600">Demo User</span>
-            </button>
+              <span className="text-sm text-gray-600">
+                {user?.user_metadata?.full_name || user?.email || 'User'}
+              </span>
+            </div>
           </div>
         </div>
       </header>

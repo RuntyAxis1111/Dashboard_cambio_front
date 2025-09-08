@@ -1,4 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
+import { AuthProvider } from './contexts/AuthContext'
+import { ProtectedRoute } from './components/ProtectedRoute'
 import { Layout } from './components/Layout'
 import { Home } from './pages/Home'
 import { DashboardsIndex } from './pages/DashboardsIndex'
@@ -10,27 +12,37 @@ import { Experiments } from './pages/Experiments'
 import { Subscriptions } from './pages/Subscriptions'
 import { DataExplorer } from './pages/DataExplorer'
 import { About } from './pages/About'
+import { AuthCallback } from './pages/AuthCallback'
 
 export default function App() {
   console.log('🎯 App component rendering...')
   
   try {
     return (
-      <Layout>
+      <AuthProvider>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/dashboards" element={<DashboardsIndex />} />
-          <Route path="/dashboard/:project/:source" element={<DashboardDetail />} />
-          <Route path="/dashboard/:project/band/:band" element={<DashboardDetail />} />
-          <Route path="/ai" element={<AIStudio />} />
-          <Route path="/ai/mmm" element={<MMM />} />
-          <Route path="/ai/llm" element={<HybeLLM />} />
-          <Route path="/ai/emotion-detection" element={<Experiments />} />
-          <Route path="/subscriptions" element={<Subscriptions />} />
-          <Route path="/data" element={<DataExplorer />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/*" element={
+            <ProtectedRoute>
+              <Layout>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/dashboards" element={<DashboardsIndex />} />
+                  <Route path="/dashboard/:project/:source" element={<DashboardDetail />} />
+                  <Route path="/dashboard/:project/band/:band" element={<DashboardDetail />} />
+                  <Route path="/ai" element={<AIStudio />} />
+                  <Route path="/ai/mmm" element={<MMM />} />
+                  <Route path="/ai/llm" element={<HybeLLM />} />
+                  <Route path="/ai/emotion-detection" element={<Experiments />} />
+                  <Route path="/subscriptions" element={<Subscriptions />} />
+                  <Route path="/data" element={<DataExplorer />} />
+                  <Route path="/about" element={<About />} />
+                </Routes>
+              </Layout>
+            </ProtectedRoute>
+          } />
         </Routes>
-      </Layout>
+      </AuthProvider>
     )
   } catch (error) {
     console.error('❌ Error in App component:', error)

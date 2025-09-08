@@ -49,13 +49,21 @@ export function Experiments() {
         setIsPlayingAudio(false)
       } else {
         audioRef.current.src = audioFiles[selectedLanguage]
-        audioRef.current.play()
+        audioRef.current.play().catch((error) => {
+          console.error('Audio playback failed:', error)
+          setIsPlayingAudio(false)
+        })
         setIsPlayingAudio(true)
       }
     }
   }
 
   const handleAudioEnded = () => {
+    setIsPlayingAudio(false)
+  }
+
+  const handleAudioError = () => {
+    console.error('Audio loading failed for:', audioFiles[selectedLanguage])
     setIsPlayingAudio(false)
   }
 
@@ -605,6 +613,7 @@ export function Experiments() {
         ref={audioRef}
         onEnded={handleAudioEnded}
         onPause={() => setIsPlayingAudio(false)}
+        onError={handleAudioError}
         preload="none"
       />
     </div>

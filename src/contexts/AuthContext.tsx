@@ -63,23 +63,37 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [])
 
   const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      })
+      if (error) {
+        console.error('Error signing in with Google:', error)
+        // If Supabase is not configured, show a friendly message
+        if (error.message.includes('not configured')) {
+          alert('Authentication is not configured in this environment. Please contact your administrator.')
+          return
+        }
+        throw error
       }
-    })
-    if (error) {
-      console.error('Error signing in with Google:', error)
-      throw error
+    } catch (error) {
+      console.error('Authentication error:', error)
+      alert('Authentication is not available in this environment.')
     }
   }
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (error) {
-      console.error('Error signing out:', error)
-      throw error
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error && !error.message.includes('not configured')) {
+        console.error('Error signing out:', error)
+        throw error
+      }
+    } catch (error) {
+      console.error('Sign out error:', error)
     }
   }
 

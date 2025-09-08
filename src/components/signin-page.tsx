@@ -12,6 +12,7 @@ export function SignInPage() {
       await signInWithGoogle()
     } catch (error) {
       console.error('Sign in error:', error)
+    } finally {
       setIsLoading(false)
     }
   }

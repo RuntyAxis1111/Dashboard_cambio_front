@@ -29,7 +29,9 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
 
     try {
       // 1. Guardar en Supabase (solo si está configurado)
-      if (import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY) {
+      const hasSupabaseConfig = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY
+      
+      if (hasSupabaseConfig) {
         const { error } = await supabase
           .from('llamadas_solicitudes')
           .insert([
@@ -40,7 +42,7 @@ export function VoiceAgent({ isOpen, onToggle }: VoiceAgentProps) {
           ])
 
         if (error) {
-          console.warn('Supabase error:', error)
+          console.warn('Supabase error (will continue with webhook):', error)
         }
       } else {
         console.log('Supabase not configured, skipping database save')

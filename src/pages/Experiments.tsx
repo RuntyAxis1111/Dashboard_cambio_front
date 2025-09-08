@@ -32,7 +32,7 @@ export function Experiments() {
   // Audio explanation functionality
   const audioFiles = {
     english: '/IAemotionenglish.mp3',
-    spanish: '/IAemotionespannol.mp3',
+    spanish: '', // Disabled - file not available
     korean: '/IAemotionkorean.mp3'
   }
 
@@ -43,6 +43,12 @@ export function Experiments() {
   }
 
   const playAudioExplanation = () => {
+    // Check if audio file exists for selected language
+    if (!audioFiles[selectedLanguage]) {
+      console.warn(`Audio file not available for ${selectedLanguage}`)
+      return
+    }
+    
     if (audioRef.current) {
       if (isPlayingAudio) {
         audioRef.current.pause()
@@ -306,6 +312,7 @@ export function Experiments() {
                   {/* Play/Pause Button */}
                   <button
                     onClick={playAudioExplanation}
+                    disabled={!audioFiles[selectedLanguage]}
                     className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors"
                   >
                     {isPlayingAudio ? (
@@ -320,6 +327,12 @@ export function Experiments() {
                       </>
                     )}
                   </button>
+                  
+                  {!audioFiles[selectedLanguage] && (
+                    <p className="text-sm text-orange-600 mt-2">
+                      Audio not available for {languageLabels[selectedLanguage]}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

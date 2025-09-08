@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Camera, CameraOff, Play, Square, Download, RotateCcw } from 'lucide-react'
+import { Camera, CameraOff, Play, Square, Download, RotateCcw, Volume2, Pause } from 'lucide-react'
 import { initHuman, detectOnce, getTopEmotion, warmup } from '../lib/human'
 
 interface EmotionResult {
@@ -10,6 +10,11 @@ interface EmotionResult {
 }
 
 export function Experiments() {
+  // Audio explanation state
+  const [selectedLanguage, setSelectedLanguage] = useState<'english' | 'spanish' | 'korean'>('english')
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false)
+  const audioRef = useRef<HTMLAudioElement>(null)
+  
   const [isStreaming, setIsStreaming] = useState(false)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [currentEmotion, setCurrentEmotion] = useState<EmotionResult | null>(null)
@@ -23,6 +28,36 @@ export function Experiments() {
   const aiVideoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const intervalRef = useRef<number | null>(null)
+
+  // Audio explanation functionality
+  const audioFiles = {
+    english: '/IAemotionenglish.mp3',
+    spanish: '/IAemotionespañol.mp3',
+    korean: '/IAemotionkorean.mp3'
+  }
+
+  const languageLabels = {
+    english: 'English',
+    spanish: 'Español',
+    korean: '한국어'
+  }
+
+  const playAudioExplanation = () => {
+    if (audioRef.current) {
+      if (isPlayingAudio) {
+        audioRef.current.pause()
+        setIsPlayingAudio(false)
+      } else {
+        audioRef.current.src = audioFiles[selectedLanguage]
+        audioRef.current.play()
+        setIsPlayingAudio(true)
+      }
+    }
+  }
+
+  const handleAudioEnded = () => {
+    setIsPlayingAudio(false)
+  }
 
   // Real AI emotion detection
   const detectEmotion = async (): Promise<EmotionResult> => {
@@ -232,6 +267,55 @@ export function Experiments() {
           <p className="text-gray-600">
             Real-time emotion detection using advanced AI models
           </p>
+          
+          {/* Audio Explanation Section */}
+          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
+            <div className="flex items-start gap-4">
+              <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg">
+                <Volume2 className="w-5 h-5 text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-black mb-2">Project Explanation</h3>
+                <p className="text-gray-600 text-sm mb-4">
+                  Listen to a detailed explanation of our AI Emotion Detection technology in your preferred language.
+                </p>
+                
+                <div className="flex items-center gap-4 flex-wrap">
+                  {/* Language Selector */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-gray-700">Language:</span>
+                    <select
+                      value={selectedLanguage}
+                      onChange={(e) => setSelectedLanguage(e.target.value as 'english' | 'spanish' | 'korean')}
+                      className="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      {Object.entries(languageLabels).map(([key, label]) => (
+                        <option key={key} value={key}>{label}</option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {/* Play/Pause Button */}
+                  <button
+                    onClick={playAudioExplanation}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors"
+                  >
+                    {isPlayingAudio ? (
+                      <>
+                        <Pause className="w-4 h-4" />
+                        Pause Explanation
+                      </>
+                    ) : (
+                      <>
+                        <Volume2 className="w-4 h-4" />
+                        Play Explanation
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -515,6 +599,14 @@ export function Experiments() {
           </div>
         </div>
       </div>
+      
+      {/* Hidden Audio Element */}
+      <audio
+        ref={audioRef}
+        onEnded={handleAudioEnded}
+        onPause={() => setIsPlayingAudio(false)}
+        preload="none"
+      />
     </div>
   )
 }

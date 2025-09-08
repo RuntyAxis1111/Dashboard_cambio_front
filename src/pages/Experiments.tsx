@@ -32,7 +32,7 @@ export function Experiments() {
   // Audio explanation functionality
   const audioFiles = {
     english: '/IAemotionenglish.mp3',
-    spanish: '/IAemocionespanol.mp3',
+    spanish: '/IAemotionespañol.mp3',
     korean: '/IAemotionkorean.mp3'
   }
 

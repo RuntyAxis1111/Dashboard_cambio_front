@@ -1,4 +1,5 @@
 import { useParams, useSearchParams } from 'react-router-dom'
+import { useKPIs, formatKPIValue } from '../hooks/useKPIs'
 import { KpiTile } from '../components/KpiTile'
 import { Tabs } from '../components/Tabs'
 import { DashboardFrame } from '../components/DashboardFrame'
@@ -9,6 +10,16 @@ import { getDashboardUrl, projects, artists } from '../lib/dashboards'
 export function DashboardDetail() {
   const { project, source, band } = useParams()
   const [searchParams] = useSearchParams()
+  
+  // Get real KPI data from BigQuery
+  const { data: kpiData, loading: kpiLoading, error: kpiError } = useKPIs(
+    project || '',
+    source || '',
+    {
+      start: searchParams.get('from') || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      end: searchParams.get('to') || new Date().toISOString().split('T')[0]
+    }
+  )
   
   // Get dashboard URL
   const dashboardUrl = getDashboardUrl(project!, source!, band)
@@ -50,13 +61,33 @@ export function DashboardDetail() {
 
   const tabs = ['Overview', 'Engagement', 'Growth', 'Audience', 'Content']
   
-  // Mock KPI data
-  const kpis = [
-    { title: 'Total Followers', value: '2.4M', change: '+12.5%', trend: 'up' as const },
-    { title: 'Engagement Rate', value: '4.8%', change: '+0.3%', trend: 'up' as const },
-    { title: 'Reach', value: '18.2M', change: '-2.1%', trend: 'down' as const },
-    { title: 'Impressions', value: '45.6M', change: '+8.7%', trend: 'up' as const },
-  ]
+  // Transform KPI data for display
+  const kpis = kpiData ? [
+    { 
+      title: 'Total Followers', 
+      value: formatKPIValue(kpiData.totalFollowers, 'followers'), 
+      change: kpiData.change.followers, 
+      trend: kpiData.trend.followers 
+    },
+    { 
+      title: 'Engagement Rate', 
+      value: formatKPIValue(kpiData.engagementRate, 'rate'), 
+      change: kpiData.change.engagement, 
+      trend: kpiData.trend.engagement 
+    },
+    { 
+      title: 'Reach', 
+      value: formatKPIValue(kpiData.reach, 'reach'), 
+      change: kpiData.change.reach, 
+      trend: kpiData.trend.reach 
+    },
+    { 
+      title: 'Impressions', 
+      value: formatKPIValue(kpiData.impressions, 'impressions'), 
+      change: kpiData.change.impressions, 
+      trend: kpiData.trend.impressions 
+    },
+  ] : []
 
   if (!dashboardUrl) {
     return (
@@ -107,11 +138,28 @@ export function DashboardDetail() {
       </div>
       
       <div className="flex-1 p-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {kpis.map((kpi, index) => (
-            <KpiTile key={index} {...kpi} />
-          ))}
-        </div>
+        {kpiLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="bg-gray-100 border border-gray-300 rounded-xl p-6 animate-pulse">
+                <div className="h-4 bg-gray-300 rounded mb-2"></div>
+                <div className="h-8 bg-gray-300 rounded mb-3"></div>
+                <div className="h-8 bg-gray-200 rounded"></div>
+              </div>
+            ))}
+          </div>
+        ) : kpiError ? (
+          <div className="bg-red-100 border border-red-300 rounded-xl p-6">
+            <p className="text-red-700">Error loading KPIs: {kpiError}</p>
+            <p className="text-red-600 text-sm mt-2">Showing fallback data</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {kpis.map((kpi, index) => (
+              <KpiTile key={index} {...kpi} />
+            ))}
+          </div>
+        )}
         
         <div className="bg-gray-100 border border-gray-300 rounded-2xl overflow-hidden">
           <Tabs tabs={tabs} />

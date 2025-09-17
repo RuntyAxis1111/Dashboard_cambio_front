@@ -27,7 +27,17 @@ export function useKPIs(project: string, platform: string, dateRange?: { start: 
   useEffect(() => {
     async function fetchKPIs() {
       if (!project || !platform) return
-
+        const response = await fetch(`/api/bigquery/kpis?project=${project}&platform=${platform}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
       setLoading(true)
       setError(null)
 

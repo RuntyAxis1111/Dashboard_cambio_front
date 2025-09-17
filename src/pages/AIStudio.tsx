@@ -56,7 +56,7 @@ export function AIStudio() {
               className="group bg-gray-100 border border-gray-300 rounded-2xl p-8 hover:border-gray-400 transition-all duration-200 hover:scale-105"
             >
               <div className="flex items-center justify-between mb-6">
-                <div className={`flex items-center justify-center w-16 h-16 rounded-xl transition-colors bg-${tool.color}-200`}>
+                <div className={`flex items-center justify-center w-16 h-16 rounded-xl transition-colors ${colorClasses[tool.color as keyof typeof colorClasses]}`}>
                   <tool.icon className="w-8 h-8" />
                 </div>
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${

@@ -20,11 +20,17 @@ export function DashboardDetail() {
   if (project === 'artists') {
     const artist = artists.find(a => a.id === source)
     title = artist?.name || source?.toUpperCase() || ''
+    const isNew = artist?.isNew
     breadcrumbItems = [
       { label: 'Dashboards', href: '/dashboards' },
       { label: 'Artists', href: '/dashboards' },
       { label: title }
     ]
+    
+    // Add "Nuevo" badge to title if it's a new artist
+    if (isNew) {
+      title = `${title} • NUEVO`
+    }
   } else if (band) {
     title = `${project?.toUpperCase()} • ${band.replace('-', ' ').toUpperCase()}`
     breadcrumbItems = [

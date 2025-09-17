@@ -4,6 +4,7 @@ export interface DashboardConfig {
   name: string
   url: string
   type: 'looker' | 'external'
+  isNew?: boolean
 }
 
 export interface ProjectSection {
@@ -35,6 +36,13 @@ export const artists: DashboardConfig[] = [
     name: 'BTS',
     url: 'https://lookerstudio.google.com/embed/reporting/0ec3d1cf-547b-4e66-8c81-77921c1cab64/page/gnpEF',
     type: 'looker'
+  },
+  {
+    id: 'kocky-ka',
+    name: 'KOCKY_KA',
+    url: 'https://lookerstudio.google.com/embed/reporting/756795a0-5667-42da-aafa-94db89865e09/page/p_u876dxgudd',
+    type: 'looker',
+    isNew: true
   },
   {
     id: 'chicocurlyhead',

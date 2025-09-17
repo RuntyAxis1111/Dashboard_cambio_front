@@ -109,9 +109,16 @@ export function DashboardsIndex() {
                                 ? `/dashboard/${project.id}/band/${dashboard.id}`
                                 : `/dashboard/${project.id}/${dashboard.id}`
                             }
-                            className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-gray-600 hover:text-black hover:bg-gray-300 transition-colors group"
+                            className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-gray-600 hover:text-black hover:bg-gray-300 transition-colors group relative"
                           >
-                            <span>{dashboard.name}</span>
+                            <div className="flex items-center gap-2">
+                              <span>{dashboard.name}</span>
+                              {dashboard.isNew && (
+                                <span className="px-2 py-0.5 bg-green-500 text-white text-xs font-medium rounded-full">
+                                  Nuevo
+                                </span>
+                              )}
+                            </div>
                             <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                           </Link>
                         ))}

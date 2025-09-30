@@ -23,8 +23,8 @@ export function HybeLLM() {
     }
 
     const webhooks = [
-      'https://runtyaxis.app.n8n.cloud/webhook/c4d010d4-6115-4f19-becd-174e6f97be0f',
-      'https://runtyaxis.app.n8n.cloud/webhook-test/c4d010d4-6115-4f19-becd-174e6f97be0f'
+      '/api/webhook/c4d010d4-6115-4f19-becd-174e6f97be0f',
+      '/api/webhook-test/c4d010d4-6115-4f19-becd-174e6f97be0f'
     ]
 
     // Enviar a ambos webhooks en paralelo

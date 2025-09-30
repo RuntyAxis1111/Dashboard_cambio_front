@@ -6,8 +6,20 @@ import path from 'path'
 export default defineConfig({
   plugins: [react()],
   base: '/',
-  server: { 
-    headers: { 'Permissions-Policy': 'camera=(self)' } 
+  server: {
+    headers: { 'Permissions-Policy': 'camera=(self)' },
+    proxy: {
+      '/api/webhook': {
+        target: 'https://runtyaxis.app.n8n.cloud',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/webhook/, '/webhook')
+      },
+      '/api/webhook-test': {
+        target: 'https://runtyaxis.app.n8n.cloud',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/webhook-test/, '/webhook-test')
+      }
+    }
   },
   preview: { 
     headers: { 'Permissions-Policy': 'camera=(self)' } 

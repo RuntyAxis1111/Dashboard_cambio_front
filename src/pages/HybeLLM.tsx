@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Send, Database, History, Bookmark, Code, BarChart } from 'lucide-react'
+import { Send, Database, History, Bookmark, Code, ChartBar as BarChart } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 
 export function HybeLLM() {

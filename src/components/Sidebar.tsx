@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Home, BarChart3, Brain, Bell, Search, Info, LogOut } from 'lucide-react'
+import { Chrome as Home, ChartBar as BarChart3, Brain, Bell, Search, Info, LogOut } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { User } from '@supabase/supabase-js'
 

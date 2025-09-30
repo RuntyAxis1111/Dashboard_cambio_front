@@ -65,7 +65,7 @@ export function About() {
         
         <div className="mt-12 pt-8 border-t border-gray-300 text-center">
           <p className="text-gray-500 text-sm">
-            © 2024 HYBE LATAM Data & AI Lab. All rights reserved.
+            © 2025 HYBE LATAM Data & AI Lab. All rights reserved.
           </p>
         </div>
       </div>

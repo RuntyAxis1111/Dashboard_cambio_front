@@ -102,7 +102,7 @@ export function Sidebar({ user }: SidebarProps) {
           
           <div className="text-center">
             <p className="text-xs text-gray-500 mb-1">HYBE LATAM Data & AI Lab</p>
-            <p className="text-xs text-gray-400">© 2024 • Todos los derechos reservados</p>
+            <p className="text-xs text-gray-400">© 2025 • Todos los derechos reservados</p>
           </div>
         </div>
       </div>

@@ -54,8 +54,8 @@ if (!rootElement) {
     rootElement.innerHTML = `
       <div style="padding: 20px; font-family: Arial; color: red;">
         <h2>React Mount Error</h2>
-        <p>Error: ${error.message}</p>
-        <pre>${error.stack}</pre>
+        <p>Error: ${error instanceof Error ? error.message : String(error)}</p>
+        <pre>${error instanceof Error ? error.stack : String(error)}</pre>
       </div>
     `
   }

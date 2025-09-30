@@ -127,13 +127,16 @@ function getMockKPIData(project: string, platform: string): KPIData {
     }
   }
 
+  // Type assertion to ensure platformData is treated as an object
+  const typedPlatformData = platformData as Omit<KPIData, 'trend'>
+
   return {
-    ...platformData,
+    ...typedPlatformData,
     trend: {
-      followers: platformData.change.followers.startsWith('+') ? 'up' : 'down',
-      engagement: platformData.change.engagement.startsWith('+') ? 'up' : 'down',
-      reach: platformData.change.reach.startsWith('+') ? 'up' : 'down',
-      impressions: platformData.change.impressions.startsWith('+') ? 'up' : 'down'
+      followers: typedPlatformData.change.followers.startsWith('+') ? 'up' : 'down',
+      engagement: typedPlatformData.change.engagement.startsWith('+') ? 'up' : 'down',
+      reach: typedPlatformData.change.reach.startsWith('+') ? 'up' : 'down',
+      impressions: typedPlatformData.change.impressions.startsWith('+') ? 'up' : 'down'
     }
   }
 }

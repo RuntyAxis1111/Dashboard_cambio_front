@@ -49,8 +49,8 @@ export default function App() {
     return (
       <div style={{ padding: '20px', fontFamily: 'Arial', color: 'red' }}>
         <h2>App Component Error</h2>
-        <p>Error: {error.message}</p>
-        <pre>{error.stack}</pre>
+        <p>Error: {error instanceof Error ? error.message : String(error)}</p>
+        <pre>{error instanceof Error ? error.stack : String(error)}</pre>
       </div>
     )
   }

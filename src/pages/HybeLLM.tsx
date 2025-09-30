@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { Send, Database, History, Bookmark, Code, BarChart } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
 
 export function HybeLLM() {
+  const { user } = useAuth()
   const [message, setMessage] = useState('')
   const [showSQL, setShowSQL] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   
   const conversations = [
     { id: 1, question: "What's the top performing content this month?", time: "2 hours ago" },
@@ -11,6 +14,67 @@ export function HybeLLM() {
     { id: 3, question: "Compare PALF vs STBV performance", time: "2 days ago" },
   ]
 
+  const sendToWebhooks = async (userEmail: string, question: string) => {
+    const webhookData = {
+      email: userEmail,
+      message: question,
+      timestamp: new Date().toISOString(),
+      source: 'hybe_llm_conversational_analytics'
+    }
+
+    const webhooks = [
+      'https://runtyaxis.app.n8n.cloud/webhook/c4d010d4-6115-4f19-becd-174e6f97be0f',
+      'https://runtyaxis.app.n8n.cloud/webhook-test/c4d010d4-6115-4f19-becd-174e6f97be0f'
+    ]
+
+    // Enviar a ambos webhooks en paralelo
+    const webhookPromises = webhooks.map(async (webhookUrl) => {
+      try {
+        const response = await fetch(webhookUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(webhookData)
+        })
+        
+        if (!response.ok) {
+          console.warn(`Webhook ${webhookUrl} failed with status:`, response.status)
+        } else {
+          console.log(`✅ Webhook ${webhookUrl} sent successfully`)
+        }
+      } catch (error) {
+        console.error(`Error sending to webhook ${webhookUrl}:`, error)
+      }
+    })
+
+    // Esperar a que todos los webhooks se envíen (sin fallar si alguno falla)
+    await Promise.allSettled(webhookPromises)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!message.trim() || !user?.email) return
+    
+    setIsSubmitting(true)
+    
+    try {
+      // Enviar a webhooks
+      await sendToWebhooks(user.email, message.trim())
+      
+      // Aquí puedes agregar la lógica para procesar la pregunta
+      console.log('Question submitted:', message)
+      
+      // Limpiar el mensaje después de enviar
+      setMessage('')
+      
+    } catch (error) {
+      console.error('Error submitting question:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
   return (
     <div className="h-full grid grid-cols-[1fr_300px] bg-white">
       {/* Main Chat Area */}
@@ -49,7 +113,7 @@ export function HybeLLM() {
         
         {/* Input Area */}
         <div className="border-t border-gray-300 p-6 bg-gray-100">
-          <div className="flex gap-3">
+          <form onSubmit={handleSubmit} className="flex gap-3">
             <div className="flex-1 relative">
               <input
                 type="text"
@@ -57,13 +121,18 @@ export function HybeLLM() {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Ask about your data..."
                 className="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                disabled={isSubmitting}
               />
             </div>
-            <button className="px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg font-medium transition-colors flex items-center gap-2">
+            <button 
+              type="submit"
+              disabled={isSubmitting || !message.trim()}
+              className="px-6 py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-colors flex items-center gap-2"
+            >
               <Send className="w-4 h-4" />
-              Ask
+              {isSubmitting ? 'Sending...' : 'Ask'}
             </button>
-          </div>
+          </form>
           
           <div className="flex items-center gap-4 mt-3">
             <label className="flex items-center gap-2 text-sm text-gray-600">
@@ -80,6 +149,13 @@ export function HybeLLM() {
               Add Chart
             </button>
           </div>
+          
+          {/* User info display */}
+          {user?.email && (
+            <div className="mt-2 text-xs text-gray-500">
+              Logged in as: {user.email}
+            </div>
+          )}
         </div>
       </div>
       

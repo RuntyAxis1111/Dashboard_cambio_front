@@ -1,5 +1,13 @@
 import { TrendingUp, TrendingDown } from 'lucide-react'
-import { SalesEntry } from '../../lib/weeklies-mock'
+
+interface SalesEntry {
+  release_name: string
+  type: 'album' | 'track'
+  tw_units: number
+  rtd_units: number
+  tw_change: number
+  rtd_change: number
+}
 
 interface SalesStreamsSectionProps {
   sales: SalesEntry[]

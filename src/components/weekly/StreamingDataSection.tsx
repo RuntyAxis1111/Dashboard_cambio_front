@@ -1,5 +1,29 @@
 import { TrendingUp, TrendingDown } from 'lucide-react'
-import { DSPData } from '../../lib/weeklies-mock'
+
+interface ChartEntry {
+  chart_name: string
+  country: string
+  entity_type: 'track' | 'album'
+  entity_name: string
+  rank: number
+  delta?: number
+  weeks_on_chart?: number
+}
+
+interface PlaylistEntry {
+  playlist_name: string
+  position: number
+  followers?: number
+  country?: string
+  date?: string
+}
+
+interface DSPData {
+  charts: ChartEntry[]
+  playlists: PlaylistEntry[]
+  markets?: any[]
+  active_market_count?: number
+}
 
 interface StreamingDataSectionProps {
   spotify?: DSPData

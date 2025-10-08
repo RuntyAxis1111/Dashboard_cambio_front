@@ -1,5 +1,10 @@
 import { ExternalLink, Play } from 'lucide-react'
-import { MVEntry } from '../../lib/weeklies-mock'
+
+interface MVEntry {
+  title: string
+  total_views: number
+  link: string
+}
 
 interface MVViewsSectionProps {
   videos: MVEntry[]

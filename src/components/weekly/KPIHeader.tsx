@@ -1,5 +1,12 @@
 import { TrendingUp, TrendingDown } from 'lucide-react'
-import { WeeklyKPI } from '../../lib/weeklies-mock'
+
+interface WeeklyKPI {
+  label: string
+  value: string | number
+  unit?: string
+  delta?: string
+  trend?: 'up' | 'down' | 'neutral'
+}
 
 interface KPIHeaderProps {
   kpis: WeeklyKPI[]

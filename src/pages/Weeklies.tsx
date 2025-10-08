@@ -1,9 +1,31 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Calendar, ExternalLink } from 'lucide-react'
-import { mockArtistsSummary } from '../lib/weeklies-mock'
+import { getLatestWeekEnd, getArtistsForWeek, ArtistSummary } from '../lib/reports-api'
 import { Breadcrumb } from '../components/Breadcrumb'
 
 export function Weeklies() {
+  const [artists, setArtists] = useState<ArtistSummary[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchArtists() {
+      setLoading(true)
+
+      const latestWeek = await getLatestWeekEnd()
+      if (!latestWeek) {
+        setLoading(false)
+        return
+      }
+
+      const artistsData = await getArtistsForWeek(latestWeek)
+      setArtists(artistsData)
+      setLoading(false)
+    }
+
+    fetchArtists()
+  }, [])
+
   const breadcrumbItems = [
     { label: 'Reports', href: '/reports' },
     { label: 'Weekly Reports' }
@@ -21,42 +43,66 @@ export function Weeklies() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockArtistsSummary.map((artist) => (
-            <Link
-              key={artist.artist_id}
-              to={`/reports/weeklies/${artist.artist_id}?week=${artist.last_week}`}
-              className="group bg-gray-100 border border-gray-300 rounded-2xl p-6 hover:border-gray-400 transition-all duration-200 hover:scale-105"
-            >
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-                  <span className="text-white text-xl font-bold">
-                    {artist.artist_name.charAt(0)}
-                  </span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-black">{artist.artist_name}</h3>
-                  <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                    <Calendar className="w-3 h-3" />
-                    <span>Week ending {artist.last_week}</span>
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-gray-100 border border-gray-300 rounded-2xl p-6 animate-pulse">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-gray-300 rounded-full"></div>
+                  <div className="flex-1">
+                    <div className="h-5 bg-gray-300 rounded mb-2 w-3/4"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
                   </div>
                 </div>
               </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {artists.map((artist) => (
+              <Link
+                key={artist.artist_id}
+                to={`/reports/weekly/${artist.artist_id}?week=${artist.week_end}`}
+                className="group bg-gray-100 border border-gray-300 rounded-2xl p-6 hover:border-gray-400 transition-all duration-200 hover:scale-105"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  {artist.cover_image_url ? (
+                    <img
+                      src={artist.cover_image_url}
+                      alt={artist.artist_name}
+                      className="w-16 h-16 rounded-full object-cover shadow-lg"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                      <span className="text-white text-xl font-bold">
+                        {artist.artist_name.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-black">{artist.artist_name}</h3>
+                    <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
+                      <Calendar className="w-3 h-3" />
+                      <span>Week ending {artist.week_end}</span>
+                    </div>
+                  </div>
+                </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-gray-300">
-                <span className="text-sm font-medium text-gray-700">View Report</span>
-                <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-black transition-colors" />
-              </div>
-            </Link>
-          ))}
-        </div>
+                <div className="flex items-center justify-between pt-4 border-t border-gray-300">
+                  <span className="text-sm font-medium text-gray-700">View Report</span>
+                  <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-black transition-colors" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
 
-        {mockArtistsSummary.length === 0 && (
+        {!loading && artists.length === 0 && (
           <div className="text-center py-12">
             <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
               <Calendar className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-medium text-black mb-2">No reports available</h3>
+            <h3 className="text-lg font-medium text-black mb-2">No reports yet</h3>
             <p className="text-gray-600">Weekly reports will appear here once generated</p>
           </div>
         )}

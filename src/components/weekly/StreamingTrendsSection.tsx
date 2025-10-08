@@ -1,5 +1,11 @@
 import { TrendingUp, TrendingDown } from 'lucide-react'
-import { TrendEntry } from '../../lib/weeklies-mock'
+
+interface TrendEntry {
+  track_name: string
+  global_change: number
+  us_change: number
+  top_markets: { country: string; change: number }[]
+}
 
 interface StreamingTrendsSectionProps {
   trends: TrendEntry[]

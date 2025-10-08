@@ -62,7 +62,7 @@ export function Weeklies() {
             {artists.map((artist) => (
               <Link
                 key={artist.artist_id}
-                to={`/reports/weekly/${artist.artist_id}?week=${artist.week_end}`}
+                to={`/reports/weeklies/${artist.artist_id}?week=${artist.week_end}`}
                 className="group bg-gray-100 border border-gray-300 rounded-2xl p-6 hover:border-gray-400 transition-all duration-200 hover:scale-105"
               >
                 <div className="flex items-center gap-4 mb-4">

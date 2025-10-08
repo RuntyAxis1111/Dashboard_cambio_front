@@ -26,17 +26,24 @@ export function WeeklyDetail() {
   const [sections, setSections] = useState<ReportSection[]>([])
   const [media, setMedia] = useState<ReportMedia[]>([])
   const [availableWeeks, setAvailableWeeks] = useState<string[]>([])
-  const [platformFilters, setPlatformFilters] = useState(['spotify', 'apple_music', 'amazon_music', 'tidal'])
+  const [platformFilters, setPlatformFilters] = useState(['spotify', 'apple_music', 'billboard', 'shazam', 'amazon_music', 'tidal'])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
-      if (!artistId) return
+      if (!artistId) {
+        console.log('❌ No artistId provided')
+        return
+      }
 
+      console.log('🔍 Fetching data for:', { artistId, weekParam })
       setLoading(true)
 
       const reportData = await getWeeklyReport(artistId, weekParam || undefined)
+      console.log('📊 Report data:', reportData)
+
       if (!reportData) {
+        console.log('❌ No report data found')
         setLoading(false)
         return
       }
@@ -49,6 +56,10 @@ export function WeeklyDetail() {
         getAvailableWeeks(artistId)
       ])
 
+      console.log('📋 Sections:', sectionsData.length, 'items')
+      console.log('🖼️ Media:', mediaData.length, 'items')
+      console.log('📅 Available weeks:', weeksData)
+
       setSections(sectionsData)
       setMedia(mediaData)
       setAvailableWeeks(weeksData)
@@ -59,7 +70,7 @@ export function WeeklyDetail() {
   }, [artistId, weekParam])
 
   const handleWeekChange = (newWeekEnd: string) => {
-    navigate(`/reports/weekly/${artistId}?week=${newWeekEnd}`)
+    navigate(`/reports/weeklies/${artistId}?week=${newWeekEnd}`)
   }
 
   const togglePlatform = (platform: string) => {
@@ -145,9 +156,9 @@ export function WeeklyDetail() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 mt-4">
-              <span className="text-sm font-medium text-gray-700">Filter DSPs:</span>
-              {['spotify', 'apple_music', 'amazon_music', 'tidal'].map(platform => (
+            <div className="flex items-center gap-2 mt-4 flex-wrap">
+              <span className="text-sm font-medium text-gray-700">Filter Platforms:</span>
+              {['spotify', 'apple_music', 'billboard', 'shazam', 'amazon_music', 'tidal'].map(platform => (
                 <button
                   key={platform}
                   onClick={() => togglePlatform(platform)}
@@ -159,6 +170,8 @@ export function WeeklyDetail() {
                 >
                   {platform === 'spotify' && 'Spotify'}
                   {platform === 'apple_music' && 'Apple Music'}
+                  {platform === 'billboard' && 'Billboard'}
+                  {platform === 'shazam' && 'Shazam'}
                   {platform === 'amazon_music' && 'Amazon Music'}
                   {platform === 'tidal' && 'Tidal'}
                   {!platformFilters.includes(platform) && <X className="w-3 h-3 ml-1 inline" />}

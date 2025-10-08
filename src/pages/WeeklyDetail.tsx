@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react'
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import { Download, X } from 'lucide-react'
 import { Breadcrumb } from '../components/Breadcrumb'
+import { SummaryHighlightsRenderer } from '../components/weekly/SummaryHighlightsRenderer'
+import { ChartsRenderer } from '../components/weekly/ChartsRenderer'
+import { StreamingTrendsRenderer } from '../components/weekly/StreamingTrendsRenderer'
+import { TikTokTrendsRenderer } from '../components/weekly/TikTokTrendsRenderer'
 import {
   getWeeklyReport,
   getAvailableWeeks,
@@ -185,29 +189,52 @@ export function WeeklyDetail() {
           const shouldShow = !section.platform || platformFilters.includes(section.platform)
           if (!shouldShow) return null
 
+          const renderSectionContent = () => {
+            switch (section.section_type) {
+              case 'summary_highlights':
+                return <SummaryHighlightsRenderer data={section.payload_json} />
+
+              case 'charts':
+                return <ChartsRenderer data={section.payload_json} platform={section.platform || undefined} />
+
+              case 'streaming_trends':
+                return <StreamingTrendsRenderer data={section.payload_json} />
+
+              case 'tiktok_trends':
+                return <TikTokTrendsRenderer data={section.payload_json} />
+
+              default:
+                return (
+                  <div className="prose max-w-none">
+                    <pre className="whitespace-pre-wrap text-sm bg-gray-50 p-4 rounded overflow-x-auto">
+                      {JSON.stringify(section.payload_json, null, 2)}
+                    </pre>
+                  </div>
+                )
+            }
+          }
+
           return (
-            <div key={section.section_id} className="bg-white border border-gray-300 rounded-xl overflow-hidden">
-              <div className="p-6 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-black">{section.title || section.section_type}</h3>
+            <div key={section.section_id} className="bg-white border border-gray-300 rounded-xl overflow-hidden shadow-sm">
+              <div className="p-6 border-b border-gray-200 bg-gray-50">
+                <h3 className="text-xl font-bold text-black">{section.title || section.section_type}</h3>
                 {section.platform && (
-                  <span className="text-sm text-gray-500 ml-2">({section.platform})</span>
+                  <span className="text-sm text-gray-600 font-medium uppercase tracking-wide">
+                    {section.platform}
+                  </span>
                 )}
               </div>
               <div className="p-6">
-                <div className="prose max-w-none">
-                  <pre className="whitespace-pre-wrap text-sm bg-gray-50 p-4 rounded overflow-x-auto">
-                    {JSON.stringify(section.payload_json, null, 2)}
-                  </pre>
-                </div>
+                {renderSectionContent()}
 
                 {media.filter(m => m.section_id === section.section_id).length > 0 && (
-                  <div className="mt-6">
-                    <h4 className="text-sm font-semibold text-gray-700 mb-3">Media</h4>
+                  <div className="mt-6 pt-6 border-t border-gray-200">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-3">Media Attachments</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {media
                         .filter(m => m.section_id === section.section_id)
                         .map(m => (
-                          <div key={m.media_id} className="border border-gray-300 rounded-lg p-4">
+                          <div key={m.media_id} className="border border-gray-300 rounded-lg p-4 hover:border-gray-400 transition-colors">
                             {m.media_type === 'image' ? (
                               <img src={m.url} alt={m.title || 'Media'} className="w-full h-auto rounded" />
                             ) : (
@@ -215,7 +242,7 @@ export function WeeklyDetail() {
                                 href={m.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-600 hover:text-blue-800 text-sm"
+                                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                               >
                                 {m.title || m.url}
                               </a>

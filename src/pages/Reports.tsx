@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { FileText, TrendingUp, Calendar } from 'lucide-react'
+import { FileText, TrendingUp, Calendar, Search } from 'lucide-react'
 
 export function Reports() {
   return (
@@ -49,6 +49,19 @@ export function Reports() {
             <h3 className="text-xl font-semibold text-black mb-3">Campaign Reports</h3>
             <p className="text-gray-600 leading-relaxed">
               Detailed campaign performance reports with ROI analysis and recommendations.
+            </p>
+            <span className="inline-block mt-4 text-xs font-medium text-gray-500 bg-gray-200 px-3 py-1 rounded-full">
+              Coming Soon
+            </span>
+          </div>
+
+          <div className="group bg-gray-100 border border-gray-300 rounded-2xl p-8 opacity-50 cursor-not-allowed">
+            <div className="flex items-center justify-center w-16 h-16 bg-orange-600/20 rounded-xl mb-6">
+              <Search className="w-8 h-8 text-orange-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-black mb-3">Scouting New Artist</h3>
+            <p className="text-gray-600 leading-relaxed">
+              Discover and analyze emerging artists with market potential and growth indicators.
             </p>
             <span className="inline-block mt-4 text-xs font-medium text-gray-500 bg-gray-200 px-3 py-1 rounded-full">
               Coming Soon

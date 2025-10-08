@@ -218,6 +218,28 @@ export const mockWeeklyReports: Record<string, WeeklyReport> = {
             { title: 'Butter (Official MV)', total_views: 950000000, link: 'https://youtube.com' }
           ]
         }
+      },
+      {
+        section_type: 'image_highlights',
+        title: 'Image Highlights',
+        order_index: 5,
+        payload: {
+          images: [
+            { image_url: '/placeholder.jpg', caption: 'BTS performing at Seoul Music Awards', source_url: 'https://twitter.com' },
+            { image_url: '/placeholder.jpg', caption: 'Behind the scenes - new MV shooting', source_url: 'https://weverse.io' }
+          ]
+        }
+      },
+      {
+        section_type: 'fan_sentiment',
+        title: 'Fan Sentiment (Images & Quotes)',
+        order_index: 6,
+        payload: {
+          items: [
+            { image_url: '/placeholder.jpg', quote: 'BTS paved the way!', source_url: 'https://twitter.com/army' },
+            { image_url: '/placeholder.jpg', quote: 'Kings of K-Pop forever', source_url: 'https://instagram.com/btsarmy' }
+          ]
+        }
       }
     ]
   },
@@ -357,6 +379,30 @@ export const mockWeeklyReports: Record<string, WeeklyReport> = {
           videos: [
             { title: 'La Nueva (Official Video)', total_views: 45000000, link: 'https://youtube.com/watch?v=abc' },
             { title: 'Gasolina (Official Video)', total_views: 2100000000, link: 'https://youtube.com/watch?v=xyz' }
+          ]
+        }
+      },
+      {
+        section_type: 'image_highlights',
+        title: 'Image Highlights',
+        order_index: 7,
+        payload: {
+          images: [
+            { image_url: '/placeholder.jpg', caption: 'Daddy Yankee at Billboard Latin Music Awards', source_url: 'https://billboard.com' },
+            { image_url: '/placeholder.jpg', caption: 'Studio session for upcoming album', source_url: 'https://instagram.com' },
+            { image_url: '/placeholder.jpg', caption: 'Collaboration announcement with J Balvin', source_url: 'https://twitter.com' }
+          ]
+        }
+      },
+      {
+        section_type: 'fan_sentiment',
+        title: 'Fan Sentiment (Images & Quotes)',
+        order_index: 8,
+        payload: {
+          items: [
+            { image_url: '/placeholder.jpg', quote: 'The King is back! La Nueva is fire!', source_url: 'https://twitter.com/fan1' },
+            { image_url: '/placeholder.jpg', quote: 'Daddy Yankee never disappoints', source_url: 'https://instagram.com/reggaetonlover' },
+            { quote: 'This song is on repeat all day long', source_url: 'https://tiktok.com/@musicfan' }
           ]
         }
       }

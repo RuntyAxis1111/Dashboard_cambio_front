@@ -10,6 +10,8 @@ import { StreamingTrendsSection } from '../components/weekly/StreamingTrendsSect
 import { TikTokSection } from '../components/weekly/TikTokSection'
 import { SalesStreamsSection } from '../components/weekly/SalesStreamsSection'
 import { MVViewsSection } from '../components/weekly/MVViewsSection'
+import { ImageHighlightsSection } from '../components/weekly/ImageHighlightsSection'
+import { FanSentimentSection } from '../components/weekly/FanSentimentSection'
 import { getWeeklyReport, getAvailableWeeks, mockArtistsSummary } from '../lib/weeklies-mock'
 
 export function WeeklyDetail() {
@@ -18,8 +20,8 @@ export function WeeklyDetail() {
   const weekParam = searchParams.get('week')
 
   const [loading, setLoading] = useState(true)
-  const [openSections, setOpenSections] = useState<Record<number, boolean>>({})
   const [platformFilters, setPlatformFilters] = useState(['spotify', 'apple', 'amazon', 'tidal'])
+  const [allExpanded, setAllExpanded] = useState(true)
 
   const artist = mockArtistsSummary.find(a => a.artist_id === artistId)
   const availableWeeks = getAvailableWeeks(artistId!)
@@ -91,18 +93,11 @@ export function WeeklyDetail() {
                 </select>
 
                 <button
-                  onClick={() => {
-                    const allOpen = Object.keys(openSections).length === report.sections.length && Object.values(openSections).every(v => v)
-                    const newState: Record<number, boolean> = {}
-                    report.sections.forEach((_, idx) => {
-                      newState[idx] = !allOpen
-                    })
-                    setOpenSections(newState)
-                  }}
+                  onClick={() => setAllExpanded(!allExpanded)}
                   className="px-4 py-2 border border-gray-300 rounded-lg bg-white text-black hover:bg-gray-100 transition-colors flex items-center gap-2"
                 >
-                  <ChevronDown className={`w-4 h-4 transition-transform ${Object.values(openSections).every(v => v) ? 'rotate-180' : ''}`} />
-                  {Object.values(openSections).every(v => v) ? 'Collapse All' : 'Expand All'}
+                  <ChevronDown className={`w-4 h-4 transition-transform ${allExpanded ? 'rotate-180' : ''}`} />
+                  {allExpanded ? 'Collapse All' : 'Expand All'}
                 </button>
 
                 <button
@@ -160,12 +155,11 @@ export function WeeklyDetail() {
         {report.sections
           .sort((a, b) => a.order_index - b.order_index)
           .map((section, index) => (
-            <AccordionSection
-              key={index}
-              title={section.title}
-              isOpen={openSections[index] || false}
-              onToggle={() => setOpenSections(prev => ({ ...prev, [index]: !prev[index] }))}
-            >
+            <div key={index} className="bg-white border border-gray-300 rounded-xl overflow-hidden">
+              <div className="p-6 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-black">{section.title}</h3>
+              </div>
+              <div className="p-6">
               {section.section_type === 'highlights' && (
                 <HighlightsSection items={section.payload.items} />
               )}
@@ -198,7 +192,16 @@ export function WeeklyDetail() {
               {section.section_type === 'mv_views' && (
                 <MVViewsSection videos={section.payload.videos} />
               )}
-            </AccordionSection>
+
+              {section.section_type === 'image_highlights' && (
+                <ImageHighlightsSection images={section.payload.images} />
+              )}
+
+              {section.section_type === 'fan_sentiment' && (
+                <FanSentimentSection items={section.payload.items} />
+              )}
+              </div>
+            </div>
           ))}
       </div>
 

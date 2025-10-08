@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Chrome as Home, ChartBar as BarChart3, Brain, Bell, Search, Info, LogOut } from 'lucide-react'
+import { Chrome as Home, ChartBar as BarChart3, Brain, Bell, Search, Info, LogOut, FileText } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { User } from '@supabase/supabase-js'
 
@@ -25,6 +25,7 @@ export function Sidebar({ user }: SidebarProps) {
   const navItems = [
     { path: '/', label: 'Home', icon: Home },
     { path: '/dashboards', label: 'Dashboards', icon: BarChart3 },
+    { path: '/reports', label: 'Reports', icon: FileText },
     { path: '/ai', label: 'AI Studio', icon: Brain },
     { path: '/subscriptions', label: 'Subscriptions', icon: Bell },
     { path: '/data', label: 'Data Explorer', icon: Search },

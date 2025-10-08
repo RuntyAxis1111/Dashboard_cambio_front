@@ -1,0 +1,66 @@
+import { Link } from 'react-router-dom'
+import { Calendar, ExternalLink } from 'lucide-react'
+import { mockArtistsSummary } from '../lib/weeklies-mock'
+import { Breadcrumb } from '../components/Breadcrumb'
+
+export function Weeklies() {
+  const breadcrumbItems = [
+    { label: 'Reports', href: '/reports' },
+    { label: 'Weekly Reports' }
+  ]
+
+  return (
+    <div className="p-8 bg-white">
+      <div className="max-w-7xl mx-auto">
+        <Breadcrumb items={breadcrumbItems} />
+
+        <div className="mt-6 mb-8">
+          <h1 className="text-3xl font-bold text-black mb-2">Weekly Reports</h1>
+          <p className="text-gray-600">
+            Select an artist to view their latest weekly performance report
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {mockArtistsSummary.map((artist) => (
+            <Link
+              key={artist.artist_id}
+              to={`/reports/weeklies/${artist.artist_id}?week=${artist.last_week}`}
+              className="group bg-gray-100 border border-gray-300 rounded-2xl p-6 hover:border-gray-400 transition-all duration-200 hover:scale-105"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                  <span className="text-white text-xl font-bold">
+                    {artist.artist_name.charAt(0)}
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-black">{artist.artist_name}</h3>
+                  <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
+                    <Calendar className="w-3 h-3" />
+                    <span>Week ending {artist.last_week}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-gray-300">
+                <span className="text-sm font-medium text-gray-700">View Report</span>
+                <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-black transition-colors" />
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {mockArtistsSummary.length === 0 && (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <Calendar className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-lg font-medium text-black mb-2">No reports available</h3>
+            <p className="text-gray-600">Weekly reports will appear here once generated</p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

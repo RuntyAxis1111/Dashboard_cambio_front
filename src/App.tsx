@@ -13,6 +13,9 @@ import { Subscriptions } from './pages/Subscriptions'
 import { DataExplorer } from './pages/DataExplorer'
 import { About } from './pages/About'
 import { AuthCallback } from './pages/AuthCallback'
+import { Reports } from './pages/Reports'
+import { Weeklies } from './pages/Weeklies'
+import { WeeklyDetail } from './pages/WeeklyDetail'
 
 export default function App() {
   console.log('🎯 App component rendering...')
@@ -36,6 +39,9 @@ export default function App() {
                   <Route path="/ai/emotion-detection" element={<Experiments />} />
                   <Route path="/subscriptions" element={<Subscriptions />} />
                   <Route path="/data" element={<DataExplorer />} />
+                  <Route path="/reports" element={<Reports />} />
+                  <Route path="/reports/weeklies" element={<Weeklies />} />
+                  <Route path="/reports/weeklies/:artistId" element={<WeeklyDetail />} />
                   <Route path="/about" element={<About />} />
                 </Routes>
               </Layout>

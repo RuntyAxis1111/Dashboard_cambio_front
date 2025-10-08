@@ -1,0 +1,61 @@
+import { Link } from 'react-router-dom'
+import { FileText, TrendingUp, Calendar } from 'lucide-react'
+
+export function Reports() {
+  return (
+    <div className="p-8 bg-white">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-black mb-4">
+            Reports Center
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Access weekly reports, analytics summaries, and export-ready documents for all your artists.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Link
+            to="/reports/weeklies"
+            className="group bg-gray-100 border border-gray-300 rounded-2xl p-8 hover:border-gray-400 transition-all duration-200 hover:scale-105"
+          >
+            <div className="flex items-center justify-center w-16 h-16 bg-blue-600/20 rounded-xl mb-6 group-hover:bg-blue-600/30 transition-colors">
+              <Calendar className="w-8 h-8 text-blue-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-black mb-3">Weekly Reports</h3>
+            <p className="text-gray-600 leading-relaxed">
+              View and export weekly performance reports by artist, including streaming data,
+              social metrics, and market insights.
+            </p>
+          </Link>
+
+          <div className="group bg-gray-100 border border-gray-300 rounded-2xl p-8 opacity-50 cursor-not-allowed">
+            <div className="flex items-center justify-center w-16 h-16 bg-purple-600/20 rounded-xl mb-6">
+              <TrendingUp className="w-8 h-8 text-purple-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-black mb-3">Monthly Summaries</h3>
+            <p className="text-gray-600 leading-relaxed">
+              Comprehensive monthly performance summaries with trend analysis and key insights.
+            </p>
+            <span className="inline-block mt-4 text-xs font-medium text-gray-500 bg-gray-200 px-3 py-1 rounded-full">
+              Coming Soon
+            </span>
+          </div>
+
+          <div className="group bg-gray-100 border border-gray-300 rounded-2xl p-8 opacity-50 cursor-not-allowed">
+            <div className="flex items-center justify-center w-16 h-16 bg-green-600/20 rounded-xl mb-6">
+              <FileText className="w-8 h-8 text-green-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-black mb-3">Campaign Reports</h3>
+            <p className="text-gray-600 leading-relaxed">
+              Detailed campaign performance reports with ROI analysis and recommendations.
+            </p>
+            <span className="inline-block mt-4 text-xs font-medium text-gray-500 bg-gray-200 px-3 py-1 rounded-full">
+              Coming Soon
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

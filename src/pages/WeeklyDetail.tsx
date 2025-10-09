@@ -82,14 +82,14 @@ const SAMPLE_KATSEYE: WeeklyReport = {
   shazam: []
 }
 
+function exportWeeklyPDF() {
+  window.print()
+}
+
 export function WeeklyDetail() {
   const { artistId } = useParams<{ artistId: string }>()
 
   const report = artistId === 'katseye' ? SAMPLE_KATSEYE : null
-
-  const handleExportPDF = () => {
-    window.print()
-  }
 
   if (!report) {
     return (
@@ -109,7 +109,7 @@ export function WeeklyDetail() {
   ]
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen report-page">
       <div className="print:hidden border-b border-gray-200 bg-white sticky top-0 z-10 shadow-sm">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <Breadcrumb items={breadcrumbItems} />
@@ -123,8 +123,8 @@ export function WeeklyDetail() {
             </div>
 
             <button
-              onClick={handleExportPDF}
-              className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 text-sm font-medium"
+              onClick={exportWeeklyPDF}
+              className="export-btn px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 text-sm font-medium"
             >
               <Download className="w-4 h-4" />
               Export PDF
@@ -145,9 +145,9 @@ export function WeeklyDetail() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-8 space-y-10">
+      <div className="report-content max-w-6xl mx-auto px-6 py-8 space-y-10">
         {report.highlights && report.highlights.length > 0 && (
-          <section className="page-break-inside-avoid">
+          <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Highlights / Overall Summary
             </h2>
@@ -176,11 +176,11 @@ export function WeeklyDetail() {
         )}
 
         {report.billboard_charts && report.billboard_charts.length > 0 && (
-          <section className="page-break-inside-avoid">
+          <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Billboard Charts
             </h2>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto table-wrapper">
               <table className="w-full border-collapse" role="table">
                 <thead>
                   <tr className="border-b-2 border-gray-300">
@@ -218,11 +218,11 @@ export function WeeklyDetail() {
         )}
 
         {report.spotify_charts && report.spotify_charts.length > 0 && (
-          <section className="page-break-inside-avoid">
+          <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Spotify Charts
             </h2>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto table-wrapper">
               <table className="w-full border-collapse" role="table">
                 <thead>
                   <tr className="border-b-2 border-gray-300">
@@ -252,13 +252,13 @@ export function WeeklyDetail() {
         )}
 
         {report.streaming_trends && report.streaming_trends.length > 0 && (
-          <section className="page-break-inside-avoid">
+          <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Streaming Trends
             </h2>
             <div className="space-y-6">
               {report.streaming_trends.map((trend, idx) => (
-                <div key={idx} className="space-y-2">
+                <div key={idx} className="trend-block space-y-2">
                   <h3 className="text-lg font-semibold text-black">{trend.track}</h3>
                   <ul className="space-y-1 list-none pl-4">
                     {trend.bullets.map((bullet, bidx) => (
@@ -275,13 +275,13 @@ export function WeeklyDetail() {
         )}
 
         {report.tiktok_trends && report.tiktok_trends.length > 0 && (
-          <section className="page-break-inside-avoid">
+          <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               TikTok Trends
             </h2>
             <div className="space-y-6">
               {report.tiktok_trends.map((trend, idx) => (
-                <div key={idx} className="space-y-2">
+                <div key={idx} className="trend-block space-y-2">
                   <h3 className="text-lg font-semibold text-black">{trend.track}</h3>
                   <div>
                     <p className="text-sm font-medium text-gray-700 mb-2">Top Posts:</p>
@@ -304,36 +304,7 @@ export function WeeklyDetail() {
         )}
       </div>
 
-      <style>{`
-        @media print {
-          body {
-            background: white;
-          }
-          .print\\:hidden {
-            display: none !important;
-          }
-          .print\\:block {
-            display: block !important;
-          }
-          .page-break-inside-avoid {
-            page-break-inside: avoid;
-            break-inside: avoid;
-          }
-          @page {
-            margin: 1.5cm;
-            size: letter;
-          }
-          section {
-            margin-bottom: 2rem;
-          }
-          table {
-            font-size: 10pt;
-          }
-          h2 {
-            margin-top: 1.5rem;
-          }
-        }
-      `}</style>
+      <div className="print-footer"></div>
     </div>
   )
 }

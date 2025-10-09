@@ -97,7 +97,7 @@
   display: none;
 }
 
-/* ==== PRINT LAYOUT for Weekly Reports ==== */
+/* ===== PRINT LAYOUT (Letter) ===== */
 @page {
   size: Letter;
   margin: 0.6in;
@@ -112,25 +112,39 @@
     background: #fff !important;
   }
 
-  /* Ocultar UI ajena al reporte */
-  .sidebar, #sidebar, header, nav, .topbar, .search-bar, .user-card,
-  .chat-fab, .export-btn, .app-footer, .print\\:hidden {
+  /* Apaga todo lo ajeno al reporte (sidebar/topbar/etc.) */
+  aside, .sidebar, [class*="sidebar"], [role="navigation"],
+  header, nav, .topbar, .search-bar, .app-footer,
+  .export-btn, .chat-fab, .user-card, .print\\:hidden {
     display: none !important;
   }
 
-  /* Área del reporte */
-  .report-page, .report-content {
+  /* Si el layout usa grid/flex con columnas, fuerza 1 columna */
+  .app-shell, .layout, .container, .page, main {
+    display: block !important;
     width: auto !important;
-    max-width: 7.4in !important;
-    margin: 0 auto !important;
-    box-shadow: none !important;
-    background: #fff !important;
+    margin: 0 !important;
     padding: 0 !important;
   }
 
-  /* Tipografía */
+  /* Área del reporte centrada */
+  .report-content, .report-page {
+    max-width: 7.4in !important;
+    margin: 0 auto !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    width: auto !important;
+  }
+
+  /* Quitar posiciones fijas/sticky que se imprimen */
+  .sticky, [class*="sticky"] {
+    position: static !important;
+  }
+
+  /* Tipografía y jerarquía */
   body, p, li, td, th {
-    font-size: 10.5pt;
+    font-size: 10.75pt;
     line-height: 1.35;
     color: #111;
   }
@@ -142,18 +156,19 @@
 
   h2 {
     font-size: 14pt;
-    margin: 14pt 0 6pt;
-    padding-bottom: 4pt;
+    margin: 16pt 0 8pt;
+    padding-bottom: 5pt;
     border-bottom: 2px solid #111;
   }
 
   h3 {
     font-size: 12pt;
-    margin: 10pt 0 4pt;
+    margin: 10pt 0 6pt;
   }
 
+  /* Bullets sobrios */
   ul {
-    margin: 4pt 0 8pt 16pt;
+    margin: 6pt 0 10pt 16pt;
   }
 
   li {
@@ -162,7 +177,7 @@
   }
 
   /* Evitar cortes feos */
-  .section, .card, .trend-block, .table, .table-wrapper, section {
+  .section, .card, .trend-block, .table-wrapper, section {
     break-inside: avoid;
     page-break-inside: avoid;
   }
@@ -171,7 +186,7 @@
     page-break-after: avoid;
   }
 
-  /* Tablas de reporte */
+  /* Tablas */
   table {
     width: 100%;
     border-collapse: collapse;
@@ -191,12 +206,17 @@
     vertical-align: top;
   }
 
+  thead th {
+    background: #f2f2f2 !important;
+    font-weight: 600;
+  }
+
   tr {
     break-inside: avoid;
     page-break-inside: avoid;
   }
 
-  /* Enlaces muestran URL en print */
+  /* Enlaces muestran URL (útil en PDF) */
   a[href^="http"]:not(.btn):not(.button)::after {
     content: " (" attr(href) ")";
     font-size: 9pt;
@@ -206,7 +226,7 @@
   /* Pie con numeración */
   .print-footer {
     position: fixed;
-    bottom: 0.2in;
+    bottom: 0.25in;
     left: 0;
     right: 0;
     text-align: right;
@@ -215,7 +235,7 @@
   }
 
   .print-footer::after {
-    content: "Page " counter(page);
+    content: "Page " counter(page) " of " counter(pages);
   }
 
   /* Mostrar header de print */
@@ -229,12 +249,23 @@
     text-shadow: none !important;
   }
 
-  .bg-blue-50, .bg-gray-50, .bg-purple-50 {
-    background: transparent !important;
+  /* ===== Colores de métricas (+/−) ===== */
+  .delta-up {
+    color: #16a34a !important;
+    font-weight: 600;
   }
 
-  .border-blue-200, .border-gray-200, .border-purple-200 {
-    border-color: #ddd !important;
+  .delta-down {
+    color: #dc2626 !important;
+    font-weight: 600;
+  }
+
+  .chip-market {
+    display: inline-block;
+    border: 1px solid #999;
+    border-radius: 12px;
+    padding: 1pt 6pt;
+    font-size: 9.5pt;
   }
 
   /* Spacing adjustments */
@@ -247,7 +278,7 @@
   }
 }
 
-/* Ocultar pie en pantalla */
+/* Oculta el pie en pantalla */
 @media screen {
   .print-footer {
     display: none;

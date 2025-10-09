@@ -82,7 +82,42 @@ const SAMPLE_KATSEYE: WeeklyReport = {
   shazam: []
 }
 
+function decorateDeltasForPrint(root: HTMLElement = document.body) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
+  const nodes: Text[] = []
+  let node: Node | null
+  
+  while ((node = walker.nextNode())) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      nodes.push(node as Text)
+    }
+  }
+
+  nodes.forEach(n => {
+    const txt = n.nodeValue || ''
+    if (!/[+\-]\s?\d+(\.\d+)?%/.test(txt)) return
+
+    const span = document.createElement('span')
+    span.innerHTML = txt
+      .replace(/(\+\s?\d+(?:\.\d+)?%)/g, '<span class="delta-up">$1</span>')
+      .replace(/(\-\s?\d+(?:\.\d+)?%)/g, '<span class="delta-down">$1</span>')
+    
+    if (n.parentNode) {
+      n.parentNode.replaceChild(span, n)
+    }
+  })
+
+  document.querySelectorAll('.markets, .notes').forEach(el => {
+    el.innerHTML = el.innerHTML.replace(
+      /\b([A-Z]{2,3})\s*\((\d+%)\)/g,
+      '<span class="chip-market">$1 $2</span>'
+    )
+  })
+}
+
 function exportWeeklyPDF() {
+  const reportContent = document.querySelector('.report-content') as HTMLElement
+  decorateDeltasForPrint(reportContent || document.body)
   window.print()
 }
 
@@ -208,7 +243,7 @@ export function WeeklyDetail() {
                       <td className="py-3 px-4 text-gray-700">{row.chart}</td>
                       <td className="py-3 px-4 font-medium text-black">{row.work}</td>
                       <td className="py-3 px-4 text-right text-gray-700">{row.weeks}</td>
-                      <td className="py-3 px-4 text-gray-600 text-sm">{row.notes === '-' ? '–' : row.notes}</td>
+                      <td className="py-3 px-4 text-gray-600 text-sm notes">{row.notes === '-' ? '–' : row.notes}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -241,8 +276,8 @@ export function WeeklyDetail() {
                   {report.spotify_charts.map((row, idx) => (
                     <tr key={idx} className="border-b border-gray-200">
                       <td className="py-3 px-4 font-medium text-black">{row.track}</td>
-                      <td className="py-3 px-4 text-right text-gray-700">{row.markets}</td>
-                      <td className="py-3 px-4 text-gray-600 text-sm">{row.notes}</td>
+                      <td className="py-3 px-4 text-right text-gray-700 markets">{row.markets}</td>
+                      <td className="py-3 px-4 text-gray-600 text-sm notes">{row.notes}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -97,6 +97,28 @@
   display: none;
 }
 
+/* Delta Percentage Styles (Screen & Print) */
+.delta {
+  font-weight: 600;
+}
+
+.delta.up {
+  color: #16a34a;
+}
+
+.delta.down {
+  color: #dc2626;
+}
+
+.delta.flat {
+  color: #6b7280;
+}
+
+.delta .arrow {
+  font-weight: 700;
+  margin-right: 4px;
+}
+
 /* ===== PRINT LAYOUT (Letter) ===== */
 @page {
   size: Letter;
@@ -247,25 +269,6 @@
   * {
     box-shadow: none !important;
     text-shadow: none !important;
-  }
-
-  /* ===== Colores de métricas (+/−) ===== */
-  .delta-up {
-    color: #16a34a !important;
-    font-weight: 600;
-  }
-
-  .delta-down {
-    color: #dc2626 !important;
-    font-weight: 600;
-  }
-
-  .chip-market {
-    display: inline-block;
-    border: 1px solid #999;
-    border-radius: 12px;
-    padding: 1pt 6pt;
-    font-size: 9.5pt;
   }
 
   /* Spacing adjustments */

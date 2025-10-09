@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { Download, ExternalLink } from 'lucide-react'
 import { Breadcrumb } from '../components/Breadcrumb'
@@ -82,42 +83,43 @@ const SAMPLE_KATSEYE: WeeklyReport = {
   shazam: []
 }
 
-function decorateDeltasForPrint(root: HTMLElement = document.body) {
+function colorizeDeltas(rootSel = '.report-content') {
+  const root = document.querySelector(rootSel)
+  if (!root) return
+
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
-  const nodes: Text[] = []
-  let node: Node | null
-  
-  while ((node = walker.nextNode())) {
-    if (node.nodeType === Node.TEXT_NODE) {
-      nodes.push(node as Text)
+  const texts: Text[] = []
+  let n: Node | null
+
+  while ((n = walker.nextNode())) {
+    if (n.nodeValue && n.nodeValue.match(/[+-]?\d+(?:\.\d+)?%/)) {
+      texts.push(n as Text)
     }
   }
 
-  nodes.forEach(n => {
-    const txt = n.nodeValue || ''
-    if (!/[+\-]\s?\d+(\.\d+)?%/.test(txt)) return
+  texts.forEach(t => {
+    const original = t.nodeValue || ''
+    const html = original.replace(/([+-]?)(\d+(?:\.\d+)?)%/g, (match, sign, num) => {
+      if (sign === '+') {
+        return `<span class="delta up" aria-label="up ${num} percent"><span class="arrow">↑</span>+${num}%</span>`
+      }
+      if (sign === '-') {
+        return `<span class="delta down" aria-label="down ${num} percent"><span class="arrow">↓</span>-${num}%</span>`
+      }
+      return `<span class="delta flat" aria-label="${num} percent">${num}%</span>`
+    })
 
-    const span = document.createElement('span')
-    span.innerHTML = txt
-      .replace(/(\+\s?\d+(?:\.\d+)?%)/g, '<span class="delta-up">$1</span>')
-      .replace(/(\-\s?\d+(?:\.\d+)?%)/g, '<span class="delta-down">$1</span>')
-    
-    if (n.parentNode) {
-      n.parentNode.replaceChild(span, n)
+    if (html !== original) {
+      const span = document.createElement('span')
+      span.innerHTML = html
+      if (t.parentNode) {
+        t.parentNode.replaceChild(span, t)
+      }
     }
-  })
-
-  document.querySelectorAll('.markets, .notes').forEach(el => {
-    el.innerHTML = el.innerHTML.replace(
-      /\b([A-Z]{2,3})\s*\((\d+%)\)/g,
-      '<span class="chip-market">$1 $2</span>'
-    )
   })
 }
 
 function exportWeeklyPDF() {
-  const reportContent = document.querySelector('.report-content') as HTMLElement
-  decorateDeltasForPrint(reportContent || document.body)
   window.print()
 }
 
@@ -125,6 +127,12 @@ export function WeeklyDetail() {
   const { artistId } = useParams<{ artistId: string }>()
 
   const report = artistId === 'katseye' ? SAMPLE_KATSEYE : null
+
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      colorizeDeltas()
+    })
+  }, [report])
 
   if (!report) {
     return (

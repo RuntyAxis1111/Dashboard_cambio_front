@@ -9,7 +9,7 @@ const SAMPLE_ARTISTS: ArtistSummary[] = [
     artist_id: 'katseye',
     artist_name: 'KATSEYE',
     week_end: '2025-10-06',
-    cover_image_url: ''
+    cover_image_url: '/assets/image copy.png'
   },
   {
     artist_id: 'adrian-cota',

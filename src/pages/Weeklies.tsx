@@ -21,7 +21,7 @@ const SAMPLE_ARTISTS: ArtistSummary[] = [
     artist_id: 'magna',
     artist_name: 'MAGNA',
     week_end: '2025-10-08',
-    cover_image_url: '/assets/magna.png'
+    cover_image_url: '/assets/image copy copy.png'
   }
 ]
 

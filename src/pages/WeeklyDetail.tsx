@@ -128,6 +128,82 @@ const SAMPLE_ADRIAN_COTA: WeeklyReport = {
   shazam: []
 }
 
+const SAMPLE_MAGNA: WeeklyReport = {
+  artist: 'MAGNA',
+  week_start: '2025-10-02',
+  week_end: '2025-10-08',
+  fan_sentiment: 'No data this week',
+  highlights: [
+    'Entrada a el nuevo pop (P) (#5/50; ~288K followers)',
+    'Nueva alta: TU PLAYLIST DE FAVORITA <3 (#4/50)',
+    'Release engagement: 4,323 listeners (6.4%) en 13 días desde "Deja De Hablar"',
+    'Mercados fuertes 28d: México (82.7K), Colombia (46.9K), US (39.8K)',
+    'Ciudades clave 28d: CDMX (23.4K), Bogotá (21.5K), Lima (9.7K)',
+    'Audiencia total 28d: 1,576,299 (Activos nuevos 22,481)',
+    'Demografía: 51% mujeres, pico 25–34 (45%)',
+    'Sin entradas verificadas en Luminate esta semana'
+  ],
+  highlight_link: undefined,
+  billboard_charts: [],
+  spotify_charts: [],
+  streaming_trends: [],
+  tiktok_trends: [],
+  apple_music: [],
+  shazam: [],
+  total_audience: 1576299,
+  release_engagement: {
+    title: 'Deja De Hablar',
+    days_since_release: 13,
+    active_audience_total: 68053,
+    engaged_streamed: 4323,
+    engaged_pct: 6.4
+  },
+  demographics: {
+    gender: { female: 51, male: 44, non_binary: 1, not_specified: 4 },
+    age_pct: {
+      '<18': 2,
+      '18-24': 25,
+      '25-34': 45,
+      '35-44': 18,
+      '45-54': 7,
+      '55-64': 2,
+      '65+': 1
+    }
+  },
+  top_countries: [
+    { rank: 1, country: 'Mexico', listeners: 82739 },
+    { rank: 2, country: 'Colombia', listeners: 46949 },
+    { rank: 3, country: 'United States', listeners: 39755 },
+    { rank: 4, country: 'Peru', listeners: 18219 },
+    { rank: 5, country: 'Spain', listeners: 13902 },
+    { rank: 6, country: 'Chile', listeners: 8528 },
+    { rank: 7, country: 'Guatemala', listeners: 7349 },
+    { rank: 8, country: 'Argentina', listeners: 7176 },
+    { rank: 9, country: 'Ecuador', listeners: 6478 },
+    { rank: 10, country: 'Venezuela', listeners: 4229 }
+  ],
+  top_cities: [
+    { rank: 1, city: 'Mexico City, MX', listeners: 23441 },
+    { rank: 2, city: 'Bogotá, CO', listeners: 21479 },
+    { rank: 3, city: 'Lima, PE', listeners: 9664 },
+    { rank: 4, city: 'Medellín, CO', listeners: 7283 },
+    { rank: 5, city: 'Guatemala City, GT', listeners: 5754 },
+    { rank: 6, city: 'Santiago, CL', listeners: 5442 },
+    { rank: 7, city: 'Barranquilla, CO', listeners: 5294 },
+    { rank: 8, city: 'Guadalajara, MX', listeners: 5043 }
+  ],
+  playlist_adds: [
+    { playlist: 'el nuevo pop (P) 🇵🇪', curator: 'Spotify', track: 'deja de hablar', date_added: '2025-09-26', position: '5/50', peak: 3, followers_k: 287.9, note: 'New add; buena posición' },
+    { playlist: 'Parchadito', curator: 'Spotify', track: 'les va a doler', date_added: '2025-08-29', position: '15/60', peak: 15, followers_k: 63.7, note: 'Estable' },
+    { playlist: 'Tecate Pal Norte 2025', curator: 'Tecate Pa\'l Norte', track: 'SAL', date_added: '2024-10-28', position: '125/224', peak: 123, followers_k: 57.2, note: 'Larga permanencia' },
+    { playlist: 'LO MAS NUEVO DEL REGGAETON 2025', curator: 'Yulieth Gomez B', track: 'les va a doler', date_added: '2025-09-05', position: '20/97', peak: 13, followers_k: 48.7, note: 'Seguidores creciendo' },
+    { playlist: 'TU PLAYLIST DE FAVORITA <3', curator: 'Joan Because', track: 'deja de hablar', date_added: '2025-10-07', position: '4/50', peak: 4, followers_k: 22.8, note: 'Nueva alta' },
+    { playlist: 'Official SXSW 2025 Playlist', curator: 'SXSW', track: 'lo que dura la canción', date_added: '2024-12-11', position: '285/719', peak: 10, followers_k: 22.8, note: 'Histórico' },
+    { playlist: 'IRIS', curator: 'Spotify', track: 'cruz', date_added: '2025-03-29', position: '41/50', peak: 6, followers_k: 20.2, note: 'Estable' },
+    { playlist: 'Cocitel Records', curator: 'uDiscover Éxitos', track: 'déjala llorar (Cobuz&Bustta Remix)', date_added: '2025-08-01', position: '14/141', peak: 12, followers_k: 18.0, note: 'Estable' }
+  ]
+}
+
 function getColIndexByHeader(tableEl: HTMLTableElement, headerText = 'notes'): number {
   const ths = tableEl.querySelectorAll('thead th')
   for (let i = 0; i < ths.length; i++) {
@@ -226,6 +302,8 @@ export function WeeklyDetail() {
     ? SAMPLE_KATSEYE
     : artistId === 'adrian-cota'
     ? SAMPLE_ADRIAN_COTA
+    : artistId === 'magna'
+    ? SAMPLE_MAGNA
     : null
 
   useEffect(() => {
@@ -443,6 +521,149 @@ export function WeeklyDetail() {
                   )}
                 </div>
               ))}
+            </div>
+          </section>
+        )}
+
+        {report.fan_sentiment && (
+          <section className="section page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Fan Sentiment
+            </h2>
+            <p className="text-gray-600 italic">{report.fan_sentiment}</p>
+          </section>
+        )}
+
+        {report.playlist_adds && report.playlist_adds.length > 0 && (
+          <section className="section page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              DSP Playlist Adds (Spotify)
+            </h2>
+            <div className="overflow-x-auto table-wrapper">
+              <table className="w-full border-collapse text-sm" role="table">
+                <thead>
+                  <tr className="border-b-2 border-gray-300">
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Playlist</th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Curator</th>
+                    <th className="text-right py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Followers (K)</th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Track</th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Added</th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Pos/Peak</th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {report.playlist_adds.map((row, idx) => (
+                    <tr key={idx} className="border-b border-gray-200">
+                      <td className="py-3 px-4 font-medium text-black">{row.playlist}</td>
+                      <td className="py-3 px-4 text-gray-700">{row.curator}</td>
+                      <td className="py-3 px-4 text-right text-gray-700">{row.followers_k}</td>
+                      <td className="py-3 px-4 text-gray-700">{row.track}</td>
+                      <td className="py-3 px-4 text-gray-600">{row.date_added}</td>
+                      <td className="py-3 px-4 text-gray-700">{row.position} / {row.peak}</td>
+                      <td className="py-3 px-4 text-gray-600 text-sm notes">{row.note}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
+        {report.top_countries && report.top_countries.length > 0 && (
+          <section className="section page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Top Countries (28 días)
+            </h2>
+            <div className="overflow-x-auto table-wrapper">
+              <table className="w-full border-collapse" role="table">
+                <thead>
+                  <tr className="border-b-2 border-gray-300">
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Rank</th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Country</th>
+                    <th className="text-right py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Listeners</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {report.top_countries.map((row, idx) => (
+                    <tr key={idx} className="border-b border-gray-200">
+                      <td className="py-3 px-4 text-gray-700">#{row.rank}</td>
+                      <td className="py-3 px-4 font-medium text-black">{row.country}</td>
+                      <td className="py-3 px-4 text-right text-gray-700">{row.listeners.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
+        {report.top_cities && report.top_cities.length > 0 && (
+          <section className="section page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Top Cities (28 días)
+            </h2>
+            <div className="overflow-x-auto table-wrapper">
+              <table className="w-full border-collapse" role="table">
+                <thead>
+                  <tr className="border-b-2 border-gray-300">
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Rank</th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">City</th>
+                    <th className="text-right py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Listeners</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {report.top_cities.map((row, idx) => (
+                    <tr key={idx} className="border-b border-gray-200">
+                      <td className="py-3 px-4 text-gray-700">#{row.rank}</td>
+                      <td className="py-3 px-4 font-medium text-black">{row.city}</td>
+                      <td className="py-3 px-4 text-right text-gray-700">{row.listeners.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
+        {report.demographics && (
+          <section className="section page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Demographics (28 días)
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold text-black mb-2">Gender</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-sm text-gray-600">Female</p>
+                    <p className="text-2xl font-bold text-black">{report.demographics.gender.female}%</p>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-sm text-gray-600">Male</p>
+                    <p className="text-2xl font-bold text-black">{report.demographics.gender.male}%</p>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-sm text-gray-600">Non-binary</p>
+                    <p className="text-2xl font-bold text-black">{report.demographics.gender.non_binary}%</p>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-sm text-gray-600">Not specified</p>
+                    <p className="text-2xl font-bold text-black">{report.demographics.gender.not_specified}%</p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-black mb-2">Age Distribution</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {Object.entries(report.demographics.age_pct).map(([age, pct]) => (
+                    <div key={age} className="bg-gray-50 p-3 rounded">
+                      <p className="text-sm text-gray-600">{age}</p>
+                      <p className="text-2xl font-bold text-black">{pct}%</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </section>
         )}

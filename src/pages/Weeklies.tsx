@@ -16,6 +16,12 @@ const SAMPLE_ARTISTS: ArtistSummary[] = [
     artist_name: 'ADRIÁN COTA',
     week_end: '2025-10-07',
     cover_image_url: '/assets/image.png'
+  },
+  {
+    artist_id: 'magna',
+    artist_name: 'MAGNA',
+    week_end: '2025-10-08',
+    cover_image_url: '/assets/magna.png'
   }
 ]
 

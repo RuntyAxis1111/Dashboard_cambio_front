@@ -1,34 +1,41 @@
-export type ChartRow = {
+export type BillboardChartRow = {
   rank: string
   chart: string
+  work: string
+  weeks: number
+  notes: string
+}
+
+export type SpotifyChartRow = {
   track: string
-  weeks: string
-  notes?: string
-  markets?: number
+  markets: number
+  notes: string
 }
 
 export type StreamingTrend = {
-  title: string
+  track: string
   bullets: string[]
 }
 
 export type TikTokTrend = {
-  topic: string
+  track: string
   top_posts: string[]
-  notes?: string
+  note?: string
 }
 
 export type WeeklyReport = {
-  artist_id: string
-  artist_name: string
+  artist: string
   week_start: string
   week_end: string
-  highlights: {
-    items: string[]
-    video_link?: string
+  highlights: string[]
+  highlight_link?: {
+    label: string
+    url: string
   }
-  billboard_charts?: ChartRow[]
-  spotify_charts?: ChartRow[]
+  billboard_charts?: BillboardChartRow[]
+  spotify_charts?: SpotifyChartRow[]
   streaming_trends?: StreamingTrend[]
   tiktok_trends?: TikTokTrend[]
+  apple_music?: any[]
+  shazam?: any[]
 }

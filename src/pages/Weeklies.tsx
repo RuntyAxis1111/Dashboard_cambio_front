@@ -4,6 +4,21 @@ import { Calendar, ExternalLink } from 'lucide-react'
 import { getLatestWeekEnd, getArtistsForWeek, ArtistSummary } from '../lib/reports-api'
 import { Breadcrumb } from '../components/Breadcrumb'
 
+const SAMPLE_ARTISTS: ArtistSummary[] = [
+  {
+    artist_id: 'katseye',
+    artist_name: 'KATSEYE',
+    week_end: '2025-10-06',
+    cover_image_url: ''
+  },
+  {
+    artist_id: 'adrian-cota',
+    artist_name: 'ADRIÁN COTA',
+    week_end: '2025-10-07',
+    cover_image_url: ''
+  }
+]
+
 export function Weeklies() {
   const [artists, setArtists] = useState<ArtistSummary[]>([])
   const [loading, setLoading] = useState(true)
@@ -14,12 +29,17 @@ export function Weeklies() {
 
       const latestWeek = await getLatestWeekEnd()
       if (!latestWeek) {
+        setArtists(SAMPLE_ARTISTS)
         setLoading(false)
         return
       }
 
       const artistsData = await getArtistsForWeek(latestWeek)
-      setArtists(artistsData)
+      if (artistsData.length === 0) {
+        setArtists(SAMPLE_ARTISTS)
+      } else {
+        setArtists(artistsData)
+      }
       setLoading(false)
     }
 

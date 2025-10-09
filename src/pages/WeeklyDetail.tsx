@@ -83,6 +83,51 @@ const SAMPLE_KATSEYE: WeeklyReport = {
   shazam: []
 }
 
+const SAMPLE_ADRIAN_COTA: WeeklyReport = {
+  artist: 'ADRIÁN COTA',
+  week_start: '2025-10-01',
+  week_end: '2025-10-07',
+  highlights: [
+    'Streams semanales: 10,060 (+131% WoW)',
+    'Oyentes semanales: 6,336 (+74% WoW)',
+    'Streams por oyente: 1.59 (+33% WoW)',
+    'Seguidores netos: +42 (+5% vs PW)',
+    '"Boujee" añadió playlists clave: All New Latin (Spotify), Cha Cha Cha Top 100, Lanzamientos de la Semana, Crema Scoops Of The Week (Oct 3–4)',
+    'Engagement lanzamiento: 476 (6.3%) de 7,533 oyentes activos reprodujeron "Boujee" en los primeros 8 días'
+  ],
+  highlight_link: {
+    label: 'Watch "Boujee"',
+    url: 'https://www.youtube.com/watch?v=LOob4p90QTA'
+  },
+  billboard_charts: [],
+  spotify_charts: [
+    {
+      track: 'Boujee',
+      markets: 0,
+      notes: 'Playlists nuevas: All New Latin (pos. 49), Cha Cha Cha Top 100 (pos. 222), Lanzamientos de la Semana (pos. 138), Crema Scoops Of The Week (pos. 7)'
+    }
+  ],
+  streaming_trends: [
+    {
+      track: 'Global',
+      bullets: [
+        'Streams +131% WoW; oyentes +74%; SPL +33%',
+        'Pico de streams: Oct 3 (1,699), alineado con altas a playlists'
+      ]
+    },
+    {
+      track: 'Mercados (S4A, 28 días)',
+      bullets: [
+        'Países top: US, MX, CA, UK, AU, DE, ES, NL, JP, FR',
+        'Ciudades top: Chicago, Mexico City, New York, Minneapolis, Denver, Culiacán, Los Ángeles, Ahome'
+      ]
+    }
+  ],
+  tiktok_trends: [],
+  apple_music: [],
+  shazam: []
+}
+
 function getColIndexByHeader(tableEl: HTMLTableElement, headerText = 'notes'): number {
   const ths = tableEl.querySelectorAll('thead th')
   for (let i = 0; i < ths.length; i++) {
@@ -177,7 +222,11 @@ function exportWeeklyPDF() {
 export function WeeklyDetail() {
   const { artistId } = useParams<{ artistId: string }>()
 
-  const report = artistId === 'katseye' ? SAMPLE_KATSEYE : null
+  const report = artistId === 'katseye'
+    ? SAMPLE_KATSEYE
+    : artistId === 'adrian-cota'
+    ? SAMPLE_ADRIAN_COTA
+    : null
 
   useEffect(() => {
     requestAnimationFrame(() => {

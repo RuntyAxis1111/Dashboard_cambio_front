@@ -15,7 +15,7 @@ const SAMPLE_ARTISTS: ArtistSummary[] = [
     artist_id: 'adrian-cota',
     artist_name: 'ADRIÁN COTA',
     week_end: '2025-10-07',
-    cover_image_url: ''
+    cover_image_url: '/assets/image.png'
   }
 ]
 
@@ -24,26 +24,8 @@ export function Weeklies() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function fetchArtists() {
-      setLoading(true)
-
-      const latestWeek = await getLatestWeekEnd()
-      if (!latestWeek) {
-        setArtists(SAMPLE_ARTISTS)
-        setLoading(false)
-        return
-      }
-
-      const artistsData = await getArtistsForWeek(latestWeek)
-      if (artistsData.length === 0) {
-        setArtists(SAMPLE_ARTISTS)
-      } else {
-        setArtists(artistsData)
-      }
-      setLoading(false)
-    }
-
-    fetchArtists()
+    setArtists(SAMPLE_ARTISTS)
+    setLoading(false)
   }, [])
 
   const breadcrumbItems = [

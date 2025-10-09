@@ -1,98 +1,81 @@
-import { useState, useEffect } from 'react'
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom'
-import { Download, X } from 'lucide-react'
+import { useParams } from 'react-router-dom'
+import { Download, ExternalLink } from 'lucide-react'
 import { Breadcrumb } from '../components/Breadcrumb'
-import { SummaryHighlightsRenderer } from '../components/weekly/SummaryHighlightsRenderer'
-import { ChartsRenderer } from '../components/weekly/ChartsRenderer'
-import { StreamingTrendsRenderer } from '../components/weekly/StreamingTrendsRenderer'
-import { TikTokTrendsRenderer } from '../components/weekly/TikTokTrendsRenderer'
-import {
-  getWeeklyReport,
-  getAvailableWeeks,
-  getReportSections,
-  getReportMedia,
-  WeeklyReport,
-  ReportSection,
-  ReportMedia
-} from '../lib/reports-api'
+import { WeeklyReport } from '../types/weekly-report'
+
+const SAMPLE_KATSEYE: WeeklyReport = {
+  artist_id: 'katseye',
+  artist_name: 'KATSEYE',
+  week_start: '2025-09-29',
+  week_end: '2025-10-06',
+  highlights: {
+    items: [
+      "32,652,250 Spotify Monthly Listeners (as of today)",
+      "IG surpassed 7M followers (10/5)",
+      "TikTok surpassed 13M followers (10/5)",
+      "Roblox 'Gabriela', 'Gameboy' & 'Gnarly' emotes dropped (10/4)",
+      "KATSEYE i-D October 2025 issue (10/2)",
+      "YouTube surpassed 5M subscribers (10/1)",
+      "'Gabriela' Dance Practice released on KE YT (9/30)"
+    ],
+    video_link: 'https://www.youtube.com/watch?v=dummy-gabriela-dance-practice'
+  },
+  billboard_charts: [
+    { rank: '#29', chart: 'Billboard 200', track: 'Beautiful Chaos', weeks: '14', notes: '-' },
+    { rank: '#45', chart: 'Top 200 Song Consumption', track: 'Gabriela', weeks: '15', notes: '-' },
+    { rank: '#127', chart: 'Top 200 Song Consumption', track: 'Gnarly', weeks: '22', notes: '-' }
+  ],
+  spotify_charts: [
+    { rank: '#', chart: '-', track: 'Gabriela', weeks: '-', markets: 47, notes: 'Global #19 (+5), US #40 (+9); Italy debut #192' },
+    { rank: '#', chart: '-', track: 'Gnarly', weeks: '-', markets: 16, notes: 'Global #79 (+10), US #102 (+15); re-enters Australia #172 & Venezuela #184' },
+    { rank: '#', chart: '-', track: 'Touch', weeks: '-', markets: 10, notes: 'Global #129 (+27); US peak #154 (+25)' },
+    { rank: '#', chart: '-', track: 'Gameboy / Debut', weeks: '-', markets: 1, notes: 'Singapore chart' }
+  ],
+  streaming_trends: [
+    {
+      title: 'Beautiful Chaos',
+      bullets: ['Slightly down -5% globally (US -5%).']
+    },
+    {
+      title: 'Gabriela',
+      bullets: [
+        'Down -5% globally; Long-form streams slightly up +1%.',
+        'Amazon LF streams up +10% (17% of global).',
+        'US streams -5% (LF slightly up +1%).',
+        'Top ex-US markets: Philippines (12%), Brazil (8%), Indonesia (6%).',
+        'Slight LF growth in Indonesia (+4%) and Australia (+2%).'
+      ]
+    },
+    {
+      title: 'Gnarly',
+      bullets: [
+        'Down -6% globally; LF streams -6%.',
+        'US streams -6% (LF -6%).',
+        'Top ex-US: Brazil (8%), Philippines (7%), Mexico (5%), UK (5%).'
+      ]
+    },
+    {
+      title: 'Gameboy',
+      bullets: ['Down -6% globally; US -6% (LF -5%).']
+    }
+  ],
+  tiktok_trends: [
+    { topic: 'Gabriela', top_posts: ['1,500,000 views'] },
+    {
+      topic: 'Gnarly',
+      top_posts: ['1,100,000 views', '1,000,000 views', '1,000,000 views', '65,000 views'],
+      notes: "More creators using 'Making Beats…' verse"
+    }
+  ]
+}
 
 export function WeeklyDetail() {
   const { artistId } = useParams<{ artistId: string }>()
-  const [searchParams] = useSearchParams()
-  const navigate = useNavigate()
-  const weekParam = searchParams.get('week')
 
-  const [report, setReport] = useState<WeeklyReport | null>(null)
-  const [sections, setSections] = useState<ReportSection[]>([])
-  const [media, setMedia] = useState<ReportMedia[]>([])
-  const [availableWeeks, setAvailableWeeks] = useState<string[]>([])
-  const platformFilters = ['spotify', 'billboard']
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function fetchData() {
-      if (!artistId) {
-        console.log('❌ No artistId provided')
-        return
-      }
-
-      console.log('🔍 Fetching data for:', { artistId, weekParam })
-      setLoading(true)
-
-      const reportData = await getWeeklyReport(artistId, weekParam || undefined)
-      console.log('📊 Report data:', reportData)
-
-      if (!reportData) {
-        console.log('❌ No report data found')
-        setLoading(false)
-        return
-      }
-
-      setReport(reportData)
-
-      const [sectionsData, mediaData, weeksData] = await Promise.all([
-        getReportSections(reportData.report_id),
-        getReportMedia(reportData.report_id),
-        getAvailableWeeks(artistId)
-      ])
-
-      console.log('📋 Sections:', sectionsData.length, 'items')
-      console.log('🖼️ Media:', mediaData.length, 'items')
-      console.log('📅 Available weeks:', weeksData)
-
-      setSections(sectionsData)
-      setMedia(mediaData)
-      setAvailableWeeks(weeksData)
-      setLoading(false)
-    }
-
-    fetchData()
-  }, [artistId, weekParam])
-
-  const handleWeekChange = (newWeekEnd: string) => {
-    navigate(`/reports/weeklies/${artistId}?week=${newWeekEnd}`)
-  }
+  const report = artistId === 'katseye' ? SAMPLE_KATSEYE : null
 
   const handleExportPDF = () => {
     window.print()
-  }
-
-  if (loading) {
-    return (
-      <div className="p-8 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="animate-pulse space-y-6">
-            <div className="h-8 bg-gray-300 rounded w-1/3"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="h-32 bg-gray-200 rounded-xl"></div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    )
   }
 
   if (!report) {
@@ -100,7 +83,7 @@ export function WeeklyDetail() {
       <div className="p-8 bg-white">
         <div className="max-w-7xl mx-auto text-center py-12">
           <h2 className="text-2xl font-bold text-black mb-2">Report Not Found</h2>
-          <p className="text-gray-600">No report available for this artist and week</p>
+          <p className="text-gray-600">No report available for {artistId}</p>
         </div>
       </div>
     )
@@ -114,102 +97,197 @@ export function WeeklyDetail() {
 
   return (
     <div className="bg-white min-h-screen">
-      <div className="print:hidden">
-        <div className="border-b border-gray-200 bg-white sticky top-0 z-10 shadow-sm">
-          <div className="max-w-7xl mx-auto px-6 py-4">
-            <Breadcrumb items={breadcrumbItems} />
+      <div className="print:hidden border-b border-gray-200 bg-white sticky top-0 z-10 shadow-sm">
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <Breadcrumb items={breadcrumbItems} />
 
-            <div className="flex items-center justify-between mt-4">
-              <div>
-                <h1 className="text-2xl font-bold text-black">{report.artist_name} Weekly</h1>
-                <p className="text-sm text-gray-600 mt-1">
-                  {report.week_start} — {report.week_end}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3">
-                {availableWeeks.length > 1 && (
-                  <select
-                    value={weekParam || report.week_end}
-                    onChange={(e) => handleWeekChange(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm text-black hover:border-gray-400 transition-colors"
-                  >
-                    {availableWeeks.map(week => (
-                      <option key={week} value={week}>Week ending {week}</option>
-                    ))}
-                  </select>
-                )}
-
-                <button
-                  onClick={handleExportPDF}
-                  className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 text-sm font-medium"
-                >
-                  <Download className="w-4 h-4" />
-                  Export PDF
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="print:block hidden">
-        <div className="px-6 py-4 border-b-2 border-black mb-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-4">
             <div>
               <h1 className="text-2xl font-bold text-black">{report.artist_name} Weekly</h1>
-              <p className="text-sm text-gray-700 mt-1">
+              <p className="text-sm text-gray-600 mt-1">
                 {report.week_start} — {report.week_end}
               </p>
             </div>
-            <img src="/assets/pinguinohybe.png" alt="HYBE" className="h-10" />
+
+            <button
+              onClick={handleExportPDF}
+              className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 text-sm font-medium"
+            >
+              <Download className="w-4 h-4" />
+              Export PDF
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-8 space-y-12">
-        {sections.map((section) => {
-          const shouldShow = !section.platform || platformFilters.includes(section.platform)
-          if (!shouldShow) return null
-
-          const renderSectionContent = () => {
-            switch (section.section_type) {
-              case 'summary_highlights':
-                return <SummaryHighlightsRenderer data={section.payload_json} />
-
-              case 'charts':
-                return <ChartsRenderer data={section.payload_json} platform={section.platform || undefined} />
-
-              case 'streaming_trends':
-                return <StreamingTrendsRenderer data={section.payload_json} />
-
-              case 'tiktok_trends':
-                return <TikTokTrendsRenderer data={section.payload_json} />
-
-              default:
-                return null
-            }
-          }
-
-          const content = renderSectionContent()
-          if (!content) return null
-
-          return (
-            <section key={section.section_id} className="page-break-inside-avoid">
-              <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-                {section.title || section.section_type}
-              </h2>
-              <div className="mt-4">
-                {content}
-              </div>
-            </section>
-          )
-        })}
-
-        {sections.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500">No sections available for this report</p>
+      <div className="print:block hidden border-b-2 border-black mb-8">
+        <div className="px-6 py-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-black">{report.artist_name} Weekly</h1>
+            <p className="text-sm text-gray-700 mt-1">
+              {report.week_start} — {report.week_end}
+            </p>
           </div>
+          <img src="/assets/pinguinohybe.png" alt="HYBE" className="h-10" />
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-6 py-8 space-y-10">
+        {report.highlights && report.highlights.items.length > 0 && (
+          <section className="page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Highlights / Overall Summary
+            </h2>
+            <ul className="space-y-2 list-none">
+              {report.highlights.items.map((item, idx) => (
+                <li key={idx} className="flex items-start gap-2">
+                  <span className="text-black font-bold mt-1">•</span>
+                  <span className="text-gray-900">{item}</span>
+                </li>
+              ))}
+            </ul>
+            {report.highlights.video_link && (
+              <div className="mt-4">
+                <a
+                  href={report.highlights.video_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 underline text-sm"
+                >
+                  Watch the full video
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            )}
+          </section>
+        )}
+
+        {report.billboard_charts && report.billboard_charts.length > 0 && (
+          <section className="page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Billboard Charts
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse" role="table">
+                <thead>
+                  <tr className="border-b-2 border-gray-300">
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
+                      Rank
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
+                      Chart
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
+                      Track/Album
+                    </th>
+                    <th className="text-right py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
+                      Weeks
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
+                      Notes
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {report.billboard_charts.map((row, idx) => (
+                    <tr key={idx} className="border-b border-gray-200">
+                      <td className="py-3 px-4 font-semibold text-black">{row.rank}</td>
+                      <td className="py-3 px-4 text-gray-700">{row.chart}</td>
+                      <td className="py-3 px-4 font-medium text-black">{row.track}</td>
+                      <td className="py-3 px-4 text-right text-gray-700">{row.weeks}</td>
+                      <td className="py-3 px-4 text-gray-600 text-sm">{row.notes || '-'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
+        {report.spotify_charts && report.spotify_charts.length > 0 && (
+          <section className="page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Spotify Charts
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse" role="table">
+                <thead>
+                  <tr className="border-b-2 border-gray-300">
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
+                      Track
+                    </th>
+                    <th className="text-right py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
+                      Markets
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
+                      Notes
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {report.spotify_charts.map((row, idx) => (
+                    <tr key={idx} className="border-b border-gray-200">
+                      <td className="py-3 px-4 font-medium text-black">{row.track}</td>
+                      <td className="py-3 px-4 text-right text-gray-700">{row.markets || '-'}</td>
+                      <td className="py-3 px-4 text-gray-600 text-sm">{row.notes || '-'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
+        {report.streaming_trends && report.streaming_trends.length > 0 && (
+          <section className="page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Streaming Trends
+            </h2>
+            <div className="space-y-6">
+              {report.streaming_trends.map((trend, idx) => (
+                <div key={idx} className="space-y-2">
+                  <h3 className="text-lg font-semibold text-black">{trend.title}</h3>
+                  <ul className="space-y-1 list-none pl-4">
+                    {trend.bullets.map((bullet, bidx) => (
+                      <li key={bidx} className="flex items-start gap-2">
+                        <span className="text-gray-600 mt-1">◦</span>
+                        <span className="text-gray-800">{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {report.tiktok_trends && report.tiktok_trends.length > 0 && (
+          <section className="page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              TikTok Trends
+            </h2>
+            <div className="space-y-6">
+              {report.tiktok_trends.map((trend, idx) => (
+                <div key={idx} className="space-y-2">
+                  <h3 className="text-lg font-semibold text-black">{trend.topic}</h3>
+                  <div>
+                    <p className="text-sm font-medium text-gray-700 mb-2">Top Posts:</p>
+                    <ul className="space-y-1 list-none pl-4">
+                      {trend.top_posts.map((post, pidx) => (
+                        <li key={pidx} className="flex items-start gap-2">
+                          <span className="text-gray-600 mt-1">•</span>
+                          <span className="text-gray-800">{post}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  {trend.notes && (
+                    <p className="text-sm text-gray-600 italic mt-2">{trend.notes}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
         )}
       </div>
 
@@ -237,6 +315,9 @@ export function WeeklyDetail() {
           }
           table {
             font-size: 10pt;
+          }
+          h2 {
+            margin-top: 1.5rem;
           }
         }
       `}</style>

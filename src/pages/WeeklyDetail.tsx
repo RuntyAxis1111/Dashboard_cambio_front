@@ -132,16 +132,16 @@ const SAMPLE_MAGNA: WeeklyReport = {
   artist: 'MAGNA',
   week_start: '2025-10-02',
   week_end: '2025-10-08',
-  fan_sentiment: 'No data this week',
+  fan_sentiment: 'No data',
   highlights: [
-    'Entrada a el nuevo pop (P) (#5/50; ~288K followers)',
-    'Nueva alta: TU PLAYLIST DE FAVORITA <3 (#4/50)',
-    'Release engagement: 4,323 listeners (6.4%) en 13 días desde "Deja De Hablar"',
-    'Mercados fuertes 28d: México (82.7K), Colombia (46.9K), US (39.8K)',
-    'Ciudades clave 28d: CDMX (23.4K), Bogotá (21.5K), Lima (9.7K)',
-    'Audiencia total 28d: 1,576,299 (Activos nuevos 22,481)',
-    'Demografía: 51% mujeres, pico 25–34 (45%)',
-    'Sin entradas verificadas en Luminate esta semana'
+    'Entrada a el nuevo pop (P) (Spotify) — posición #5/50; playlist ~287.9K followers',
+    'Nueva alta: TU PLAYLIST DE FAVORITA <3 — posición #4/50',
+    'Release engagement (Spotify for Artists): 4,323 listeners (6.4%) en 13 días desde "Deja De Hablar" (al 2025-10-08)',
+    'Top markets (28d): México (82.7K), Colombia (46.9K), Estados Unidos (39.8K)',
+    'Top cities (28d): CDMX (23.4K), Bogotá (21.5K), Lima (9.7K)',
+    'Audiencia total (28d): 1,576,299 (activos nuevos 22,481)',
+    'Demografía: 51% mujeres; pico 25–34 (45%)',
+    'Luminate: Sin entradas verificadas esta semana'
   ],
   highlight_link: undefined,
   billboard_charts: [],
@@ -194,13 +194,10 @@ const SAMPLE_MAGNA: WeeklyReport = {
   ],
   playlist_adds: [
     { playlist: 'el nuevo pop (P) 🇵🇪', curator: 'Spotify', track: 'deja de hablar', date_added: '2025-09-26', position: '5/50', peak: 3, followers_k: 287.9, note: 'New add; buena posición' },
+    { playlist: 'TU PLAYLIST DE FAVORITA <3', curator: 'Joan Because', track: 'deja de hablar', date_added: '2025-10-07', position: '4/50', peak: 4, followers_k: 22.8, note: '—' },
     { playlist: 'Parchadito', curator: 'Spotify', track: 'les va a doler', date_added: '2025-08-29', position: '15/60', peak: 15, followers_k: 63.7, note: 'Estable' },
-    { playlist: 'Tecate Pal Norte 2025', curator: 'Tecate Pa\'l Norte', track: 'SAL', date_added: '2024-10-28', position: '125/224', peak: 123, followers_k: 57.2, note: 'Larga permanencia' },
     { playlist: 'LO MAS NUEVO DEL REGGAETON 2025', curator: 'Yulieth Gomez B', track: 'les va a doler', date_added: '2025-09-05', position: '20/97', peak: 13, followers_k: 48.7, note: 'Seguidores creciendo' },
-    { playlist: 'TU PLAYLIST DE FAVORITA <3', curator: 'Joan Because', track: 'deja de hablar', date_added: '2025-10-07', position: '4/50', peak: 4, followers_k: 22.8, note: 'Nueva alta' },
-    { playlist: 'Official SXSW 2025 Playlist', curator: 'SXSW', track: 'lo que dura la canción', date_added: '2024-12-11', position: '285/719', peak: 10, followers_k: 22.8, note: 'Histórico' },
-    { playlist: 'IRIS', curator: 'Spotify', track: 'cruz', date_added: '2025-03-29', position: '41/50', peak: 6, followers_k: 20.2, note: 'Estable' },
-    { playlist: 'Cocitel Records', curator: 'uDiscover Éxitos', track: 'déjala llorar (Cobuz&Bustta Remix)', date_added: '2025-08-01', position: '14/141', peak: 12, followers_k: 18.0, note: 'Estable' }
+    { playlist: 'Tecate Pal Norte 2025', curator: 'Tecate Pa\'l Norte', track: 'SAL', date_added: '2024-10-28', position: '125/224', peak: 123, followers_k: 57.2, note: 'Larga permanencia' }
   ]
 }
 
@@ -397,134 +394,6 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        {report.billboard_charts && report.billboard_charts.length > 0 && (
-          <section className="section page-break-inside-avoid">
-            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-              Billboard Charts
-            </h2>
-            <div className="overflow-x-auto table-wrapper">
-              <table className="w-full border-collapse" role="table">
-                <thead>
-                  <tr className="border-b-2 border-gray-300">
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
-                      Rank
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
-                      Chart
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
-                      Track/Album
-                    </th>
-                    <th className="text-right py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
-                      Weeks
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
-                      Notes
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {report.billboard_charts.map((row, idx) => (
-                    <tr key={idx} className="border-b border-gray-200">
-                      <td className="py-3 px-4 font-semibold text-black">{row.rank}</td>
-                      <td className="py-3 px-4 text-gray-700">{row.chart}</td>
-                      <td className="py-3 px-4 font-medium text-black">{row.work}</td>
-                      <td className="py-3 px-4 text-right text-gray-700">{row.weeks}</td>
-                      <td className="py-3 px-4 text-gray-600 text-sm notes">{row.notes === '-' ? '–' : row.notes}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        )}
-
-        {report.spotify_charts && report.spotify_charts.length > 0 && (
-          <section className="section page-break-inside-avoid">
-            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-              Spotify Charts
-            </h2>
-            <div className="overflow-x-auto table-wrapper">
-              <table className="w-full border-collapse" role="table">
-                <thead>
-                  <tr className="border-b-2 border-gray-300">
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
-                      Track
-                    </th>
-                    <th className="text-right py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
-                      Markets
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">
-                      Notes
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {report.spotify_charts.map((row, idx) => (
-                    <tr key={idx} className="border-b border-gray-200">
-                      <td className="py-3 px-4 font-medium text-black">{row.track}</td>
-                      <td className="py-3 px-4 text-right text-gray-700 markets">{row.markets}</td>
-                      <td className="py-3 px-4 text-gray-600 text-sm notes">{row.notes}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        )}
-
-        {report.streaming_trends && report.streaming_trends.length > 0 && (
-          <section className="section page-break-inside-avoid">
-            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-              Streaming Trends
-            </h2>
-            <div className="space-y-6">
-              {report.streaming_trends.map((trend, idx) => (
-                <div key={idx} className="trend-block space-y-2">
-                  <h3 className="text-lg font-semibold text-black">{trend.track}</h3>
-                  <ul className="space-y-1 list-none pl-4">
-                    {trend.bullets.map((bullet, bidx) => (
-                      <li key={bidx} className="flex items-start gap-2">
-                        <span className="text-gray-600 mt-1">◦</span>
-                        <span className="text-gray-800">{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {report.tiktok_trends && report.tiktok_trends.length > 0 && (
-          <section className="section page-break-inside-avoid">
-            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-              TikTok Trends
-            </h2>
-            <div className="space-y-6">
-              {report.tiktok_trends.map((trend, idx) => (
-                <div key={idx} className="trend-block space-y-2">
-                  <h3 className="text-lg font-semibold text-black">{trend.track}</h3>
-                  <div>
-                    <p className="text-sm font-medium text-gray-700 mb-2">Top Posts:</p>
-                    <ul className="space-y-1 list-none pl-4">
-                      {trend.top_posts.map((post, pidx) => (
-                        <li key={pidx} className="flex items-start gap-2">
-                          <span className="text-gray-600 mt-1">•</span>
-                          <span className="text-gray-800">{post}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  {trend.note && (
-                    <p className="text-sm text-gray-600 italic mt-2">{trend.note}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
         {report.fan_sentiment && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
@@ -533,6 +402,85 @@ export function WeeklyDetail() {
             <p className="text-gray-600 italic">{report.fan_sentiment}</p>
           </section>
         )}
+
+        <section className="section page-break-inside-avoid">
+          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+            Streaming Data Update
+          </h2>
+
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-semibold text-black mb-2">Charting — Billboard</h3>
+              {report.billboard_charts && report.billboard_charts.length > 0 ? (
+                <div className="overflow-x-auto table-wrapper">
+                  <table className="w-full border-collapse" role="table">
+                    <thead>
+                      <tr className="border-b-2 border-gray-300">
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Rank</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Chart</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Track/Album</th>
+                        <th className="text-right py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Weeks</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {report.billboard_charts.map((row, idx) => (
+                        <tr key={idx} className="border-b border-gray-200">
+                          <td className="py-3 px-4 font-semibold text-black">{row.rank}</td>
+                          <td className="py-3 px-4 text-gray-700">{row.chart}</td>
+                          <td className="py-3 px-4 font-medium text-black">{row.work}</td>
+                          <td className="py-3 px-4 text-right text-gray-700">{row.weeks}</td>
+                          <td className="py-3 px-4 text-gray-600 text-sm notes">{row.notes === '-' ? '–' : row.notes}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="text-gray-600 italic">No data</p>
+              )}
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold text-black mb-2">Charting — Spotify</h3>
+              {report.spotify_charts && report.spotify_charts.length > 0 ? (
+                <div className="overflow-x-auto table-wrapper">
+                  <table className="w-full border-collapse" role="table">
+                    <thead>
+                      <tr className="border-b-2 border-gray-300">
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Track</th>
+                        <th className="text-right py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Markets</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {report.spotify_charts.map((row, idx) => (
+                        <tr key={idx} className="border-b border-gray-200">
+                          <td className="py-3 px-4 font-medium text-black">{row.track}</td>
+                          <td className="py-3 px-4 text-right text-gray-700 markets">{row.markets}</td>
+                          <td className="py-3 px-4 text-gray-600 text-sm notes">{row.notes}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="text-gray-600 italic">No data</p>
+              )}
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold text-black mb-2">Charting — Apple Music</h3>
+              <p className="text-gray-600 italic">No data</p>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold text-black mb-2">Charting — Shazam</h3>
+              <p className="text-gray-600 italic">No data</p>
+            </div>
+          </div>
+        </section>
+
 
         {report.playlist_adds && report.playlist_adds.length > 0 && (
           <section className="section page-break-inside-avoid">
@@ -667,6 +615,48 @@ export function WeeklyDetail() {
             </div>
           </section>
         )}
+
+        <section className="section page-break-inside-avoid">
+          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+            Streaming Trends
+          </h2>
+          <p className="text-gray-600 italic">No data</p>
+        </section>
+
+        <section className="section page-break-inside-avoid">
+          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+            TikTok Trends
+          </h2>
+          <p className="text-gray-600 italic">No data</p>
+        </section>
+
+        <section className="section page-break-inside-avoid">
+          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+            US Weekly Album Sales Updates
+          </h2>
+          <p className="text-gray-600 italic">No data</p>
+        </section>
+
+        <section className="section page-break-inside-avoid">
+          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+            Total MV Views
+          </h2>
+          <p className="text-gray-600 italic">No data</p>
+        </section>
+
+        <section className="section page-break-inside-avoid">
+          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+            Spotify Streams (totales por canción)
+          </h2>
+          <p className="text-gray-600 italic">No data</p>
+        </section>
+
+        <section className="section page-break-inside-avoid">
+          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+            Members' IG Weekly Social Growth
+          </h2>
+          <p className="text-gray-600 italic">No data</p>
+        </section>
       </div>
 
       <div className="print-footer"></div>

@@ -500,49 +500,97 @@ export function WeeklyDetail() {
             <div className="space-y-6">
               <div className="whitespace-pre-line text-gray-900">{report.fan_sentiment}</div>
 
-              <div className="space-y-6 mt-6">
-                <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
-                  <div className="bg-white rounded-lg overflow-hidden mb-3">
-                    <img
-                      src="/assets/magna-ig-aniversario.png"
-                      alt="Post aniversario + -50% descuento"
-                      className="w-full mx-auto"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                        const placeholder = document.createElement('div');
-                        placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
-                        placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">📸 Imagen no disponible</p><p class="text-sm mt-2">Post aniversario + -50%</p></div>';
-                        target.parentElement?.appendChild(placeholder);
-                      }}
-                    />
+              {report.artist === 'MAGNA' && (
+                <div className="space-y-6 mt-6">
+                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                    <div className="bg-white rounded-lg overflow-hidden mb-3">
+                      <img
+                        src="/assets/magna-ig-aniversario.png"
+                        alt="Post aniversario + -50% descuento"
+                        className="w-full max-w-3xl mx-auto rounded-lg shadow-sm"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const placeholder = document.createElement('div');
+                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Imagen no disponible</p><p class="text-sm mt-2">Post aniversario + -50%</p></div>';
+                          target.parentElement?.appendChild(placeholder);
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-700 text-center italic">
+                      <strong>Imagen 1:</strong> Post aniversario + -50% — 839 likes — hace ~5 días.
+                    </p>
                   </div>
-                  <p className="text-sm text-gray-700 text-center italic">
-                    <strong>Imagen 1:</strong> Post aniversario + -50% — 839 likes — hace ~5 días.
-                  </p>
-                </div>
 
-                <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
-                  <div className="bg-white rounded-lg overflow-hidden mb-3">
-                    <img
-                      src="/assets/magna-ig-dejadehablar.png"
-                      alt="Reel Deja de hablar (canta-along)"
-                      className="w-full mx-auto"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                        const placeholder = document.createElement('div');
-                        placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
-                        placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">📸 Imagen no disponible</p><p class="text-sm mt-2">Reel "Deja de hablar"</p></div>';
-                        target.parentElement?.appendChild(placeholder);
-                      }}
-                    />
+                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                    <div className="bg-white rounded-lg overflow-hidden mb-3">
+                      <img
+                        src="/assets/magna-ig-dejadehablar.png"
+                        alt="Reel Deja de hablar (canta-along)"
+                        className="w-full max-w-3xl mx-auto rounded-lg shadow-sm"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const placeholder = document.createElement('div');
+                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Imagen no disponible</p><p class="text-sm mt-2">Reel "Deja de hablar"</p></div>';
+                          target.parentElement?.appendChild(placeholder);
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-700 text-center italic">
+                      <strong>Imagen 2:</strong> Reel "Deja de hablar" (canta-along) — 386 likes — hace ~1 semana.
+                    </p>
                   </div>
-                  <p className="text-sm text-gray-700 text-center italic">
-                    <strong>Imagen 2:</strong> Reel "Deja de hablar" (canta-along) — 386 likes — hace ~1 semana.
-                  </p>
                 </div>
-              </div>
+              )}
+
+              {report.artist === 'GREGORIO' && (
+                <div className="space-y-6 mt-6">
+                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                    <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
+                      <img
+                        src="/assets/gregorio-santos-bravos.png"
+                        alt="Post con Santos Bravos"
+                        className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const placeholder = document.createElement('div');
+                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Imagen no disponible</p><p class="text-sm mt-2">Post con Santos Bravos</p></div>';
+                          target.parentElement?.appendChild(placeholder);
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-700 text-center italic">
+                      <strong>Imagen 1:</strong> Post con Santos Bravos — "UNA CANCIÓN ASÍ LES QUEDARÍA PERFECTO A SANTOS BRAVOS CUANDO YA DEBUTEN" — ~3 semanas.
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                    <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
+                      <img
+                        src="/assets/gregorio-toca-la-puerta-live.png"
+                        alt="Mi primera vez cantando Toca La Puerta (en vivo)"
+                        className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const placeholder = document.createElement('div');
+                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Imagen no disponible</p><p class="text-sm mt-2">Toca La Puerta (en vivo)</p></div>';
+                          target.parentElement?.appendChild(placeholder);
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-700 text-center italic">
+                      <strong>Imagen 2:</strong> Mi primera vez cantando "Toca La Puerta" (en vivo) — "Eres demasiado!!! Y en vivo eres una locura!!!! Qué buena presentación" — ~2 días.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </section>
         )}

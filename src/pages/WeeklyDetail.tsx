@@ -218,6 +218,85 @@ const SAMPLE_MAGNA: WeeklyReport = {
   ]
 }
 
+const SAMPLE_GREGORIO: WeeklyReport = {
+  artist: 'GREGORIO',
+  week_start: '2025-10-02',
+  week_end: '2025-10-08',
+  fan_sentiment: `This week's takeaways:
+
+• Tono general: Muy positivo (presentación en vivo de "Toca La Puerta" y clip con Santos Bravos)
+
+• Temas:
+  - "En vivo suena increíble"
+  - "Presentación poderosa"
+  - "Colaboración/afinidad con Santos Bravos"
+  - "Expectativa por su debut"
+
+• Pull-quotes (muestra):
+  - "Eres demasiado!!! Y en vivo eres una locura!!!! Qué buena presentación ✨✨✨✨"
+  - "Increíble ❤️😍"
+  - "UNA CANCIÓN ASÍ LES QUEDARÍA PERFECTO A SANTOS BRAVOS CUANDO YA DEBUTEN 🙏🏻"
+  - "Me encanta todo lo que está sucediendo acá"`,
+  highlights: [
+    'Presentación en vivo de "Toca La Puerta" y contenido con Santos Bravos generan alta afinidad',
+    'Total audience (S4A, últimos 2 años): 95,303',
+    'Segmentación (S4A): 3.3% audiencia activa, 4% previamente activa, 92.6% programada',
+    'Release engagement: "Toca La Puerta" — 977 (34%) de 2,877 oyentes de la audiencia activa la escucharon intencionalmente en los primeros 28 días',
+    'Mercados fuertes 28d (Top-3): Colombia (17,275), México (9,816), Estados Unidos (9,431)',
+    'Ciudades clave 28d (Top-3): Bogotá (8,608), Lima (3,587), Medellín (2,350)',
+    'Demografía 28d: 54% mujeres, 41% hombres, 1% no binario, 4% no especificado. Pico de edad 25–34 (38%); luego 35–44 (29%) y 18–24 (13%)'
+  ],
+  billboard_charts: [],
+  spotify_charts: [],
+  streaming_trends: [],
+  tiktok_trends: [],
+  apple_music: [],
+  shazam: [],
+  total_audience: 95303,
+  release_engagement: {
+    title: 'Toca La Puerta',
+    days_since_release: 28,
+    active_audience_total: 2877,
+    engaged_streamed: 977,
+    engaged_pct: 34
+  },
+  demographics: {
+    gender: { female: 54, male: 41, non_binary: 1, not_specified: 4 },
+    age_pct: {
+      '<18': 2,
+      '18-24': 13,
+      '25-34': 38,
+      '35-44': 29,
+      '45-54': 13,
+      '55-64': 4,
+      '65+': 1
+    }
+  },
+  top_countries: [
+    { rank: 1, country: 'Colombia', listeners: 17275 },
+    { rank: 2, country: 'Mexico', listeners: 9816 },
+    { rank: 3, country: 'United States', listeners: 9431 }
+  ],
+  top_cities: [
+    { rank: 1, city: 'Bogotá, CO', listeners: 8608 },
+    { rank: 2, city: 'Lima, PE', listeners: 3587 },
+    { rank: 3, city: 'Medellín, CO', listeners: 2350 }
+  ],
+  playlist_adds: [],
+  spotify_stats: {
+    listeners: 64335,
+    streams: 101174,
+    streams_per_listener: 1.573,
+    saves: 1271,
+    playlist_adds: 850
+  },
+  audience_segmentation: {
+    active: 3.3,
+    previously_active: 4.0,
+    programmed: 92.6
+  }
+}
+
 function getColIndexByHeader(tableEl: HTMLTableElement, headerText = 'notes'): number {
   const ths = tableEl.querySelectorAll('thead th')
   for (let i = 0; i < ths.length; i++) {
@@ -318,6 +397,8 @@ export function WeeklyDetail() {
     ? SAMPLE_ADRIAN_COTA
     : artistId === 'magna'
     ? SAMPLE_MAGNA
+    : artistId === 'gregorio'
+    ? SAMPLE_GREGORIO
     : null
 
   useEffect(() => {
@@ -637,6 +718,58 @@ export function WeeklyDetail() {
           </section>
         )}
 
+        {report.spotify_stats && (
+          <section className="section page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Spotify for Artists — Stats (últimos 28 días)
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600 mb-1">Listeners</p>
+                <p className="text-2xl font-bold text-black">{report.spotify_stats.listeners.toLocaleString()}</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600 mb-1">Streams</p>
+                <p className="text-2xl font-bold text-black">{report.spotify_stats.streams.toLocaleString()}</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600 mb-1">Streams/Listener</p>
+                <p className="text-2xl font-bold text-black">{report.spotify_stats.streams_per_listener.toFixed(3)}</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600 mb-1">Saves</p>
+                <p className="text-2xl font-bold text-black">{report.spotify_stats.saves.toLocaleString()}</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600 mb-1">Playlist Adds</p>
+                <p className="text-2xl font-bold text-black">{report.spotify_stats.playlist_adds.toLocaleString()}</p>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {report.audience_segmentation && (
+          <section className="section page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Audience Segmentation
+            </h2>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
+                <p className="text-sm text-gray-600 mb-1">Activa</p>
+                <p className="text-3xl font-bold text-blue-600">{report.audience_segmentation.active}%</p>
+              </div>
+              <div className="bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                <p className="text-sm text-gray-600 mb-1">Previously Active</p>
+                <p className="text-3xl font-bold text-green-600">{report.audience_segmentation.previously_active}%</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                <p className="text-sm text-gray-600 mb-1">Programmed</p>
+                <p className="text-3xl font-bold text-gray-600">{report.audience_segmentation.programmed}%</p>
+              </div>
+            </div>
+          </section>
+        )}
+
         {report.demographics && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
@@ -725,20 +858,42 @@ export function WeeklyDetail() {
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             Sources
           </h2>
-          <ul className="space-y-2 list-disc list-inside text-gray-900">
-            <li>
-              <strong>Instagram @m4gna</strong> — Post aniversario + promo -50% (839 likes, ~5d), Reel "Deja de hablar" (386 likes, ~1w)
-            </li>
-            <li>
-              <strong>Spotify for Artists</strong> — Top Countries, Top Cities, Demographics, Audience Segments (últimos 28 días)
-            </li>
-            <li>
-              <strong>Chartmetric</strong> — Playlist adds & stats (semana al 2025-10-08)
-            </li>
-            <li>
-              <strong>Luminate</strong> — Entradas/posiciones (sin novedades esta semana)
-            </li>
-          </ul>
+          {report.artist === 'MAGNA' ? (
+            <ul className="space-y-2 list-disc list-inside text-gray-900">
+              <li>
+                <strong>Instagram @m4gna</strong> — Post aniversario + promo -50% (839 likes, ~5d), Reel "Deja de hablar" (386 likes, ~1w)
+              </li>
+              <li>
+                <strong>Spotify for Artists</strong> — Top Countries, Top Cities, Demographics, Audience Segments (últimos 28 días)
+              </li>
+              <li>
+                <strong>Chartmetric</strong> — Playlist adds & stats (semana al 2025-10-08)
+              </li>
+              <li>
+                <strong>Luminate</strong> — Entradas/posiciones (sin novedades esta semana)
+              </li>
+            </ul>
+          ) : report.artist === 'GREGORIO' ? (
+            <ul className="space-y-2 list-disc list-inside text-gray-900">
+              <li>
+                <strong>Spotify for Artists</strong> — Segments, Demographics, Location, Release engagement (últimos 28 días)
+              </li>
+              <li>
+                <strong>Instagram @gregorio_umana</strong> — Posts: "Toca La Puerta (en vivo)" y "con Santos Bravos"
+              </li>
+              <li>
+                <strong>Chartmetric</strong> — Playlist adds & stats (pending)
+              </li>
+              <li>
+                <strong>Luminate</strong> — Entradas/posiciones (pending)
+              </li>
+              <li>
+                <strong>Meltwater</strong> — Social media insights (pending)
+              </li>
+            </ul>
+          ) : (
+            <p className="text-gray-600 italic">No sources listed</p>
+          )}
         </section>
       </div>
 

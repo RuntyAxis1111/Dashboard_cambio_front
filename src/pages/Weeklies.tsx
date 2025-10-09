@@ -22,6 +22,12 @@ const SAMPLE_ARTISTS: ArtistSummary[] = [
     artist_name: 'MAGNA',
     week_end: '2025-10-08',
     cover_image_url: '/assets/image copy copy.png'
+  },
+  {
+    artist_id: 'gregorio',
+    artist_name: 'GREGORIO',
+    week_end: '2025-10-08',
+    cover_image_url: '/assets/image copy copy copy.png'
   }
 ]
 

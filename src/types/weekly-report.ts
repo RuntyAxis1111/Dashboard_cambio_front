@@ -59,6 +59,20 @@ export type ReleaseEngagement = {
   engaged_pct: number
 }
 
+export type SpotifyStats = {
+  listeners: number
+  streams: number
+  streams_per_listener: number
+  saves: number
+  playlist_adds: number
+}
+
+export type AudienceSegmentation = {
+  active: number
+  previously_active: number
+  programmed: number
+}
+
 export type WeeklyReport = {
   artist: string
   week_start: string
@@ -81,4 +95,6 @@ export type WeeklyReport = {
   release_engagement?: ReleaseEngagement
   total_audience?: number
   fan_sentiment?: string
+  spotify_stats?: SpotifyStats
+  audience_segmentation?: AudienceSegmentation
 }

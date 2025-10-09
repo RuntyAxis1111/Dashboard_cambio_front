@@ -132,16 +132,33 @@ const SAMPLE_MAGNA: WeeklyReport = {
   artist: 'MAGNA',
   week_start: '2025-10-02',
   week_end: '2025-10-08',
-  fan_sentiment: 'No data',
+  fan_sentiment: `This week's takeaways:
+
+• Tono general: Muy positivo (celebración, gratitud, cercanía). Sin señales negativas relevantes.
+
+• Temas:
+  - Hito 1º aniversario del álbum
+  - Promoción -50% de merch/vinilo con envíos a MX/CO/US
+  - Conexión emocional con "Deja de hablar" (canta-along, comunidad)
+
+• Pull-quotes (muestra):
+  - "Ese álbum es pura magia, lo amo tanto 💙"
+  - "Además tiene mi canción favorita en el mundo!!!!"
+  - "La vida suena muy linda contigooo 🩷"
+  - "Qué lindo @c2abadp 😍"
+
+• Acciones sugeridas:
+  - Fijar/rehusar el post del -50% y empujarlo en stories con link sticker a itsmagna.com (MX/CO/US)
+  - Repostear clips canta-along de "Deja de hablar" (IG Reels/TikTok) con CTA a Guardar el track
+  - Añadir UTM (ej. ?utm_source=ig&utm_campaign=aniv50) para medir tráfico a merch`,
   highlights: [
-    'Entrada a el nuevo pop (P) (Spotify) — posición #5/50; playlist ~287.9K followers',
-    'Nueva alta: TU PLAYLIST DE FAVORITA <3 — posición #4/50',
-    'Release engagement (Spotify for Artists): 4,323 listeners (6.4%) en 13 días desde "Deja De Hablar" (al 2025-10-08)',
-    'Top markets (28d): México (82.7K), Colombia (46.9K), Estados Unidos (39.8K)',
-    'Top cities (28d): CDMX (23.4K), Bogotá (21.5K), Lima (9.7K)',
-    'Audiencia total (28d): 1,576,299 (activos nuevos 22,481)',
-    'Demografía: 51% mujeres; pico 25–34 (45%)',
-    'Luminate: Sin entradas verificadas esta semana'
+    'Aniversario del álbum (+casi 5M streams) y promo -50% en vinilo/merch en itsmagna.com (envíos a MX/CO/US)',
+    'Contenido íntimo/UGC de "Deja de hablar" generó alta afinidad y comentarios positivos (ver Fan Sentiment)',
+    'Mercados fuertes 28d (S4A): México (82.7K), Colombia (46.9K), US (39.8K)',
+    'Ciudades clave 28d: CDMX (23.4K), Bogotá (21.5K), Lima (9.7K)',
+    'Audiencia total 28d (S4A): 1,576,299 (Activos nuevos 22,481)',
+    'Demografía 28d: 51% mujeres, pico 25–34 (45%)',
+    'Luminate: sin entradas verificadas esta semana (No data)'
   ],
   highlight_link: undefined,
   billboard_charts: [],
@@ -399,7 +416,33 @@ export function WeeklyDetail() {
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Fan Sentiment
             </h2>
-            <p className="text-gray-600 italic">{report.fan_sentiment}</p>
+            <div className="space-y-6">
+              <div className="whitespace-pre-line text-gray-900">{report.fan_sentiment}</div>
+
+              <div className="space-y-6 mt-6">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <img
+                    src="/assets/magna-ig-aniversario.png"
+                    alt="Post aniversario + -50% descuento"
+                    className="w-full max-w-2xl mx-auto rounded-lg shadow-md mb-3"
+                  />
+                  <p className="text-sm text-gray-700 text-center italic">
+                    <strong>Imagen 1:</strong> Post aniversario + -50% — 839 likes — hace ~5 días.
+                  </p>
+                </div>
+
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <img
+                    src="/assets/magna-ig-dejadehablar.png"
+                    alt="Reel Deja de hablar (canta-along)"
+                    className="w-full max-w-2xl mx-auto rounded-lg shadow-md mb-3"
+                  />
+                  <p className="text-sm text-gray-700 text-center italic">
+                    <strong>Imagen 2:</strong> Reel "Deja de hablar" (canta-along) — 386 likes — hace ~1 semana.
+                  </p>
+                </div>
+              </div>
+            </div>
           </section>
         )}
 
@@ -437,7 +480,7 @@ export function WeeklyDetail() {
                   </table>
                 </div>
               ) : (
-                <p className="text-gray-600 italic">No data</p>
+                <p className="text-gray-600 italic">No data this week</p>
               )}
             </div>
 
@@ -465,18 +508,18 @@ export function WeeklyDetail() {
                   </table>
                 </div>
               ) : (
-                <p className="text-gray-600 italic">No data</p>
+                <p className="text-gray-600 italic">No data this week</p>
               )}
             </div>
 
             <div>
               <h3 className="text-lg font-semibold text-black mb-2">Charting — Apple Music</h3>
-              <p className="text-gray-600 italic">No data</p>
+              <p className="text-gray-600 italic">No data this week</p>
             </div>
 
             <div>
               <h3 className="text-lg font-semibold text-black mb-2">Charting — Shazam</h3>
-              <p className="text-gray-600 italic">No data</p>
+              <p className="text-gray-600 italic">No data this week</p>
             </div>
           </div>
         </section>
@@ -620,42 +663,62 @@ export function WeeklyDetail() {
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             Streaming Trends
           </h2>
-          <p className="text-gray-600 italic">No data</p>
+          <p className="text-gray-600 italic">No data this week</p>
         </section>
 
         <section className="section page-break-inside-avoid">
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             TikTok Trends
           </h2>
-          <p className="text-gray-600 italic">No data</p>
+          <p className="text-gray-600 italic">No data this week</p>
         </section>
 
         <section className="section page-break-inside-avoid">
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             US Weekly Album Sales Updates
           </h2>
-          <p className="text-gray-600 italic">No data</p>
+          <p className="text-gray-600 italic">No data this week</p>
         </section>
 
         <section className="section page-break-inside-avoid">
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             Total MV Views
           </h2>
-          <p className="text-gray-600 italic">No data</p>
+          <p className="text-gray-600 italic">No data this week</p>
         </section>
 
         <section className="section page-break-inside-avoid">
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             Spotify Streams (totales por canción)
           </h2>
-          <p className="text-gray-600 italic">No data</p>
+          <p className="text-gray-600 italic">No data this week</p>
         </section>
 
         <section className="section page-break-inside-avoid">
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             Members' IG Weekly Social Growth
           </h2>
-          <p className="text-gray-600 italic">No data</p>
+          <p className="text-gray-600 italic">No data this week</p>
+        </section>
+
+        <section className="section page-break-inside-avoid">
+          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+            Sources
+          </h2>
+          <ul className="space-y-2 list-disc list-inside text-gray-900">
+            <li>
+              <strong>Instagram @m4gna</strong> — Post aniversario + promo -50% (839 likes, ~5d), Reel "Deja de hablar" (386 likes, ~1w)
+            </li>
+            <li>
+              <strong>Spotify for Artists</strong> — Top Countries, Top Cities, Demographics, Audience Segments (últimos 28 días)
+            </li>
+            <li>
+              <strong>Chartmetric</strong> — Playlist adds & stats (semana al 2025-10-08)
+            </li>
+            <li>
+              <strong>Luminate</strong> — Entradas/posiciones (sin novedades esta semana)
+            </li>
+          </ul>
         </section>
       </div>
 

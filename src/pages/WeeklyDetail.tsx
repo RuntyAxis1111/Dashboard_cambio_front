@@ -83,6 +83,46 @@ const SAMPLE_KATSEYE: WeeklyReport = {
   shazam: []
 }
 
+function getColIndexByHeader(tableEl: HTMLTableElement, headerText = 'notes'): number {
+  const ths = tableEl.querySelectorAll('thead th')
+  for (let i = 0; i < ths.length; i++) {
+    const text = (ths[i].textContent || '').trim().toLowerCase()
+    if (text === headerText) return i
+  }
+  return -1
+}
+
+function paintNotesCell(td: HTMLTableCellElement) {
+  if (!td || td.querySelector('.delta')) return
+
+  let html = td.innerHTML
+
+  html = html.replace(/([+-]?)(\d+(?:\.\d+)?)%/g, (m, s, num) => {
+    if (s === '+') return `<span class="delta up" aria-label="up ${num} percent"><span class="arrow">↑</span>+${num}%</span>`
+    if (s === '-') return `<span class="delta down" aria-label="down ${num} percent"><span class="arrow">↓</span>-${num}%</span>`
+    return `<span class="delta flat" aria-label="${num} percent">${num}%</span>`
+  })
+
+  html = html.replace(/\(([+-])(\d+)\)/g, (m, s, num) => {
+    const cls = s === '+' ? 'up' : 'down'
+    const arrow = s === '+' ? '↑' : '↓'
+    const label = s === '+' ? 'up' : 'down'
+    return `(<span class="delta ${cls}" aria-label="${label} ${num}"><span class="arrow">${arrow}</span>${s}${num}</span>)`
+  })
+
+  td.innerHTML = html
+}
+
+function colorizeNotesInTable(tableEl: HTMLTableElement) {
+  const idx = getColIndexByHeader(tableEl, 'notes')
+  if (idx < 0) return
+
+  tableEl.querySelectorAll('tbody tr').forEach(tr => {
+    const td = tr.children[idx] as HTMLTableCellElement
+    if (td) paintNotesCell(td)
+  })
+}
+
 function colorizeDeltas(rootSel = '.report-content') {
   const root = document.querySelector(rootSel)
   if (!root) return
@@ -92,6 +132,11 @@ function colorizeDeltas(rootSel = '.report-content') {
   let n: Node | null
 
   while ((n = walker.nextNode())) {
+    const parent = n.parentElement
+    if (!parent) continue
+
+    if (parent.closest('table')) continue
+
     if (n.nodeValue && n.nodeValue.match(/[+-]?\d+(?:\.\d+)?%/)) {
       texts.push(n as Text)
     }
@@ -119,6 +164,12 @@ function colorizeDeltas(rootSel = '.report-content') {
   })
 }
 
+function colorizeAllNotes() {
+  document.querySelectorAll('.report-content table').forEach(table => {
+    colorizeNotesInTable(table as HTMLTableElement)
+  })
+}
+
 function exportWeeklyPDF() {
   window.print()
 }
@@ -130,6 +181,7 @@ export function WeeklyDetail() {
 
   useEffect(() => {
     requestAnimationFrame(() => {
+      colorizeAllNotes()
       colorizeDeltas()
     })
   }, [report])

@@ -88,12 +88,12 @@ const SAMPLE_ADRIAN_COTA: WeeklyReport = {
   week_start: '2025-10-01',
   week_end: '2025-10-07',
   highlights: [
-    'Streams semanales: 10,060 (+131% WoW)',
-    'Oyentes semanales: 6,336 (+74% WoW)',
+    'Weekly streams: 10,060 (+131% WoW)',
+    'Weekly listeners: 6,336 (+74% WoW)',
     'Streams por oyente: 1.59 (+33% WoW)',
     'Seguidores netos: +42 (+5% vs PW)',
     '"Boujee" añadió playlists clave: All New Latin (Spotify), Cha Cha Cha Top 100, Lanzamientos de la Semana, Crema Scoops Of The Week (Oct 3–4)',
-    'Engagement lanzamiento: 476 (6.3%) de 7,533 oyentes activos reprodujeron "Boujee" en los primeros 8 días'
+    'Release engagement: 476 (6.3%) of 7,533 active listeners streamed "Boujee" in the first 8 days'
   ],
   highlight_link: {
     label: 'Watch "Boujee"',
@@ -116,7 +116,7 @@ const SAMPLE_ADRIAN_COTA: WeeklyReport = {
       ]
     },
     {
-      track: 'Mercados (S4A, 28 días)',
+      track: 'Markets (S4A, 28 days)',
       bullets: [
         'Países top: US, MX, CA, UK, AU, DE, ES, NL, JP, FR',
         'Ciudades top: Chicago, Mexico City, New York, Minneapolis, Denver, Culiacán, Los Ángeles, Ahome'
@@ -134,31 +134,31 @@ const SAMPLE_MAGNA: WeeklyReport = {
   week_end: '2025-10-08',
   fan_sentiment: `This week's takeaways:
 
-• Tono general: Muy positivo (celebración, gratitud, cercanía). Sin señales negativas relevantes.
+• Overall tone: Very positive (celebration, gratitude, closeness). No relevant negative signals.
 
-• Temas:
-  - Hito 1º aniversario del álbum
-  - Promoción -50% de merch/vinilo con envíos a MX/CO/US
-  - Conexión emocional con "Deja de hablar" (canta-along, comunidad)
+• Themes:
+  - Milestone: 1st album anniversary
+  - -50% promo on merch/vinyl with shipping to MX/CO/US
+  - Emotional connection with "Deja de hablar" (sing-along, community)
 
-• Pull-quotes (muestra):
+• Pull-quotes (sample):
   - "Ese álbum es pura magia, lo amo tanto 💙"
   - "Además tiene mi canción favorita en el mundo!!!!"
   - "La vida suena muy linda contigooo 🩷"
   - "Qué lindo @c2abadp 😍"
 
-• Acciones sugeridas:
-  - Fijar/rehusar el post del -50% y empujarlo en stories con link sticker a itsmagna.com (MX/CO/US)
-  - Repostear clips canta-along de "Deja de hablar" (IG Reels/TikTok) con CTA a Guardar el track
-  - Añadir UTM (ej. ?utm_source=ig&utm_campaign=aniv50) para medir tráfico a merch`,
+• Suggested actions:
+  - Pin/reuse the -50% post and push it in stories with link sticker to itsmagna.com (MX/CO/US)
+  - Repost sing-along clips of "Deja de hablar" (IG Reels/TikTok) with CTA to Save the track
+  - Add UTM (e.g. ?utm_source=ig&utm_campaign=aniv50) to measure traffic to merch`,
   highlights: [
-    'Aniversario del álbum (+casi 5M streams) y promo -50% en vinilo/merch en itsmagna.com (envíos a MX/CO/US)',
-    'Contenido íntimo/UGC de "Deja de hablar" generó alta afinidad y comentarios positivos (ver Fan Sentiment)',
-    'Mercados fuertes 28d (S4A): México (82.7K), Colombia (46.9K), US (39.8K)',
-    'Ciudades clave 28d: CDMX (23.4K), Bogotá (21.5K), Lima (9.7K)',
-    'Audiencia total 28d (S4A): 1,576,299 (Activos nuevos 22,481)',
-    'Demografía 28d: 51% mujeres, pico 25–34 (45%)',
-    'Luminate: sin entradas verificadas esta semana (No data)'
+    'Album anniversary (+almost 5M streams) and -50% promo on vinyl/merch at itsmagna.com (shipping to MX/CO/US)',
+    'Intimate/UGC content from "Deja de hablar" generated high affinity and positive comments (see Fan Sentiment)',
+    'Strong markets 28d (S4A): Mexico (82.7K), Colombia (46.9K), US (39.8K)',
+    'Key cities 28d: CDMX (23.4K), Bogotá (21.5K), Lima (9.7K)',
+    'Total audience 28d (S4A): 1,576,299 (New Actives 22,481)',
+    'Demographics 28d: 51% female, peak 25–34 (45%)',
+    'Luminate: no verified entries this week (No data)'
   ],
   highlight_link: undefined,
   billboard_charts: [],
@@ -334,9 +334,9 @@ const SAMPLE_GREGORIO: WeeklyReport = {
   - "Me encanta todo lo que está sucediendo acá"`,
   highlights: [
     'Presentación en vivo de "Toca La Puerta" y contenido con Santos Bravos generan alta afinidad',
-    'Total audience (S4A, últimos 2 años): 95,303',
+    'Total audience (S4A, last 2 years): 95,303',
     'Segmentación (S4A): 3.3% audiencia activa, 4% previamente activa, 92.6% programada',
-    'Release engagement: "Toca La Puerta" — 977 (34%) de 2,877 oyentes de la audiencia activa la escucharon intencionalmente en los primeros 28 días',
+    'Release engagement: "Toca La Puerta" — 977 (34%) of 2,877 active audience listeners intentionally streamed it in the first 28 days',
     'Mercados fuertes 28d (Top-3): Colombia (17,275), México (9,816), Estados Unidos (9,431)',
     'Ciudades clave 28d (Top-3): Bogotá (8,608), Lima (3,587), Medellín (2,350)',
     'Demografía 28d: 54% mujeres, 41% hombres, 1% no binario, 4% no especificado. Pico de edad 25–34 (38%); luego 35–44 (29%) y 18–24 (13%)'
@@ -734,20 +734,20 @@ export function WeeklyDetail() {
                     <div className="bg-white rounded-lg overflow-hidden mb-3">
                       <img
                         src="/assets/magna-ig-aniversario.png"
-                        alt="Post aniversario + -50% descuento"
+                        alt="Anniversary post + -50% discount"
                         className="w-full max-w-3xl mx-auto rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
                           const placeholder = document.createElement('div');
                           placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
-                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Imagen no disponible</p><p class="text-sm mt-2">Post aniversario + -50%</p></div>';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image unavailable</p><p class="text-sm mt-2">Anniversary post + -50%</p></div>';
                           target.parentElement?.appendChild(placeholder);
                         }}
                       />
                     </div>
                     <p className="text-sm text-gray-700 text-center italic">
-                      <strong>Imagen 1:</strong> Post aniversario + -50% — 839 likes — hace ~5 días.
+                      <strong>Image 1:</strong> Anniversary post + -50% — 839 likes — ~5 days ago.
                     </p>
                   </div>
 
@@ -762,13 +762,13 @@ export function WeeklyDetail() {
                           target.style.display = 'none';
                           const placeholder = document.createElement('div');
                           placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
-                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Imagen no disponible</p><p class="text-sm mt-2">Reel "Deja de hablar"</p></div>';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image unavailable</p><p class="text-sm mt-2">Reel "Deja de hablar"</p></div>';
                           target.parentElement?.appendChild(placeholder);
                         }}
                       />
                     </div>
                     <p className="text-sm text-gray-700 text-center italic">
-                      <strong>Imagen 2:</strong> Reel "Deja de hablar" (canta-along) — 386 likes — hace ~1 semana.
+                      <strong>Image 2:</strong> Reel "Deja de hablar" (sing-along) — 386 likes — ~1 week ago.
                     </p>
                   </div>
                 </div>
@@ -990,20 +990,20 @@ export function WeeklyDetail() {
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
                         src="/assets/gregorio-santos-bravos.png"
-                        alt="Post con Santos Bravos"
+                        alt="Post with Santos Bravos"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
                           const placeholder = document.createElement('div');
                           placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
-                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Imagen no disponible</p><p class="text-sm mt-2">Post con Santos Bravos</p></div>';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image unavailable</p><p class="text-sm mt-2">Post with Santos Bravos</p></div>';
                           target.parentElement?.appendChild(placeholder);
                         }}
                       />
                     </div>
                     <p className="text-sm text-gray-700 text-center italic">
-                      <strong>Imagen 1:</strong> Post con Santos Bravos — "UNA CANCIÓN ASÍ LES QUEDARÍA PERFECTO A SANTOS BRAVOS CUANDO YA DEBUTEN" — ~3 semanas.
+                      <strong>Image 1:</strong> Post with Santos Bravos — "UNA CANCIÓN ASÍ LES QUEDARÍA PERFECTO A SANTOS BRAVOS CUANDO YA DEBUTEN" — ~3 weeks.
                     </p>
                   </div>
 
@@ -1018,13 +1018,13 @@ export function WeeklyDetail() {
                           target.style.display = 'none';
                           const placeholder = document.createElement('div');
                           placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
-                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Imagen no disponible</p><p class="text-sm mt-2">Toca La Puerta (en vivo)</p></div>';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image unavailable</p><p class="text-sm mt-2">Toca La Puerta (live)</p></div>';
                           target.parentElement?.appendChild(placeholder);
                         }}
                       />
                     </div>
                     <p className="text-sm text-gray-700 text-center italic">
-                      <strong>Imagen 2:</strong> Mi primera vez cantando "Toca La Puerta" (en vivo) — "Eres demasiado!!! Y en vivo eres una locura!!!! Qué buena presentación" — ~2 días.
+                      <strong>Image 2:</strong> My first time singing "Toca La Puerta" (live) — "Eres demasiado!!! Y en vivo eres una locura!!!! Qué buena presentación" — ~2 days.
                     </p>
                   </div>
                 </div>
@@ -1500,22 +1500,22 @@ export function WeeklyDetail() {
           ) : report.artist === 'MAGNA' ? (
             <ul className="space-y-2 list-disc list-inside text-gray-900">
               <li>
-                <strong>Instagram @m4gna</strong> — Post aniversario + promo -50% (839 likes, ~5d), Reel "Deja de hablar" (386 likes, ~1w)
+                <strong>Instagram @m4gna</strong> — Anniversary post + -50% promo (839 likes, ~5d), Reel "Deja de hablar" (386 likes, ~1w)
               </li>
               <li>
-                <strong>Spotify for Artists</strong> — Top Countries, Top Cities, Demographics, Audience Segments (últimos 28 días)
+                <strong>Spotify for Artists</strong> — Top Countries, Top Cities, Demographics, Audience Segments (last 28 days)
               </li>
               <li>
-                <strong>Chartmetric</strong> — Playlist adds & stats (semana al 2025-10-08)
+                <strong>Chartmetric</strong> — Playlist adds & stats (week of 2025-10-08)
               </li>
               <li>
-                <strong>Luminate</strong> — Entradas/posiciones (sin novedades esta semana)
+                <strong>Luminate</strong> — Entries/positions (no updates this week)
               </li>
             </ul>
           ) : report.artist === 'GREGORIO' ? (
             <ul className="space-y-2 list-disc list-inside text-gray-900">
               <li>
-                <strong>Spotify for Artists</strong> — Segments, Demographics, Location, Release engagement (últimos 28 días)
+                <strong>Spotify for Artists</strong> — Segments, Demographics, Location, Release engagement (last 28 days)
               </li>
               <li>
                 <strong>Instagram @gregorio_umana</strong> — Posts: "Toca La Puerta (en vivo)" y "con Santos Bravos"

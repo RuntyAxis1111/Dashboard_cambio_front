@@ -46,6 +46,12 @@ const SAMPLE_ARTISTS: ArtistSummary[] = [
     artist_name: 'MUSZA',
     week_end: '2025-10-08',
     cover_image_url: '/assets/image copy copy copy copy copy copy copy copy copy.png'
+  },
+  {
+    artist_id: 'low-clika',
+    artist_name: 'LOW CLIKA',
+    week_end: '2025-10-08',
+    cover_image_url: '/assets/image copy copy copy copy copy copy copy copy copy copy.png'
   }
 ]
 

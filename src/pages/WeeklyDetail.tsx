@@ -397,30 +397,13 @@ const SAMPLE_DESTINO: WeeklyReport = {
   week_start: '2025-10-02',
   week_end: '2025-10-08',
   highlights: [
-    'Spotify (28d): 23,728 listeners, 43,520 streams, 1.834 streams/listener, 1,711 saves, 1,635 playlist adds.',
-    'Audience quality: 27% active / 73% programmed / 0% previously active → alta dependencia de programación.',
-    'Release engagement — Máquina Del Tiempo (released 2025-09-10): 5,611 / 6,214 (90.3%) de la active audience la escuchó intencionalmente en los primeros 28 días.',
-    'Top países (28d): México, Estados Unidos, Guatemala.',
-    'Top ciudades (28d): CDMX, Guadalajara, Puebla.',
-    'Demografía (28d): 59% male, 37% female, 4% not specified; pico de edad 25–34.',
-    '',
-    '**Facebook Insights:**',
-    'Facebook Insights: Video views ↑ +240% WoW; pico 05-Oct con 796,121.',
-    'Facebook Insights: Viewers/Reach ↓ −51% WoW; pico 30-Sep con 467,677.',
-    'Facebook Insights: Interacciones ↓ −87% WoW; pico 14-Sep (3,865).',
-    'Facebook Insights: Visitas al perfil ↓ −76% WoW; pico 26-Sep (1,271).',
-    'Facebook Insights: Clics en enlace semana baja; último pico 27-Sep (5,750).',
-    'Facebook Insights: +1,161 seguidores (28d); semana −57% vs previa; mejor día 14-Sep (+158).',
-    '',
-    '**Instagram Insights (last 28 days / last 7 days):**',
-    'Instagram: Alcance (7d): 2.75M ↑+1702% vs semana previa — pico 455K el 5 Oct.',
-    'Instagram: Reproducciones de video (7d): 3.26M ↑+1047% — pico 561K el 5 Oct.',
-    'Instagram: Visitas al perfil (7d): 2,663 ↓−88.7% vs semana previa.',
-    'Instagram: Clics en el enlace (7d): 38 ↓−97.4%.',
-    'Instagram: Interacciones totales (7d): 184 ↓−56.6%.',
-    'Instagram: Seguidores (7d): +99 ↓−75.4% vs semana previa.',
-    '',
-    'Mini insight: Explosión de alcance/visualizaciones (contenido viral) pero caída en visitas/clics ⇒ awareness alto sin conversión. Próximo paso: añadir CTAs y enlaces en posts/Stories durante picos.'
+    'Spotify (28d): 23,728 listeners · 43,520 streams · 1.834 streams/listener · 1,711 saves · 1,635 playlist adds.',
+    'Audience quality: 27% active · 73% programmed · 0% previously active → heavy programming dependency.',
+    'Release engagement: Máquina Del Tiempo (released 2025-09-10): 5,611 / 6,214 (90.3%) of active audience intentionally streamed in first 28 days.',
+    'Top countries (7d, Spotify): Mexico, United States, Guatemala.',
+    'Top cities (28d, Spotify): Mexico City, Guadalajara, Puebla.',
+    'Facebook (7d vs prev): Video views ↑ +240%; other metrics mixed/declining.',
+    'Instagram (7d): Massive reach/video spikes (Oct 5) but low conversion to profile visits and link clicks → focus on CTAs.'
   ],
   billboard_charts: [],
   spotify_charts: [],
@@ -471,9 +454,9 @@ const SAMPLE_DESTINO: WeeklyReport = {
   ],
   fan_sentiment: `This week's takeaways:
 
-• Tono general: Muy positivo (🔥🙌). Sin señales negativas relevantes.
-• Demand gen (live): Alta expectativa por shows — menciones a Arre y "verlos pronto".
-• Nostalgia activa: Posts de Máquina del Tiempo disparan afinidad ("Los mejores", "Soy fan").
+• Overall tone: Very positive (🔥🙌). No relevant negative signals.
+• Demand gen (live): fans asking to see them live; mentions of Arre / Premios Juventud.
+• Active nostalgia: #maquinadeltiempo posts trigger affinity ("Los mejores", "Soy fan").
 
 Comment snapshots:`
 }
@@ -826,6 +809,49 @@ export function WeeklyDetail() {
                 </div>
               )}
 
+              {report.artist === 'DESTINO' && (
+                <div className="mt-8 bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-lg border-2 border-blue-200 page-break-inside-avoid">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Instagram KPIs</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 page-break-inside-avoid">
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-blue-100">
+                      <div className="text-sm text-gray-600 mb-1">CTR (link-in-bio)</div>
+                      <div className="text-3xl font-bold text-blue-600">N/A</div>
+                      <div className="text-xs text-gray-500 mt-2">No reliable link CTR from IG data</div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-blue-100">
+                      <div className="text-sm text-gray-600 mb-1">Engagement / Reach (7d)</div>
+                      <div className="text-3xl font-bold text-cyan-600">184</div>
+                      <div className="text-xs text-gray-500 mt-2">Interactions (↓ -56.6% WoW)</div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-blue-100">
+                      <div className="text-sm text-gray-600 mb-1">Views per Reach (proxy)</div>
+                      <div className="text-3xl font-bold text-indigo-600">1.18</div>
+                      <div className="text-xs text-gray-500 mt-2">3.26M views / 2.75M reach</div>
+                    </div>
+                  </div>
+                  <div className="mt-4 p-4 bg-white rounded-lg border border-blue-100">
+                    <p className="text-sm text-gray-700">
+                      <strong>Note:</strong> Big spikes from Oct 5 content; average depth lower — replicate short reels with large captions + add clear CTAs.
+                    </p>
+                  </div>
+                  <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <p className="text-sm text-gray-800">
+                      <strong>Mini-insight:</strong> Explosive awareness (reach/video) with weak conversion (profile visits, link clicks). Add CTAs in posts/Stories during peaks.
+                    </p>
+                  </div>
+                  <div className="mt-4 space-y-2">
+                    <h4 className="text-sm font-semibold text-gray-900">IG time-series (last 7 days):</h4>
+                    <ul className="text-xs text-gray-700 space-y-1 ml-4">
+                      <li><strong>Reach:</strong> 2.75M (↑ +1702%) — peak 455K on Oct 5</li>
+                      <li><strong>Video views:</strong> 3.26M (↑ +1047%) — peak 561K on Oct 5</li>
+                      <li><strong>Profile visits:</strong> 2,663 (↓ -88.7%)</li>
+                      <li><strong>Bio link clicks:</strong> 38 (↓ -97.4%)</li>
+                      <li><strong>Followers:</strong> +99 (↓ -75.4% vs prev week)</li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+
               {report.artist === 'GREGORIO' && (
                 <div className="space-y-6 mt-6">
                   <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
@@ -878,7 +904,7 @@ export function WeeklyDetail() {
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
                         src="/assets/IG_DESTINO_ARRE.png"
-                        alt="Instagram - Arre / Premios Juventud"
+                        alt="Performance discussion - Iannis vs. Alex"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -891,13 +917,16 @@ export function WeeklyDetail() {
                       />
                     </div>
                     <p className="text-sm text-gray-700 text-center">
-                      <strong>Instagram — Arre / Premios Juventud</strong> (mejor post de la semana)
+                      <strong>Card A — Performance discussion — Iannis vs. Alex</strong>
                     </p>
                     <p className="text-xs text-gray-600 text-center italic mt-2">
-                      Fans piden verlos en vivo; hype sostenido por presentaciones.
+                      "No tengo nada en contra de Alex… yo elijo a Iannis… él está mejorando en baile y tiene una gran voz… el grupo ya tiene buenos bailarines…"
                     </p>
-                    <p className="text-xs text-gray-500 text-center mt-2">
-                      Ejemplos: "Que chingón se vivió eso", "Ya cuento los días para verlos en Arre 🤧🙌"
+                    <p className="text-xs font-semibold text-gray-800 text-center mt-3">
+                      Why it matters:
+                    </p>
+                    <p className="text-xs text-gray-600 text-center">
+                      Fans weigh members' strengths (vocals/dance); guidance for coaching & messaging.
                     </p>
                   </div>
 
@@ -905,7 +934,7 @@ export function WeeklyDetail() {
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
                         src="/assets/IG_DESTINO_MDT.png"
-                        alt="Instagram - #maquinadeltiempo"
+                        alt="Strong opinions on line distribution"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -918,13 +947,16 @@ export function WeeklyDetail() {
                       />
                     </div>
                     <p className="text-sm text-gray-700 text-center">
-                      <strong>Instagram — #maquinadeltiempo</strong>
+                      <strong>Card B — Strong opinions on line distribution</strong>
                     </p>
                     <p className="text-xs text-gray-600 text-center italic mt-2">
-                      Nostalgia + lealtad ("Los mejores", "Soy fan").
+                      "ME MOLESTA MUCHO QUE IANNIS Y KAUÊ CANTARON SUPER BIEN… ESPERO QUE NO ESTÉN MANTENIENDO A ALEX Y DIEGO SOLO POR SU BAILE…"
                     </p>
-                    <p className="text-xs text-gray-500 text-center mt-2">
-                      Ejemplos: "Los mejores 🤩🙌", "Soy fan!!!"
+                    <p className="text-xs font-semibold text-gray-800 text-center mt-3">
+                      Why it matters:
+                    </p>
+                    <p className="text-xs text-gray-600 text-center">
+                      High-engagement feedback on fairness/roles; surface this theme in edits and comms.
                     </p>
                   </div>
                 </div>
@@ -1063,7 +1095,7 @@ export function WeeklyDetail() {
             </h2>
             <div className="grid grid-cols-3 gap-4">
               <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
-                <p className="text-sm text-gray-600 mb-1">Activa</p>
+                <p className="text-sm text-gray-600 mb-1">Active</p>
                 <p className="text-3xl font-bold text-blue-600">{report.audience_segmentation.active}%</p>
               </div>
               <div className="bg-green-50 p-4 rounded-lg border-2 border-green-200">
@@ -1075,93 +1107,106 @@ export function WeeklyDetail() {
                 <p className="text-3xl font-bold text-gray-600">{report.audience_segmentation.programmed}%</p>
               </div>
             </div>
+            {report.artist === 'DESTINO' && (
+              <div className="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                <p className="text-sm text-gray-700">
+                  <strong>Note:</strong> High programming share — invest in converting programmed to active with tailored release content & library education.
+                </p>
+              </div>
+            )}
           </section>
         )}
 
-        <section className="section page-break-inside-avoid">
-          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-            Streaming Trends
-          </h2>
-          {report.streaming_trends && report.streaming_trends.length > 0 ? (
-            <div className="space-y-6">
-              {report.streaming_trends.map((trend, idx) => (
-                <div key={idx}>
-                  <h3 className="font-semibold text-gray-900 mb-2">{trend.track}</h3>
-                  {trend.bullets && trend.bullets.length > 0 && (
-                    <ul className="space-y-1 list-disc list-inside text-gray-900">
-                      {trend.bullets.map((bullet, bIdx) => (
-                        <li key={bIdx}>{bullet}</li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-600 italic">No data this week</p>
-          )}
-        </section>
-
-        <section className="section page-break page-break-inside-avoid">
-          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-            TikTok Trends
-          </h2>
-          {report.tiktok_trends && report.tiktok_trends.length > 0 ? (
-            <div className="space-y-4">
-              {report.tiktok_trends.map((trend, idx) => (
-                <div key={idx}>
-                  {trend.track && <h3 className="font-semibold text-gray-900 mb-2">{trend.track}</h3>}
-                  {trend.top_posts && trend.top_posts.length > 0 && (
-                    <ul className="space-y-1 list-disc list-inside text-gray-900">
-                      {trend.top_posts.map((post, pIdx) => (
-                        <li key={pIdx}>{post}</li>
-                      ))}
-                    </ul>
-                  )}
-                  {trend.note && (
-                    <p className="text-sm text-gray-700 italic mt-2">{trend.note}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-600 italic">No data this week</p>
-          )}
-        </section>
-
-        <section className="section page-break-inside-avoid">
-          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-            Total MV Views
-          </h2>
-          {report.mv_views && report.mv_views.length > 0 ? (
-            <div className="space-y-6">
-              {report.mv_views.map((mv, idx) => (
-                <div key={idx}>
-                  <h3 className="font-semibold text-gray-900 mb-3">{mv.section}</h3>
-                  {mv.bullets && mv.bullets.length > 0 && (
-                    <ul className="space-y-1 list-disc list-inside text-gray-900 mb-4">
-                      {mv.bullets.map((bullet, bIdx) => (
-                        <li key={bIdx}>{bullet}</li>
-                      ))}
-                    </ul>
-                  )}
-                  {mv.top_content && mv.top_content.length > 0 && (
-                    <div className="mt-4">
-                      <h4 className="font-semibold text-gray-900 mb-2">Top contenidos (48h)</h4>
+        {report.artist !== 'DESTINO' && (
+          <section className="section page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Streaming Trends
+            </h2>
+            {report.streaming_trends && report.streaming_trends.length > 0 ? (
+              <div className="space-y-6">
+                {report.streaming_trends.map((trend, idx) => (
+                  <div key={idx}>
+                    <h3 className="font-semibold text-gray-900 mb-2">{trend.track}</h3>
+                    {trend.bullets && trend.bullets.length > 0 && (
                       <ul className="space-y-1 list-disc list-inside text-gray-900">
-                        {mv.top_content.map((content, cIdx) => (
-                          <li key={cIdx}>{content}</li>
+                        {trend.bullets.map((bullet, bIdx) => (
+                          <li key={bIdx}>{bullet}</li>
                         ))}
                       </ul>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-600 italic">No data this week</p>
-          )}
-        </section>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600 italic">No data this week</p>
+            )}
+          </section>
+        )}
+
+        {report.artist !== 'DESTINO' && (
+          <section className="section page-break page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              TikTok Trends
+            </h2>
+            {report.tiktok_trends && report.tiktok_trends.length > 0 ? (
+              <div className="space-y-4">
+                {report.tiktok_trends.map((trend, idx) => (
+                  <div key={idx}>
+                    {trend.track && <h3 className="font-semibold text-gray-900 mb-2">{trend.track}</h3>}
+                    {trend.top_posts && trend.top_posts.length > 0 && (
+                      <ul className="space-y-1 list-disc list-inside text-gray-900">
+                        {trend.top_posts.map((post, pIdx) => (
+                          <li key={pIdx}>{post}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {trend.note && (
+                      <p className="text-sm text-gray-700 italic mt-2">{trend.note}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600 italic">No data this week</p>
+            )}
+          </section>
+        )}
+
+        {report.artist !== 'DESTINO' && (
+          <section className="section page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Total MV Views
+            </h2>
+            {report.mv_views && report.mv_views.length > 0 ? (
+              <div className="space-y-6">
+                {report.mv_views.map((mv, idx) => (
+                  <div key={idx}>
+                    <h3 className="font-semibold text-gray-900 mb-3">{mv.section}</h3>
+                    {mv.bullets && mv.bullets.length > 0 && (
+                      <ul className="space-y-1 list-disc list-inside text-gray-900 mb-4">
+                        {mv.bullets.map((bullet, bIdx) => (
+                          <li key={bIdx}>{bullet}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {mv.top_content && mv.top_content.length > 0 && (
+                      <div className="mt-4">
+                        <h4 className="font-semibold text-gray-900 mb-2">Top contenidos (48h)</h4>
+                        <ul className="space-y-1 list-disc list-inside text-gray-900">
+                          {mv.top_content.map((content, cIdx) => (
+                            <li key={cIdx}>{content}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600 italic">No data this week</p>
+            )}
+          </section>
+        )}
 
         {report.demographics && (
           <section className="section page-break-inside-avoid">
@@ -1285,39 +1330,16 @@ export function WeeklyDetail() {
           ) : report.artist === 'DESTINO' ? (
             <ul className="space-y-2 list-disc list-inside text-gray-900">
               <li>
-                <strong>Spotify for Artists</strong>
-                <ul className="ml-6 mt-1 space-y-1 list-none text-sm text-gray-700">
-                  <li>Audience Overview (28 días): listeners, streams, streams/listener, saves, playlist adds</li>
-                  <li>Segments: active (27%), programmed (73%), previously active (0%)</li>
-                  <li>Demographics: gender distribution and age breakdown</li>
-                  <li>Location: Top Countries (México, Estados Unidos, Guatemala) and Top Cities (CDMX, Guadalajara, Puebla)</li>
-                  <li>Release Engagement: Máquina Del Tiempo (90.3% of active audience streamed intentionally in first 28 days)</li>
-                </ul>
+                <strong>Spotify for Artists:</strong> Audience Overview (28d); Segments (active 27%, programmed 73%, previously active 0%); Demographics; Top Countries/Cities; Release Engagement (Máquina Del Tiempo — 90.3% intentional within first 28 days).
               </li>
               <li>
-                <strong>Facebook Insights</strong>
-                <ul className="ml-6 mt-1 space-y-1 list-none text-sm text-gray-700">
-                  <li>Video views (28 días con picos semanales)</li>
-                  <li>Viewers/Reach (28 días con comparaciones WoW)</li>
-                  <li>Interacciones (engagement metrics)</li>
-                  <li>Visitas al perfil</li>
-                  <li>Clics en enlace</li>
-                  <li>Crecimiento de seguidores (+1,161 en 28 días)</li>
-                </ul>
+                <strong>Facebook Insights (7d/28d CSVs):</strong> Video views (↑ +240% WoW, peak Oct 5: 796,121); Viewers/Reach (↓ -51% WoW, peak Sep 30: 467,677); Interactions (↓ -87% WoW, peak Sep 14: 3,865); Profile visits (↓ -76% WoW, peak Sep 26: 1,271); Link clicks (weekly low; last high Sep 27: 5,750); Followers +1,161 (28d); best day Sep 14 (+158).
               </li>
               <li>
-                <strong>Instagram Insights (CSVs)</strong>
-                <ul className="ml-6 mt-1 space-y-1 list-none text-sm text-gray-700">
-                  <li>Alcance (1).csv — Alcance de 7 días con comparación WoW</li>
-                  <li>Visualizaciones (3).csv — Reproducciones de video de 7 días</li>
-                  <li>Visitas (2).csv — Visitas al perfil de 7 días</li>
-                  <li>Clics en el enlace (2).csv — Clics en enlaces de 7 días</li>
-                  <li>Interacciones (3).csv — Interacciones totales de 7 días</li>
-                  <li>Seguidores (3).csv — Crecimiento de seguidores de 7 días</li>
-                </ul>
+                <strong>Instagram Insights (CSVs, last 7d):</strong> Reach 2.75M (↑ +1702%); Video views 3.26M (↑ +1047%); Profile visits 2,663 (↓ -88.7%); Link clicks 38 (↓ -97.4%); Interactions 184 (↓ -56.6%); Followers +99 (↓ -75.4%).
               </li>
               <li>
-                <strong>Otros (Billboard/Apple/Shazam/Luminate/TikTok):</strong> No data esta semana.
+                <strong>Chartmetric:</strong> Milestone badges (ranking progress); used only for context, not chart placements.
               </li>
             </ul>
           ) : (

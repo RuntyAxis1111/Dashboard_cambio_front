@@ -320,6 +320,14 @@
     color: #4f46e5 !important;
   }
 
+  .text-blue-600 {
+    color: #2563eb !important;
+  }
+
+  .text-cyan-600 {
+    color: #0891b2 !important;
+  }
+
   .text-green-600 {
     color: #16a34a !important;
   }
@@ -331,6 +339,43 @@
   .border-purple-200,
   .border-purple-100 {
     border-color: #e9d5ff !important;
+  }
+
+  .border-blue-200,
+  .border-blue-100 {
+    border-color: #dbeafe !important;
+  }
+
+  .bg-blue-50 {
+    background: #eff6ff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .bg-cyan-50 {
+    background: #ecfeff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .bg-yellow-50 {
+    background: #fefce8 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .border-yellow-200 {
+    border-color: #fef08a !important;
+  }
+
+  .bg-green-50 {
+    background: #f0fdf4 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .border-green-200 {
+    border-color: #bbf7d0 !important;
   }
 
   /* Tables */

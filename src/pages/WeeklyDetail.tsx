@@ -394,7 +394,17 @@ const SAMPLE_DESTINO: WeeklyReport = {
     'Facebook Insights: Interacciones ↓ −87% WoW; pico 14-Sep (3,865).',
     'Facebook Insights: Visitas al perfil ↓ −76% WoW; pico 26-Sep (1,271).',
     'Facebook Insights: Clics en enlace semana baja; último pico 27-Sep (5,750).',
-    'Facebook Insights: +1,161 seguidores (28d); semana −57% vs previa; mejor día 14-Sep (+158).'
+    'Facebook Insights: +1,161 seguidores (28d); semana −57% vs previa; mejor día 14-Sep (+158).',
+    '',
+    '**Instagram Insights (last 28 days / last 7 days):**',
+    'Instagram: Alcance (7d): 2.75M ↑+1702% vs semana previa — pico 455K el 5 Oct.',
+    'Instagram: Reproducciones de video (7d): 3.26M ↑+1047% — pico 561K el 5 Oct.',
+    'Instagram: Visitas al perfil (7d): 2,663 ↓−88.7% vs semana previa.',
+    'Instagram: Clics en el enlace (7d): 38 ↓−97.4%.',
+    'Instagram: Interacciones totales (7d): 184 ↓−56.6%.',
+    'Instagram: Seguidores (7d): +99 ↓−75.4% vs semana previa.',
+    '',
+    'Mini insight: Explosión de alcance/visualizaciones (contenido viral) pero caída en visitas/clics ⇒ awareness alto sin conversión. Próximo paso: añadir CTAs y enlaces en posts/Stories durante picos.'
   ],
   billboard_charts: [],
   spotify_charts: [],
@@ -1246,7 +1256,18 @@ export function WeeklyDetail() {
                 </ul>
               </li>
               <li>
-                <strong>Otros (Billboard/Apple/Shazam/Luminate/Instagram/TikTok):</strong> No data esta semana.
+                <strong>Instagram Insights (CSVs)</strong>
+                <ul className="ml-6 mt-1 space-y-1 list-none text-sm text-gray-700">
+                  <li>Alcance (1).csv — Alcance de 7 días con comparación WoW</li>
+                  <li>Visualizaciones (3).csv — Reproducciones de video de 7 días</li>
+                  <li>Visitas (2).csv — Visitas al perfil de 7 días</li>
+                  <li>Clics en el enlace (2).csv — Clics en enlaces de 7 días</li>
+                  <li>Interacciones (3).csv — Interacciones totales de 7 días</li>
+                  <li>Seguidores (3).csv — Crecimiento de seguidores de 7 días</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Otros (Billboard/Apple/Shazam/Luminate/TikTok):</strong> No data esta semana.
               </li>
             </ul>
           ) : (

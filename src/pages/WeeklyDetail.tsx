@@ -788,9 +788,9 @@ export function WeeklyDetail() {
                   <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
                     <div className="bg-white rounded-lg overflow-hidden mb-3">
                       <img
-                        src="/assets/magna-ig-aniversario.png"
+                        src="/assets/magna copy.png"
                         alt="Anniversary post + -50% discount"
-                        className="w-full max-w-3xl mx-auto rounded-lg shadow-sm"
+                        className="w-full max-w-md mx-auto rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
@@ -802,16 +802,16 @@ export function WeeklyDetail() {
                       />
                     </div>
                     <p className="text-sm text-gray-700 text-center italic">
-                      <strong>Image 1:</strong> Anniversary post + -50% — 839 likes — ~5 days ago.
+                      <strong>Image 1:</strong> Anniversary post celebrating first year + -50% promo — 839 likes — ~5 days ago.
                     </p>
                   </div>
 
                   <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
                     <div className="bg-white rounded-lg overflow-hidden mb-3">
                       <img
-                        src="/assets/magna-ig-dejadehablar.png"
-                        alt="Reel Deja de hablar (canta-along)"
-                        className="w-full max-w-3xl mx-auto rounded-lg shadow-sm"
+                        src="/assets/magna2 copy.png"
+                        alt="Reel Deja de hablar (sing-along)"
+                        className="w-full max-w-md mx-auto rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';

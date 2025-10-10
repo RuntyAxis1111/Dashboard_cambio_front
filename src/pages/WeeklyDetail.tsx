@@ -87,7 +87,15 @@ const SAMPLE_ADRIAN_COTA: WeeklyReport = {
   artist: 'ADRIÁN COTA',
   week_start: '2025-10-01',
   week_end: '2025-10-07',
-  fan_sentiment: `(social media pending)`,
+  fan_sentiment: `This week's takeaways:
+
+• Overall tone: Very positive (family pride + humor + artist co-sign).
+
+• What's working: UGC reaction videos with Boujee, family participation, and cross-mentions (e.g., Cody Simpson tag) that broaden reach.
+
+• Next actions: Encourage a #Boujee reaction/duet challenge; pin best family/UGC comments; reuse these clips in Reels/Stories with CTA to duet.
+
+Comment snapshots:`,
   highlights: [
     'Weekly streams: 10,060 (+131% WoW)',
     'Weekly listeners: 6,336 (+74% WoW)',
@@ -824,6 +832,66 @@ export function WeeklyDetail() {
                     </div>
                     <p className="text-sm text-gray-700 text-center italic">
                       <strong>Image 2:</strong> Reel "Deja de hablar" (sing-along) — 386 likes — ~1 week ago.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {report.artist === 'ADRIÁN COTA' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                    <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
+                      <img
+                        src="/assets/adrian-cota-comment-1.png"
+                        alt="Family love & co-sign visibility"
+                        className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const placeholder = document.createElement('div');
+                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">adrian-cota-comment-1.png</p></div>';
+                          target.parentElement?.appendChild(placeholder);
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-700 text-center">
+                      <strong>Family love & co-sign visibility</strong>
+                    </p>
+                    <p className="text-xs text-gray-600 text-center italic mt-1">
+                      "Esssssssssssssooooooooooo Eaaaaaaaaaaaaa Puro Corazón. Como Los Amo Pa @adriancota @codysimpson ❤️❤️❤️⭐️⭐️⭐️"
+                    </p>
+                    <p className="text-xs text-gray-500 text-center mt-2">
+                      <strong>Why it matters:</strong> Strong family/fan validation + Cody Simpson tag = credibility + warmth. Humanizes the artist and increases save/share probability.
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                    <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
+                      <img
+                        src="/assets/adrian-cota-comment-2.png"
+                        alt="UGC reaction drives affinity"
+                        className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const placeholder = document.createElement('div');
+                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">adrian-cota-comment-2.png</p></div>';
+                          target.parentElement?.appendChild(placeholder);
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-700 text-center">
+                      <strong>UGC reaction drives affinity</strong>
+                    </p>
+                    <p className="text-xs text-gray-600 text-center italic mt-1">
+                      "BOUJEE @adriancota"<br />
+                      "Cuando apoye a mi consentido no diré nada pero habrá señales… 🤣🤣🤣🤣" — @thaliacota<br />
+                      "Creo que es el mejor video que he visto en mi vida" — @adriancota
+                    </p>
+                    <p className="text-xs text-gray-500 text-center mt-2">
+                      <strong>Why it matters:</strong> Organic, funny UGC signals trend potential for Boujee; perfect seed to launch a duet/stitch challenge and spark comments.
                     </p>
                   </div>
                 </div>

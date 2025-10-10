@@ -1342,7 +1342,7 @@ export function WeeklyDetail() {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-600 italic">No data this week</p>
+              <p className="text-gray-600 italic">Social media pending</p>
             )}
           </section>
         )}
@@ -1371,7 +1371,7 @@ export function WeeklyDetail() {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-600 italic">No data this week</p>
+              <p className="text-gray-600 italic">Social media pending</p>
             )}
           </section>
         )}
@@ -1407,7 +1407,7 @@ export function WeeklyDetail() {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-600 italic">No data this week</p>
+              <p className="text-gray-600 italic">Social media pending</p>
             )}
           </section>
         )}
@@ -1495,7 +1495,7 @@ export function WeeklyDetail() {
                 </ul>
               </li>
               <li>
-                <strong>Other (Billboard/Apple/Shazam/Luminate):</strong> No data this week.
+                <strong>Other (Billboard/Apple/Shazam/Luminate):</strong> Social media pending.
               </li>
             </ul>
           ) : report.artist === 'MAGNA' ? (

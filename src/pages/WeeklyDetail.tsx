@@ -224,16 +224,18 @@ const SAMPLE_SANTOS_BRAVOS: WeeklyReport = {
   week_end: '2025-10-08',
   fan_sentiment: `This week's takeaways:
 
-• Énfasis de fandom en desempeño vocal y equilibrio de líneas.
+• Tono general: Muy positivo (presentación en vivo + colaboración).
 
-• Alta afinidad por Alejandro; fans dicen que vuelven a reproducir su parte en Spotify.
+• Lo que funciona: reels cortos con captions grandes; colaboraciones/remix.
 
-• Tono general: mixto a positivo (pasión/expectativa), con feedback crítico constructivo hacia miembros.`,
+• Top fan comments destacan la presentación en vivo y la demanda de colaboración con Santos Bravos.
+
+• Instagram: CTR link-in-bio 19.6%, engagement/alcance 11.6%, vistas por alcance 3.13. Reels con hook <3s + subtítulos grandes concentran la interacción.`,
   highlights: [
-    'Spotify (últimos 30 días): 946,4K reproducciones; 28.531 horas de consumo; +1.030 seguidores.',
-    'Países fuertes (7 días): México (15.738), Argentina (59), España (52).',
-    'Demografía (7 días): 62.6% mujeres; pico de edad 45–59 (28%).',
-    'Billboard / Apple / Shazam / Luminate: No data esta semana.'
+    'Instagram: CTR link-in-bio 19.6%, engagement/alcance 11.6%, vistas por alcance 3.13. Reels con hook <3s + subtítulos grandes concentran la interacción.',
+    'Spotify for Creators (últimos 30 días): 946.4K reproducciones, 28,531 horas de consumo, +1,030 seguidores.',
+    'Top países (7 días, Spotify): México, Argentina, España.',
+    'Demografía Spotify: 62.6% mujeres, 31.4% hombres, 1.6% no binario, 4.4% sin especificar; pico de edad 45–59; también fuerte 23–27 y 18–22.'
   ],
   billboard_charts: [],
   spotify_charts: [],
@@ -596,23 +598,26 @@ export function WeeklyDetail() {
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
                         src="/assets/santos-bravos-comment-1.png"
-                        alt="Fans piden equilibrio vocal"
+                        alt="Presentación en vivo - Toca la puerta"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
                           const placeholder = document.createElement('div');
                           placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
-                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">sb_comment_1.png</p></div>';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">santos-bravos-comment-1.png</p></div>';
                           target.parentElement?.appendChild(placeholder);
                         }}
                       />
                     </div>
                     <p className="text-sm text-gray-700 text-center">
-                      <strong>Post 1</strong> — Fans piden equilibrio vocal
+                      <strong>Comentario 1</strong> — Presentación en vivo
                     </p>
                     <p className="text-xs text-gray-600 text-center italic mt-1">
-                      "ME MOLESTA MUCHO QUE IANNIS Y KAUÊ CANTARON SUPER BIEN PERO SUS VOCES FUERON PARA TAPAR A DIEGO Y A ALEX QUE NO TE LLEGAN NI A UNA NOTA..."
+                      "mi primera vez cantando 'toca la puerta'… en vivo…"
+                    </p>
+                    <p className="text-xs text-gray-500 text-center mt-2">
+                      <strong>Por qué importa:</strong> Muestra la conexión emocional de los fans con las presentaciones en vivo y genera engagement orgánico.
                     </p>
                   </div>
 
@@ -620,23 +625,55 @@ export function WeeklyDetail() {
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
                         src="/assets/santos-bravos-comment-2.png"
-                        alt="Alta afinidad por Alejandro / repeat listens"
+                        alt="Demanda de colaboración con Santos Bravos"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
                           const placeholder = document.createElement('div');
                           placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
-                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">sb_comment_2.png</p></div>';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">santos-bravos-comment-2.png</p></div>';
                           target.parentElement?.appendChild(placeholder);
                         }}
                       />
                     </div>
                     <p className="text-sm text-gray-700 text-center">
-                      <strong>Post 2</strong> — Alta afinidad por Alejandro / repeat listens
+                      <strong>Comentario 2</strong> — Demanda de colaboración
                     </p>
                     <p className="text-xs text-gray-600 text-center italic mt-1">
-                      "Viendo esto en spotify solo para reproducir la parte de Alejandro"
+                      "UNA CANCIÓN ASÍ LES QUEDARÍA PERFECTO A SANTOS BRAVOS…"
+                    </p>
+                    <p className="text-xs text-gray-500 text-center mt-2">
+                      <strong>Por qué importa:</strong> Los fans anticipan y demandan colaboraciones específicas, señal de engagement profundo con el concepto del grupo.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {report.artist === 'SANTOS BRAVOS' && (
+                <div className="mt-8 bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-lg border-2 border-purple-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Instagram Mini-KPIs</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-purple-100">
+                      <div className="text-sm text-gray-600 mb-1">CTR Link-in-Bio</div>
+                      <div className="text-3xl font-bold text-purple-600">19.6%</div>
+                      <div className="text-xs text-gray-500 mt-2">Tasa de clics en el enlace de la biografía</div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-purple-100">
+                      <div className="text-sm text-gray-600 mb-1">Engagement / Reach</div>
+                      <div className="text-3xl font-bold text-pink-600">11.6%</div>
+                      <div className="text-xs text-gray-500 mt-2">Ratio de interacción sobre alcance</div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-purple-100">
+                      <div className="text-sm text-gray-600 mb-1">Vistas por Alcance</div>
+                      <div className="text-3xl font-bold text-indigo-600">3.13</div>
+                      <div className="text-xs text-gray-500 mt-2">Promedio de vistas por usuario alcanzado</div>
+                    </div>
+                  </div>
+                  <div className="mt-4 p-4 bg-white rounded-lg border border-purple-100">
+                    <p className="text-sm text-gray-700">
+                      <strong>Insight clave:</strong> Reels con hook &lt;3s + subtítulos grandes concentran la interacción.
+                      Picos claros esta semana; replicar formato de esos posts.
                     </p>
                   </div>
                 </div>
@@ -1005,15 +1042,30 @@ export function WeeklyDetail() {
           {report.artist === 'SANTOS BRAVOS' ? (
             <ul className="space-y-2 list-disc list-inside text-gray-900">
               <li>
-                <strong>Spotify for Creators — Santos Bravos</strong>
+                <strong>Instagram Insights (CSVs)</strong>
                 <ul className="ml-6 mt-1 space-y-1 list-none text-sm text-gray-700">
-                  <li>Overview (últimos 30 días): reproducciones, horas, seguidores.</li>
-                  <li>Audience (últimos 7 días): género y edades.</li>
-                  <li>Top Countries (últimos 7 días): MX, AR, ES.</li>
+                  <li>Seguidores (28 días)</li>
+                  <li>Visitas al perfil (28 días)</li>
+                  <li>Interacciones totales (28 días)</li>
+                  <li>Clics en el enlace de la biografía (28 días)</li>
+                  <li>Alcance de cuentas (28 días)</li>
+                  <li>Visualizaciones de contenido (28 días)</li>
                 </ul>
               </li>
               <li>
-                <strong>Fan comments:</strong> capturas provistas (Instagram/YouTube/otros) — ver imágenes adjuntas.
+                <strong>Spotify for Creators — Santos Bravos</strong>
+                <ul className="ml-6 mt-1 space-y-1 list-none text-sm text-gray-700">
+                  <li>Overview (últimos 30 días): 946.4K reproducciones, 28,531 horas, +1,030 seguidores</li>
+                  <li>Audience (últimos 7 días): género y edades (62.6% mujeres, pico 45-59)</li>
+                  <li>Top Countries (últimos 7 días): México, Argentina, España</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Instagram — Capturas de comentarios</strong>
+                <ul className="ml-6 mt-1 space-y-1 list-none text-sm text-gray-700">
+                  <li>Comentario 1: "mi primera vez cantando 'toca la puerta'… en vivo…"</li>
+                  <li>Comentario 2: "UNA CANCIÓN ASÍ LES QUEDARÍA PERFECTO A SANTOS BRAVOS…"</li>
+                </ul>
               </li>
               <li>
                 <strong>Otros (Billboard/Apple/Shazam/Luminate):</strong> No data esta semana.

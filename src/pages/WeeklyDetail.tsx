@@ -566,7 +566,12 @@ function colorizeAllNotes() {
 }
 
 function exportWeeklyPDF() {
+  document.body.classList.add('print-mode')
+  window.scrollTo(0, 0)
   window.print()
+  window.onafterprint = () => {
+    document.body.classList.remove('print-mode')
+  }
 }
 
 export function WeeklyDetail() {
@@ -635,18 +640,18 @@ export function WeeklyDetail() {
         </div>
       </div>
 
-      <div className="print:block hidden border-b-2 border-black mb-8">
-        <div className="px-6 py-4 flex items-center justify-between">
+      <div className="print-header">
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-black">{report.artist} Weekly</h1>
-            <p className="text-sm text-gray-700 mt-1">
-              {report.week_start} — {report.week_end}
+            <h1 className="text-lg font-bold text-black">{report.artist} Weekly Report</h1>
+            <p className="text-xs text-gray-600 mt-0.5">
+              {report.week_start} to {report.week_end} · Generated {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
             </p>
           </div>
           <img
             src={report.artist === 'DESTINO' ? '/assets/image copy copy copy copy copy copy copy copy.png' : '/assets/pinguinohybe.png'}
             alt="HYBE"
-            className="h-10"
+            className="h-8"
           />
         </div>
       </div>
@@ -966,7 +971,7 @@ export function WeeklyDetail() {
         )}
 
         {report.top_countries && report.top_countries.length > 0 && (
-          <section className="section page-break-inside-avoid">
+          <section className="section page-break page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Top Countries (last 28 days)
             </h2>
@@ -1097,7 +1102,7 @@ export function WeeklyDetail() {
           )}
         </section>
 
-        <section className="section page-break-inside-avoid">
+        <section className="section page-break page-break-inside-avoid">
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             TikTok Trends
           </h2>
@@ -1200,7 +1205,7 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        <section className="section page-break-inside-avoid">
+        <section className="section page-break page-break-inside-avoid">
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             Sources
           </h2>
@@ -1321,7 +1326,13 @@ export function WeeklyDetail() {
         </section>
       </div>
 
-      <div className="print-footer"></div>
+      <div className="print-footer">
+        <div className="flex justify-between items-center w-full">
+          <span className="text-xs">HYBE LATAM Data & AI Lab</span>
+          <span className="text-xs">{report.artist} Weekly Report</span>
+          <span className="text-xs">Page <span className="page-num"></span></span>
+        </div>
+      </div>
     </div>
   )
 }

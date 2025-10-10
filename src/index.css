@@ -199,9 +199,14 @@
   }
 
   /* Evitar cortes feos */
-  .section, .card, .trend-block, .table-wrapper, section {
+  .section, .card, .trend-block, .table-wrapper, section, .kpi, .image-block {
     break-inside: avoid;
     page-break-inside: avoid;
+  }
+
+  .page-break {
+    break-before: page;
+    page-break-before: always;
   }
 
   h2, h3 {
@@ -283,7 +288,13 @@
 
 /* Oculta el pie en pantalla */
 @media screen {
-  .print-footer {
+  .print-footer, .print-header {
     display: none;
   }
+}
+
+/* Show header/footer only in print preview mode */
+body.print-mode .print-header,
+body.print-mode .print-footer {
+  display: block !important;
 }

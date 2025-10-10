@@ -132,31 +132,66 @@
 
   html, body {
     background: #fff !important;
-  }
-
-  /* Apaga todo lo ajeno al reporte (sidebar/topbar/etc.) */
-  aside, .sidebar, [class*="sidebar"], [role="navigation"],
-  header, nav, .topbar, .search-bar, .app-footer,
-  .export-btn, .chat-fab, .user-card, .print\\:hidden {
-    display: none !important;
-  }
-
-  /* Si el layout usa grid/flex con columnas, fuerza 1 columna */
-  .app-shell, .layout, .container, .page, main {
-    display: block !important;
-    width: auto !important;
     margin: 0 !important;
     padding: 0 !important;
   }
 
-  /* Área del reporte centrada */
-  .report-content, .report-page {
-    max-width: 7.4in !important;
-    margin: 0 auto !important;
-    background: #fff !important;
-    box-shadow: none !important;
+  /* Hide ALL navigation and chrome - be very specific */
+  aside,
+  nav,
+  header:not(.print-header),
+  [class*="sidebar"],
+  [class*="Sidebar"],
+  [class*="topbar"],
+  [class*="Topbar"],
+  .print\\:hidden,
+  [role="navigation"],
+  button,
+  .voice-agent,
+  .floating-btn {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Hide Sidebar - first child of grid layout */
+  .grid > div:first-child,
+  .h-screen > div:first-child {
+    display: none !important;
+  }
+
+  /* Hide Topbar - usually has specific background */
+  .bg-white.border-b,
+  .sticky.top-0 {
+    display: none !important;
+  }
+
+  /* Force layout to single column - override grid */
+  body > div,
+  #root > div,
+  .h-screen {
+    display: block !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Main content should be full width */
+  main {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
     padding: 0 !important;
-    width: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Report page container */
+  .report-page {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
   }
 
   /* Quitar posiciones fijas/sticky que se imprimen */
@@ -164,44 +199,56 @@
     position: static !important;
   }
 
+  /* Report content styling */
+  .report-content {
+    max-width: 100% !important;
+    padding: 12mm 16mm !important;
+    margin: 0 !important;
+  }
+
   /* Tipografía y jerarquía */
   body, p, li, td, th {
-    font-size: 10.75pt;
-    line-height: 1.35;
+    font-size: 11pt;
+    line-height: 1.4;
     color: #111;
   }
 
   h1 {
-    font-size: 18pt;
-    margin: 0 0 8pt;
+    font-size: 20pt;
+    margin: 0 0 10pt;
+    font-weight: 700;
   }
 
   h2 {
-    font-size: 14pt;
-    margin: 16pt 0 8pt;
-    padding-bottom: 5pt;
+    font-size: 15pt;
+    margin: 18pt 0 10pt;
+    padding-bottom: 6pt;
     border-bottom: 2px solid #111;
+    font-weight: 700;
   }
 
   h3 {
-    font-size: 12pt;
-    margin: 10pt 0 6pt;
+    font-size: 13pt;
+    margin: 12pt 0 8pt;
+    font-weight: 600;
   }
 
-  /* Bullets sobrios */
+  /* Lists */
   ul {
-    margin: 6pt 0 10pt 16pt;
+    margin: 8pt 0 12pt 18pt;
   }
 
   li {
     break-inside: avoid;
     page-break-inside: avoid;
+    margin-bottom: 4pt;
   }
 
   /* Evitar cortes feos */
   .section, .card, .trend-block, .table-wrapper, section, .kpi, .image-block {
     break-inside: avoid;
     page-break-inside: avoid;
+    margin-bottom: 16pt;
   }
 
   .page-break {
@@ -213,10 +260,27 @@
     page-break-after: avoid;
   }
 
-  /* Tablas */
+  /* Preserve backgrounds and colors */
+  .bg-gray-50,
+  .bg-gray-100 {
+    background: #F9FAFB !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .text-green-600 {
+    color: #16a34a !important;
+  }
+
+  .text-red-600 {
+    color: #dc2626 !important;
+  }
+
+  /* Tables */
   table {
     width: 100%;
     border-collapse: collapse;
+    margin: 8pt 0;
   }
 
   thead {
@@ -228,14 +292,17 @@
   }
 
   th, td {
-    border: 1px solid #000;
-    padding: 6pt;
+    border: 1px solid #ddd;
+    padding: 8pt;
     vertical-align: top;
+    text-align: left;
   }
 
   thead th {
-    background: #f2f2f2 !important;
+    background: #f3f4f6 !important;
     font-weight: 600;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   tr {
@@ -243,46 +310,66 @@
     page-break-inside: avoid;
   }
 
-  /* Enlaces muestran URL (útil en PDF) */
-  a[href^="http"]:not(.btn):not(.button)::after {
-    content: " (" attr(href) ")";
-    font-size: 9pt;
-    color: #555;
+  /* Links styling */
+  a {
+    color: #2563eb;
+    text-decoration: underline;
   }
 
-  /* Pie con numeración */
+  /* Print header/footer visibility */
+  .print-header,
   .print-footer {
-    position: fixed;
-    bottom: 0.25in;
-    left: 0;
-    right: 0;
-    text-align: right;
-    font-size: 9pt;
-    color: #444;
-  }
-
-  .print-footer::after {
-    content: "Page " counter(page) " of " counter(pages);
-  }
-
-  /* Mostrar header de print */
-  .print\\:block {
     display: block !important;
   }
 
-  /* Remover sombras y fondos decorativos */
+  .print-header {
+    padding: 8mm 14mm 6mm;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .print-footer {
+    position: fixed;
+    bottom: 8mm;
+    left: 14mm;
+    right: 14mm;
+    padding-top: 6mm;
+    border-top: 1px solid #e5e7eb;
+    font-size: 9pt;
+    color: #666;
+  }
+
+  .print-footer .page-num::after {
+    content: counter(page);
+  }
+
+  /* Remove decorative elements */
   * {
     box-shadow: none !important;
     text-shadow: none !important;
   }
 
+  /* Images */
+  img {
+    max-width: 100%;
+    height: auto;
+    page-break-inside: avoid;
+  }
+
   /* Spacing adjustments */
   .space-y-10 > * + * {
-    margin-top: 14pt !important;
+    margin-top: 16pt !important;
   }
 
   .space-y-6 > * + * {
+    margin-top: 10pt !important;
+  }
+
+  .space-y-4 > * + * {
     margin-top: 8pt !important;
+  }
+
+  .space-y-2 > * + * {
+    margin-top: 4pt !important;
   }
 }
 

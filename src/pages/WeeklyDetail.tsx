@@ -757,7 +757,7 @@ export function WeeklyDetail() {
                       <strong>Performance discussion — Iannis vs. Alex</strong>
                     </p>
                     <p className="text-xs text-gray-600 text-center italic mt-1">
-                      "No tengo nada en contra de Alex… yo elijo a Iannis… Alex… no tiene buena voz y ya el grupo tiene buenos bailarines…"
+                      "I have nothing against Alex… I choose Iannis… Alex… doesn't have a good voice and the group already has good dancers…"
                     </p>
                     <p className="text-xs text-gray-500 text-center mt-2">
                       <strong>Why it matters:</strong> Fans are weighing members' strengths (vocals/dance); guidance for coaching and messaging.
@@ -784,7 +784,7 @@ export function WeeklyDetail() {
                       <strong>Strong opinions on line distribution</strong>
                     </p>
                     <p className="text-xs text-gray-600 text-center italic mt-1">
-                      "ME MOLESTA MUCHO QUE IANNIS Y KAUÊ CANTARON SUPER BIEN… ESPERO QUE NO ESTÉN MANTENIENDO A ALEX Y DIEGO SOLO POR SU BAILE…"
+                      "IT REALLY BOTHERS ME THAT IANNIS AND KAUÊ SANG SO WELL… I HOPE THEY'RE NOT KEEPING ALEX AND DIEGO JUST FOR THEIR DANCING…"
                     </p>
                     <p className="text-xs text-gray-500 text-center mt-2">
                       <strong>Why it matters:</strong> High-engagement feedback on fairness/roles; surface this theme in edits and comms.

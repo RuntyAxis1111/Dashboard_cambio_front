@@ -218,6 +218,35 @@ const SAMPLE_MAGNA: WeeklyReport = {
   ]
 }
 
+const SAMPLE_SANTOS_BRAVOS: WeeklyReport = {
+  artist: 'SANTOS BRAVOS',
+  week_start: '2025-09-10',
+  week_end: '2025-10-09',
+  fan_sentiment: `This week's takeaways:
+
+• Tono mixto → apoyo fuerte a miembros concretos y feedback exigente sobre desempeño vocal.
+
+• Conversación centrada en presentaciones recientes y expectativa por el proyecto/debut.
+
+• Featured comments:
+  - "ME MOLESTA MUCHO QUE … HYBE, NOSOTROS ESCUCHAMOS CANCIONES…" (13 días) — 6 likes
+  - "Viendo esto en Spotify sólo para reproducir la parte de Alejandro" (13 días) — 4 likes`,
+  highlights: [
+    'Spotify (últimos 30 días – Creators): 946,4K reproducciones, 28.531 h de consumo, +1.030 seguidores.',
+    'Picos anómalos de consumo (CSV 9/10–10/9): Sep 14 (190.174), Sep 15 (177.630) y Sep 12 (154.654).',
+    'Media diaria (CSV): 31.6K plays; mediana 635 → audiencia diaria típica baja con picos muy altos concentrados en 12–15 Sep.',
+    'Demografía fuerte femenina (~62.6%); picos de edad 45–59 (28%), 28–34 (23.9%), 18–22 (19.7%).',
+    'Top países (últimos 7 días – Creators): México, Argentina, España.',
+    'Nota: Secciones de charts/ventas sin datos → marcar como No data por ahora.'
+  ],
+  billboard_charts: [],
+  spotify_charts: [],
+  streaming_trends: [],
+  tiktok_trends: [],
+  apple_music: [],
+  shazam: []
+}
+
 const SAMPLE_GREGORIO: WeeklyReport = {
   artist: 'GREGORIO',
   week_start: '2025-10-02',
@@ -399,6 +428,8 @@ export function WeeklyDetail() {
     ? SAMPLE_MAGNA
     : artistId === 'gregorio'
     ? SAMPLE_GREGORIO
+    : artistId === 'santos-bravos'
+    ? SAMPLE_SANTOS_BRAVOS
     : null
 
   useEffect(() => {
@@ -541,6 +572,52 @@ export function WeeklyDetail() {
                     </div>
                     <p className="text-sm text-gray-700 text-center italic">
                       <strong>Imagen 2:</strong> Reel "Deja de hablar" (canta-along) — 386 likes — hace ~1 semana.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {report.artist === 'SANTOS BRAVOS' && (
+                <div className="space-y-6 mt-6">
+                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                    <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
+                      <img
+                        src="/assets/gregorio-santos-bravos.png"
+                        alt="Comentario sobre Santos Bravos"
+                        className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const placeholder = document.createElement('div');
+                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Imagen no disponible</p><p class="text-sm mt-2">Comentario Santos Bravos</p></div>';
+                          target.parentElement?.appendChild(placeholder);
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-700 text-center italic">
+                      <strong>Imagen 1:</strong> "ME MOLESTA MUCHO QUE … HYBE, NOSOTROS ESCUCHAMOS CANCIONES…" (13 días) — 6 likes.
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                    <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
+                      <img
+                        src="/assets/gregorio-toca-la-puerta-live.png"
+                        alt="Comentario sobre Alejandro"
+                        className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const placeholder = document.createElement('div');
+                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Imagen no disponible</p><p class="text-sm mt-2">Comentario Alejandro</p></div>';
+                          target.parentElement?.appendChild(placeholder);
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-700 text-center italic">
+                      <strong>Imagen 2:</strong> "Viendo esto en Spotify sólo para reproducir la parte de Alejandro" (13 días) — 4 likes.
                     </p>
                   </div>
                 </div>
@@ -906,7 +983,16 @@ export function WeeklyDetail() {
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             Sources
           </h2>
-          {report.artist === 'MAGNA' ? (
+          {report.artist === 'SANTOS BRAVOS' ? (
+            <ul className="space-y-2 list-disc list-inside text-gray-900">
+              <li>
+                <strong>Spotify for Creators</strong> — Estadísticas &gt; Descripción general, Audiencia (últimos 7/30 días)
+              </li>
+              <li>
+                <strong>CSV:</strong> SantosBravos_EnSpotify_10-9-2025--9-10-2025.csv (plays/streams/horas/followers diarios)
+              </li>
+            </ul>
+          ) : report.artist === 'MAGNA' ? (
             <ul className="space-y-2 list-disc list-inside text-gray-900">
               <li>
                 <strong>Instagram @m4gna</strong> — Post aniversario + promo -50% (839 likes, ~5d), Reel "Deja de hablar" (386 likes, ~1w)

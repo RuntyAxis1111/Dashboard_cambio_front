@@ -241,7 +241,29 @@ const SAMPLE_SANTOS_BRAVOS: WeeklyReport = {
   ],
   billboard_charts: [],
   spotify_charts: [],
-  streaming_trends: [],
+  streaming_trends: [
+    {
+      track: 'YouTube (últimos 7 días)',
+      bullets: [
+        '3.5M views (+122% WoW) · 113.3K horas watch time (-19% WoW) · +32.6K subs',
+        'Top en 48h: Kenneth "Cuando estoy…" 236K, Kenneth el más pequeño… 225K, EP 3: DINAMITA 197K'
+      ]
+    },
+    {
+      track: 'TikTok (últimos 28 días)',
+      bullets: [
+        '19M video views (+175.7%) · 2.5M likes (+230%) · 38K comments (+103%) · 52K shares (+255.6%)',
+        'Tráfico: For You 66%, Perfil 19.5%, Búsqueda 13.5%',
+        'Post destacado semana: "La química se baila…" ≈ 30K views · 5,372 likes · 491 comments'
+      ]
+    },
+    {
+      track: 'Spotify for Creators (últimos 30 días)',
+      bullets: [
+        '946.4K reproducciones · 28,531 horas de consumo · +1,030 seguidores'
+      ]
+    }
+  ],
   tiktok_trends: [
     {
       track: 'TikTok Trends (últimos 28 días)',
@@ -1098,7 +1120,24 @@ export function WeeklyDetail() {
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             Streaming Trends
           </h2>
-          <p className="text-gray-600 italic">No data this week</p>
+          {report.streaming_trends && report.streaming_trends.length > 0 ? (
+            <div className="space-y-6">
+              {report.streaming_trends.map((trend, idx) => (
+                <div key={idx}>
+                  <h3 className="font-semibold text-gray-900 mb-2">{trend.track}</h3>
+                  {trend.bullets && trend.bullets.length > 0 && (
+                    <ul className="space-y-1 list-disc list-inside text-gray-900">
+                      {trend.bullets.map((bullet, bIdx) => (
+                        <li key={bIdx}>{bullet}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-600 italic">No data this week</p>
+          )}
         </section>
 
         <section className="section page-break-inside-avoid">

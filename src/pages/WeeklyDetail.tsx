@@ -903,60 +903,60 @@ export function WeeklyDetail() {
                   <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
-                        src="/assets/IG_DESTINO_ARRE.png"
-                        alt="Performance discussion - Iannis vs. Alex"
+                        src="/assets/destino-comment-1.png"
+                        alt="Instagram - #maquinadeltiempo"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
                           const placeholder = document.createElement('div');
                           placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
-                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">IG_DESTINO_ARRE.png</p></div>';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">destino-comment-1.png</p></div>';
                           target.parentElement?.appendChild(placeholder);
                         }}
                       />
                     </div>
                     <p className="text-sm text-gray-700 text-center">
-                      <strong>Card A — Performance discussion — Iannis vs. Alex</strong>
+                      <strong>Instagram — #maquinadeltiempo</strong>
                     </p>
                     <p className="text-xs text-gray-600 text-center italic mt-2">
-                      "No tengo nada en contra de Alex… yo elijo a Iannis… él está mejorando en baile y tiene una gran voz… el grupo ya tiene buenos bailarines…"
+                      "Los mejores", "Soy fan!!!", 🔥🔥🔥
                     </p>
                     <p className="text-xs font-semibold text-gray-800 text-center mt-3">
                       Why it matters:
                     </p>
                     <p className="text-xs text-gray-600 text-center">
-                      Fans weigh members' strengths (vocals/dance); guidance for coaching & messaging.
+                      Nostalgia & loyalty signal. Fans express strong affinity and positive sentiment toward the concept/era.
                     </p>
                   </div>
 
                   <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
-                        src="/assets/IG_DESTINO_MDT.png"
-                        alt="Strong opinions on line distribution"
+                        src="/assets/destino-comment-2.png"
+                        alt="Instagram - Live performance hype (Arre / Premios Juventud)"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
                           const placeholder = document.createElement('div');
                           placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
-                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">IG_DESTINO_MDT.png</p></div>';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">destino-comment-2.png</p></div>';
                           target.parentElement?.appendChild(placeholder);
                         }}
                       />
                     </div>
                     <p className="text-sm text-gray-700 text-center">
-                      <strong>Card B — Strong opinions on line distribution</strong>
+                      <strong>Instagram — Live performance hype (Arre / Premios Juventud)</strong>
                     </p>
                     <p className="text-xs text-gray-600 text-center italic mt-2">
-                      "ME MOLESTA MUCHO QUE IANNIS Y KAUÊ CANTARON SUPER BIEN… ESPERO QUE NO ESTÉN MANTENIENDO A ALEX Y DIEGO SOLO POR SU BAILE…"
+                      "Qué chingón se vivió eso", "Ya cuento los días para verlos en Arre"
                     </p>
                     <p className="text-xs font-semibold text-gray-800 text-center mt-3">
                       Why it matters:
                     </p>
                     <p className="text-xs text-gray-600 text-center">
-                      High-engagement feedback on fairness/roles; surface this theme in edits and comms.
+                      Clear demand for live shows; comments point to anticipation and sustained hype.
                     </p>
                   </div>
                 </div>

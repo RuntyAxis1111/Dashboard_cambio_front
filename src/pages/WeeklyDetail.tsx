@@ -386,7 +386,15 @@ const SAMPLE_DESTINO: WeeklyReport = {
     'Release engagement — Máquina Del Tiempo (released 2025-09-10): 5,611 / 6,214 (90.3%) de la active audience la escuchó intencionalmente en los primeros 28 días.',
     'Top países (28d): México, Estados Unidos, Guatemala.',
     'Top ciudades (28d): CDMX, Guadalajara, Puebla.',
-    'Demografía (28d): 59% male, 37% female, 4% not specified; pico de edad 25–34.'
+    'Demografía (28d): 59% male, 37% female, 4% not specified; pico de edad 25–34.',
+    '',
+    '**Facebook Insights:**',
+    'Facebook Insights: Video views ↑ +240% WoW; pico 05-Oct con 796,121.',
+    'Facebook Insights: Viewers/Reach ↓ −51% WoW; pico 30-Sep con 467,677.',
+    'Facebook Insights: Interacciones ↓ −87% WoW; pico 14-Sep (3,865).',
+    'Facebook Insights: Visitas al perfil ↓ −76% WoW; pico 26-Sep (1,271).',
+    'Facebook Insights: Clics en enlace semana baja; último pico 27-Sep (5,750).',
+    'Facebook Insights: +1,161 seguidores (28d); semana −57% vs previa; mejor día 14-Sep (+158).'
   ],
   billboard_charts: [],
   spotify_charts: [],
@@ -1224,6 +1232,17 @@ export function WeeklyDetail() {
                   <li>Demographics: gender distribution and age breakdown</li>
                   <li>Location: Top Countries (México, Estados Unidos, Guatemala) and Top Cities (CDMX, Guadalajara, Puebla)</li>
                   <li>Release Engagement: Máquina Del Tiempo (90.3% of active audience streamed intentionally in first 28 days)</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Facebook Insights</strong>
+                <ul className="ml-6 mt-1 space-y-1 list-none text-sm text-gray-700">
+                  <li>Video views (28 días con picos semanales)</li>
+                  <li>Viewers/Reach (28 días con comparaciones WoW)</li>
+                  <li>Interacciones (engagement metrics)</li>
+                  <li>Visitas al perfil</li>
+                  <li>Clics en enlace</li>
+                  <li>Crecimiento de seguidores (+1,161 en 28 días)</li>
                 </ul>
               </li>
               <li>

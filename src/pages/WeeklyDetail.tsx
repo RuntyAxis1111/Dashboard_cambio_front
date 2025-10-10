@@ -741,7 +741,7 @@ export function WeeklyDetail() {
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
                         src="/assets/santos-bravos-comment-1.png"
-                        alt="Presentación en vivo - Toca la puerta"
+                        alt="Performance discussion — Iannis vs. Alex"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -754,13 +754,13 @@ export function WeeklyDetail() {
                       />
                     </div>
                     <p className="text-sm text-gray-700 text-center">
-                      <strong>Comentario 1</strong> — Presentación en vivo
+                      <strong>Performance discussion — Iannis vs. Alex</strong>
                     </p>
                     <p className="text-xs text-gray-600 text-center italic mt-1">
-                      "mi primera vez cantando 'toca la puerta'… en vivo…"
+                      "No tengo nada en contra de Alex… yo elijo a Iannis… Alex… no tiene buena voz y ya el grupo tiene buenos bailarines…"
                     </p>
                     <p className="text-xs text-gray-500 text-center mt-2">
-                      <strong>Por qué importa:</strong> Muestra la conexión emocional de los fans con las presentaciones en vivo y genera engagement orgánico.
+                      <strong>Why it matters:</strong> Fans are weighing members' strengths (vocals/dance); guidance for coaching and messaging.
                     </p>
                   </div>
 
@@ -768,7 +768,7 @@ export function WeeklyDetail() {
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
                         src="/assets/santos-bravos-comment-2.png"
-                        alt="Demanda de colaboración con Santos Bravos"
+                        alt="Strong opinions on line distribution"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -781,13 +781,13 @@ export function WeeklyDetail() {
                       />
                     </div>
                     <p className="text-sm text-gray-700 text-center">
-                      <strong>Comentario 2</strong> — Demanda de colaboración
+                      <strong>Strong opinions on line distribution</strong>
                     </p>
                     <p className="text-xs text-gray-600 text-center italic mt-1">
-                      "UNA CANCIÓN ASÍ LES QUEDARÍA PERFECTO A SANTOS BRAVOS…"
+                      "ME MOLESTA MUCHO QUE IANNIS Y KAUÊ CANTARON SUPER BIEN… ESPERO QUE NO ESTÉN MANTENIENDO A ALEX Y DIEGO SOLO POR SU BAILE…"
                     </p>
                     <p className="text-xs text-gray-500 text-center mt-2">
-                      <strong>Por qué importa:</strong> Los fans anticipan y demandan colaboraciones específicas, señal de engagement profundo con el concepto del grupo.
+                      <strong>Why it matters:</strong> High-engagement feedback on fairness/roles; surface this theme in edits and comms.
                     </p>
                   </div>
                 </div>
@@ -795,28 +795,27 @@ export function WeeklyDetail() {
 
               {report.artist === 'SANTOS BRAVOS' && (
                 <div className="mt-8 bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-lg border-2 border-purple-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Instagram Mini-KPIs</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Instagram KPIs</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="bg-white p-4 rounded-lg shadow-sm border border-purple-100">
-                      <div className="text-sm text-gray-600 mb-1">CTR Link-in-Bio</div>
+                      <div className="text-sm text-gray-600 mb-1">CTR (link-in-bio)</div>
                       <div className="text-3xl font-bold text-purple-600">19.6%</div>
-                      <div className="text-xs text-gray-500 mt-2">Tasa de clics en el enlace de la biografía</div>
+                      <div className="text-xs text-gray-500 mt-2">Link-in-bio click-through rate</div>
                     </div>
                     <div className="bg-white p-4 rounded-lg shadow-sm border border-purple-100">
                       <div className="text-sm text-gray-600 mb-1">Engagement / Reach</div>
                       <div className="text-3xl font-bold text-pink-600">11.6%</div>
-                      <div className="text-xs text-gray-500 mt-2">Ratio de interacción sobre alcance</div>
+                      <div className="text-xs text-gray-500 mt-2">Engagement rate over reach</div>
                     </div>
                     <div className="bg-white p-4 rounded-lg shadow-sm border border-purple-100">
-                      <div className="text-sm text-gray-600 mb-1">Vistas por Alcance</div>
+                      <div className="text-sm text-gray-600 mb-1">Views per Reach</div>
                       <div className="text-3xl font-bold text-indigo-600">3.13</div>
-                      <div className="text-xs text-gray-500 mt-2">Promedio de vistas por usuario alcanzado</div>
+                      <div className="text-xs text-gray-500 mt-2">Average views per user reached</div>
                     </div>
                   </div>
                   <div className="mt-4 p-4 bg-white rounded-lg border border-purple-100">
                     <p className="text-sm text-gray-700">
-                      <strong>Insight clave:</strong> Reels con hook &lt;3s + subtítulos grandes concentran la interacción.
-                      Picos claros esta semana; replicar formato de esos posts.
+                      <strong>Insight:</strong> Reels with hook &lt;3s + large captions concentrate interactions. Clear spikes — replicate that format.
                     </p>
                   </div>
                 </div>

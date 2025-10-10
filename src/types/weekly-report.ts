@@ -73,6 +73,12 @@ export type AudienceSegmentation = {
   programmed: number
 }
 
+export type MVViews = {
+  section: string
+  bullets: string[]
+  top_content?: string[]
+}
+
 export type WeeklyReport = {
   artist: string
   week_start: string
@@ -86,6 +92,7 @@ export type WeeklyReport = {
   spotify_charts?: SpotifyChartRow[]
   streaming_trends?: StreamingTrend[]
   tiktok_trends?: TikTokTrend[]
+  mv_views?: MVViews[]
   apple_music?: any[]
   shazam?: any[]
   playlist_adds?: PlaylistAdd[]

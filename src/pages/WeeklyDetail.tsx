@@ -253,6 +253,23 @@ const SAMPLE_SANTOS_BRAVOS: WeeklyReport = {
       ]
     }
   ],
+  mv_views: [
+    {
+      section: 'YouTube (últimos 7 días)',
+      bullets: [
+        '3.5M views (+122% WoW)',
+        '113.3K horas de watch time (-19% WoW)',
+        '+32.6K suscriptores (≈ igual vs semana previa)',
+        '$350.84 estimated revenue (+149% WoW)',
+        'Realtime (48h): 1.31M views'
+      ],
+      top_content: [
+        'Kenneth: "Cuando estoy en el escenario…" — 236K views',
+        'Kenneth el más pequeño… — 225K views',
+        'EP 3: DINAMITA — 197K views'
+      ]
+    }
+  ],
   apple_music: [],
   shazam: [],
   demographics: {
@@ -1200,7 +1217,34 @@ export function WeeklyDetail() {
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             Total MV Views
           </h2>
-          <p className="text-gray-600 italic">No data this week</p>
+          {report.mv_views && report.mv_views.length > 0 ? (
+            <div className="space-y-6">
+              {report.mv_views.map((mv, idx) => (
+                <div key={idx}>
+                  <h3 className="font-semibold text-gray-900 mb-3">{mv.section}</h3>
+                  {mv.bullets && mv.bullets.length > 0 && (
+                    <ul className="space-y-1 list-disc list-inside text-gray-900 mb-4">
+                      {mv.bullets.map((bullet, bIdx) => (
+                        <li key={bIdx}>{bullet}</li>
+                      ))}
+                    </ul>
+                  )}
+                  {mv.top_content && mv.top_content.length > 0 && (
+                    <div className="mt-4">
+                      <h4 className="font-semibold text-gray-900 mb-2">Top contenidos (48h)</h4>
+                      <ul className="space-y-1 list-disc list-inside text-gray-900">
+                        {mv.top_content.map((content, cIdx) => (
+                          <li key={cIdx}>{content}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-600 italic">No data this week</p>
+          )}
         </section>
 
         <section className="section page-break-inside-avoid">

@@ -595,7 +595,7 @@ export function WeeklyDetail() {
                   <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
-                        src="/assets/gregorio-santos-bravos.png"
+                        src="/assets/santos-bravos-comment-1.png"
                         alt="Fans piden equilibrio vocal"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
                         onError={(e) => {
@@ -612,14 +612,14 @@ export function WeeklyDetail() {
                       <strong>Post 1</strong> — Fans piden equilibrio vocal
                     </p>
                     <p className="text-xs text-gray-600 text-center italic mt-1">
-                      "ME MOLESTA MUCHO QUE ANNIS Y KAUÊ… esperamos que no estén manteniendo a Alex y Diego solo por su baile."
+                      "ME MOLESTA MUCHO QUE IANNIS Y KAUÊ CANTARON SUPER BIEN PERO SUS VOCES FUERON PARA TAPAR A DIEGO Y A ALEX QUE NO TE LLEGAN NI A UNA NOTA..."
                     </p>
                   </div>
 
                   <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
-                        src="/assets/gregorio-toca-la-puerta-live.png"
+                        src="/assets/santos-bravos-comment-2.png"
                         alt="Alta afinidad por Alejandro / repeat listens"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
                         onError={(e) => {
@@ -636,7 +636,7 @@ export function WeeklyDetail() {
                       <strong>Post 2</strong> — Alta afinidad por Alejandro / repeat listens
                     </p>
                     <p className="text-xs text-gray-600 text-center italic mt-1">
-                      "Viendo esto en Spotify solo para reproducir la parte de Alejandro."
+                      "Viendo esto en spotify solo para reproducir la parte de Alejandro"
                     </p>
                   </div>
                 </div>

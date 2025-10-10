@@ -87,6 +87,7 @@ const SAMPLE_ADRIAN_COTA: WeeklyReport = {
   artist: 'ADRIÁN COTA',
   week_start: '2025-10-01',
   week_end: '2025-10-07',
+  fan_sentiment: `(social media pending)`,
   highlights: [
     'Weekly streams: 10,060 (+131% WoW)',
     'Weekly listeners: 6,336 (+74% WoW)',
@@ -132,7 +133,7 @@ const SAMPLE_MAGNA: WeeklyReport = {
   artist: 'MAGNA',
   week_start: '2025-10-02',
   week_end: '2025-10-08',
-  fan_sentiment: `This week's takeaways:
+  fan_sentiment: `This week's takeaways (social media pending):
 
 • Overall tone: Very positive (celebration, gratitude, closeness). No relevant negative signals.
 
@@ -317,29 +318,29 @@ const SAMPLE_GREGORIO: WeeklyReport = {
   artist: 'GREGORIO',
   week_start: '2025-10-02',
   week_end: '2025-10-08',
-  fan_sentiment: `This week's takeaways:
+  fan_sentiment: `This week's takeaways (social media pending):
 
-• Tono general: Muy positivo (presentación en vivo de "Toca La Puerta" y clip con Santos Bravos)
+• Overall tone: Very positive (live performance of "Toca La Puerta" and clip with Santos Bravos)
 
-• Temas:
-  - "En vivo suena increíble"
-  - "Presentación poderosa"
-  - "Colaboración/afinidad con Santos Bravos"
-  - "Expectativa por su debut"
+• Themes:
+  - "Sounds incredible live"
+  - "Powerful performance"
+  - "Collaboration/affinity with Santos Bravos"
+  - "Anticipation for their debut"
 
-• Pull-quotes (muestra):
+• Pull-quotes (sample):
   - "Eres demasiado!!! Y en vivo eres una locura!!!! Qué buena presentación ✨✨✨✨"
   - "Increíble ❤️😍"
   - "UNA CANCIÓN ASÍ LES QUEDARÍA PERFECTO A SANTOS BRAVOS CUANDO YA DEBUTEN 🙏🏻"
   - "Me encanta todo lo que está sucediendo acá"`,
   highlights: [
-    'Presentación en vivo de "Toca La Puerta" y contenido con Santos Bravos generan alta afinidad',
+    'Live performance of "Toca La Puerta" and content with Santos Bravos generate high affinity',
     'Total audience (S4A, last 2 years): 95,303',
-    'Segmentación (S4A): 3.3% audiencia activa, 4% previamente activa, 92.6% programada',
+    'Segmentation (S4A): 3.3% active audience, 4% previously active, 92.6% programmed',
     'Release engagement: "Toca La Puerta" — 977 (34%) of 2,877 active audience listeners intentionally streamed it in the first 28 days',
-    'Mercados fuertes 28d (Top-3): Colombia (17,275), México (9,816), Estados Unidos (9,431)',
-    'Ciudades clave 28d (Top-3): Bogotá (8,608), Lima (3,587), Medellín (2,350)',
-    'Demografía 28d: 54% mujeres, 41% hombres, 1% no binario, 4% no especificado. Pico de edad 25–34 (38%); luego 35–44 (29%) y 18–24 (13%)'
+    'Strong markets 28d (Top-3): Colombia (17,275), Mexico (9,816), United States (9,431)',
+    'Key cities 28d (Top-3): Bogotá (8,608), Lima (3,587), Medellín (2,350)',
+    'Demographics 28d: 54% female, 41% male, 1% non-binary, 4% not specified. Age peak 25–34 (38%); then 35–44 (29%) and 18–24 (13%)'
   ],
   billboard_charts: [],
   spotify_charts: [],

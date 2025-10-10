@@ -907,84 +907,6 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        <section className="section page-break-inside-avoid">
-          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-            Streaming Data Update
-          </h2>
-
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-black mb-2">Charting — Billboard</h3>
-              {report.billboard_charts && report.billboard_charts.length > 0 ? (
-                <div className="overflow-x-auto table-wrapper">
-                  <table className="w-full border-collapse" role="table">
-                    <thead>
-                      <tr className="border-b-2 border-gray-300">
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Rank</th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Chart</th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Track/Album</th>
-                        <th className="text-right py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Weeks</th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Notes</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {report.billboard_charts.map((row, idx) => (
-                        <tr key={idx} className="border-b border-gray-200">
-                          <td className="py-3 px-4 font-semibold text-black">{row.rank}</td>
-                          <td className="py-3 px-4 text-gray-700">{row.chart}</td>
-                          <td className="py-3 px-4 font-medium text-black">{row.work}</td>
-                          <td className="py-3 px-4 text-right text-gray-700">{row.weeks}</td>
-                          <td className="py-3 px-4 text-gray-600 text-sm notes">{row.notes === '-' ? '–' : row.notes}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <p className="text-gray-600 italic">No data this week</p>
-              )}
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold text-black mb-2">Charting — Spotify</h3>
-              {report.spotify_charts && report.spotify_charts.length > 0 ? (
-                <div className="overflow-x-auto table-wrapper">
-                  <table className="w-full border-collapse" role="table">
-                    <thead>
-                      <tr className="border-b-2 border-gray-300">
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Track</th>
-                        <th className="text-right py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Markets</th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900 bg-gray-50" scope="col">Notes</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {report.spotify_charts.map((row, idx) => (
-                        <tr key={idx} className="border-b border-gray-200">
-                          <td className="py-3 px-4 font-medium text-black">{row.track}</td>
-                          <td className="py-3 px-4 text-right text-gray-700 markets">{row.markets}</td>
-                          <td className="py-3 px-4 text-gray-600 text-sm notes">{row.notes}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <p className="text-gray-600 italic">No data this week</p>
-              )}
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold text-black mb-2">Charting — Apple Music</h3>
-              <p className="text-gray-600 italic">No data this week</p>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold text-black mb-2">Charting — Shazam</h3>
-              <p className="text-gray-600 italic">No data this week</p>
-            </div>
-          </div>
-        </section>
-
 
         {report.playlist_adds && report.playlist_adds.length > 0 && (
           <section className="section page-break-inside-avoid">
@@ -1208,13 +1130,6 @@ export function WeeklyDetail() {
 
         <section className="section page-break-inside-avoid">
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-            US Weekly Album Sales Updates
-          </h2>
-          <p className="text-gray-600 italic">No data this week</p>
-        </section>
-
-        <section className="section page-break-inside-avoid">
-          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             Total MV Views
           </h2>
           {report.mv_views && report.mv_views.length > 0 ? (
@@ -1245,20 +1160,6 @@ export function WeeklyDetail() {
           ) : (
             <p className="text-gray-600 italic">No data this week</p>
           )}
-        </section>
-
-        <section className="section page-break-inside-avoid">
-          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-            Spotify Streams (totales por canción)
-          </h2>
-          <p className="text-gray-600 italic">No data this week</p>
-        </section>
-
-        <section className="section page-break-inside-avoid">
-          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-            Members' IG Weekly Social Growth
-          </h2>
-          <p className="text-gray-600 italic">No data this week</p>
         </section>
 
         <section className="section page-break-inside-avoid">

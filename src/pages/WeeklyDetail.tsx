@@ -1073,48 +1073,6 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        {report.demographics && (
-          <section className="section page-break-inside-avoid">
-            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-              Demographics (last 28 days)
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-semibold text-black mb-2">Gender</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-sm text-gray-600">Female</p>
-                    <p className="text-2xl font-bold text-black">{report.demographics.gender.female}%</p>
-                  </div>
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-sm text-gray-600">Male</p>
-                    <p className="text-2xl font-bold text-black">{report.demographics.gender.male}%</p>
-                  </div>
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-sm text-gray-600">Non-binary</p>
-                    <p className="text-2xl font-bold text-black">{report.demographics.gender.non_binary}%</p>
-                  </div>
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-sm text-gray-600">Not specified</p>
-                    <p className="text-2xl font-bold text-black">{report.demographics.gender.not_specified}%</p>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-black mb-2">Age Distribution</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {Object.entries(report.demographics.age_pct).map(([age, pct]) => (
-                    <div key={age} className="bg-gray-50 p-3 rounded">
-                      <p className="text-sm text-gray-600">{age}</p>
-                      <p className="text-2xl font-bold text-black">{pct}%</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
         <section className="section page-break-inside-avoid">
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             Streaming Trends
@@ -1200,6 +1158,48 @@ export function WeeklyDetail() {
           )}
         </section>
 
+        {report.demographics && (
+          <section className="section page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Demographics (last 28 days)
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold text-black mb-2">Gender</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-sm text-gray-600">Female</p>
+                    <p className="text-2xl font-bold text-black">{report.demographics.gender.female}%</p>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-sm text-gray-600">Male</p>
+                    <p className="text-2xl font-bold text-black">{report.demographics.gender.male}%</p>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-sm text-gray-600">Non-binary</p>
+                    <p className="text-2xl font-bold text-black">{report.demographics.gender.non_binary}%</p>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-sm text-gray-600">Not specified</p>
+                    <p className="text-2xl font-bold text-black">{report.demographics.gender.not_specified}%</p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-black mb-2">Age Distribution</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {Object.entries(report.demographics.age_pct).map(([age, pct]) => (
+                    <div key={age} className="bg-gray-50 p-3 rounded">
+                      <p className="text-sm text-gray-600">{age}</p>
+                      <p className="text-2xl font-bold text-black">{pct}%</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
         <section className="section page-break-inside-avoid">
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             Sources
@@ -1228,8 +1228,8 @@ export function WeeklyDetail() {
               <li>
                 <strong>Instagram — Comment captures</strong>
                 <ul className="ml-6 mt-1 space-y-1 list-none text-sm text-gray-700">
-                  <li>Comment 1: "my first time singing 'toca la puerta'… live…"</li>
-                  <li>Comment 2: "A SONG LIKE THIS WOULD BE PERFECT FOR SANTOS BRAVOS…"</li>
+                  <li>Comment 1: "I have nothing against Alex… I choose Iannis… Alex… doesn't have a good voice and the group already has good dancers…"</li>
+                  <li>Comment 2: "IT REALLY BOTHERS ME THAT IANNIS AND KAUÊ SANG SO WELL… I HOPE THEY'RE NOT KEEPING ALEX AND DIEGO JUST FOR THEIR DANCING…"</li>
                 </ul>
               </li>
               <li>

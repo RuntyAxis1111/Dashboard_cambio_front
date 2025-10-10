@@ -452,7 +452,14 @@ const SAMPLE_DESTINO: WeeklyReport = {
     { rank: 1, city: 'Mexico City, MX', listeners: 3298 },
     { rank: 2, city: 'Guadalajara, MX', listeners: 1081 },
     { rank: 3, city: 'Puebla City, MX', listeners: 713 }
-  ]
+  ],
+  fan_sentiment: `This week's takeaways:
+
+• Tono general: Muy positivo (🔥🙌). Sin señales negativas relevantes.
+• Demand gen (live): Alta expectativa por shows — menciones a Arre y "verlos pronto".
+• Nostalgia activa: Posts de Máquina del Tiempo disparan afinidad ("Los mejores", "Soy fan").
+
+Comment snapshots:`
 }
 
 function getColIndexByHeader(tableEl: HTMLTableElement, headerText = 'notes'): number {
@@ -840,6 +847,64 @@ export function WeeklyDetail() {
                     </div>
                     <p className="text-sm text-gray-700 text-center italic">
                       <strong>Imagen 2:</strong> Mi primera vez cantando "Toca La Puerta" (en vivo) — "Eres demasiado!!! Y en vivo eres una locura!!!! Qué buena presentación" — ~2 días.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {report.artist === 'DESTINO' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                    <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
+                      <img
+                        src="/assets/IG_DESTINO_ARRE.png"
+                        alt="Instagram - Arre / Premios Juventud"
+                        className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const placeholder = document.createElement('div');
+                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">IG_DESTINO_ARRE.png</p></div>';
+                          target.parentElement?.appendChild(placeholder);
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-700 text-center">
+                      <strong>Instagram — Arre / Premios Juventud</strong> (mejor post de la semana)
+                    </p>
+                    <p className="text-xs text-gray-600 text-center italic mt-2">
+                      Fans piden verlos en vivo; hype sostenido por presentaciones.
+                    </p>
+                    <p className="text-xs text-gray-500 text-center mt-2">
+                      Ejemplos: "Que chingón se vivió eso", "Ya cuento los días para verlos en Arre 🤧🙌"
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                    <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
+                      <img
+                        src="/assets/IG_DESTINO_MDT.png"
+                        alt="Instagram - #maquinadeltiempo"
+                        className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const placeholder = document.createElement('div');
+                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">IG_DESTINO_MDT.png</p></div>';
+                          target.parentElement?.appendChild(placeholder);
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-700 text-center">
+                      <strong>Instagram — #maquinadeltiempo</strong>
+                    </p>
+                    <p className="text-xs text-gray-600 text-center italic mt-2">
+                      Nostalgia + lealtad ("Los mejores", "Soy fan").
+                    </p>
+                    <p className="text-xs text-gray-500 text-center mt-2">
+                      Ejemplos: "Los mejores 🤩🙌", "Soy fan!!!"
                     </p>
                   </div>
                 </div>

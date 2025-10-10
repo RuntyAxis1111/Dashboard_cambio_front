@@ -220,31 +220,44 @@ const SAMPLE_MAGNA: WeeklyReport = {
 
 const SAMPLE_SANTOS_BRAVOS: WeeklyReport = {
   artist: 'SANTOS BRAVOS',
-  week_start: '2025-09-10',
-  week_end: '2025-10-09',
+  week_start: '2025-10-02',
+  week_end: '2025-10-08',
   fan_sentiment: `This week's takeaways:
 
-• Tono mixto → apoyo fuerte a miembros concretos y feedback exigente sobre desempeño vocal.
+• Énfasis de fandom en desempeño vocal y equilibrio de líneas.
 
-• Conversación centrada en presentaciones recientes y expectativa por el proyecto/debut.
+• Alta afinidad por Alejandro; fans dicen que vuelven a reproducir su parte en Spotify.
 
-• Featured comments:
-  - "ME MOLESTA MUCHO QUE … HYBE, NOSOTROS ESCUCHAMOS CANCIONES…" (13 días) — 6 likes
-  - "Viendo esto en Spotify sólo para reproducir la parte de Alejandro" (13 días) — 4 likes`,
+• Tono general: mixto a positivo (pasión/expectativa), con feedback crítico constructivo hacia miembros.`,
   highlights: [
-    'Spotify (últimos 30 días – Creators): 946,4K reproducciones, 28.531 h de consumo, +1.030 seguidores.',
-    'Picos anómalos de consumo (CSV 9/10–10/9): Sep 14 (190.174), Sep 15 (177.630) y Sep 12 (154.654).',
-    'Media diaria (CSV): 31.6K plays; mediana 635 → audiencia diaria típica baja con picos muy altos concentrados en 12–15 Sep.',
-    'Demografía fuerte femenina (~62.6%); picos de edad 45–59 (28%), 28–34 (23.9%), 18–22 (19.7%).',
-    'Top países (últimos 7 días – Creators): México, Argentina, España.',
-    'Nota: Secciones de charts/ventas sin datos → marcar como No data por ahora.'
+    'Spotify (últimos 30 días): 946,4K reproducciones; 28.531 horas de consumo; +1.030 seguidores.',
+    'Países fuertes (7 días): México (15.738), Argentina (59), España (52).',
+    'Demografía (7 días): 62.6% mujeres; pico de edad 45–59 (28%).',
+    'Billboard / Apple / Shazam / Luminate: No data esta semana.'
   ],
   billboard_charts: [],
   spotify_charts: [],
   streaming_trends: [],
   tiktok_trends: [],
   apple_music: [],
-  shazam: []
+  shazam: [],
+  demographics: {
+    gender: { female: 62.6, male: 31.4, non_binary: 1.6, not_specified: 4.4 },
+    age_pct: {
+      '0-17': 0.9,
+      '18-22': 19.7,
+      '23-27': 23.9,
+      '28-34': 4.5,
+      '35-44': 11.8,
+      '45-59': 28,
+      '60+': 11.4
+    }
+  },
+  top_countries: [
+    { rank: 1, country: 'México', listeners: 15738 },
+    { rank: 2, country: 'Argentina', listeners: 59 },
+    { rank: 3, country: 'España', listeners: 52 }
+  ]
 }
 
 const SAMPLE_GREGORIO: WeeklyReport = {
@@ -578,25 +591,28 @@ export function WeeklyDetail() {
               )}
 
               {report.artist === 'SANTOS BRAVOS' && (
-                <div className="space-y-6 mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                   <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
                         src="/assets/gregorio-santos-bravos.png"
-                        alt="Comentario sobre Santos Bravos"
+                        alt="Fans piden equilibrio vocal"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
                           const placeholder = document.createElement('div');
                           placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
-                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Imagen no disponible</p><p class="text-sm mt-2">Comentario Santos Bravos</p></div>';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">sb_comment_1.png</p></div>';
                           target.parentElement?.appendChild(placeholder);
                         }}
                       />
                     </div>
-                    <p className="text-sm text-gray-700 text-center italic">
-                      <strong>Imagen 1:</strong> "ME MOLESTA MUCHO QUE … HYBE, NOSOTROS ESCUCHAMOS CANCIONES…" (13 días) — 6 likes.
+                    <p className="text-sm text-gray-700 text-center">
+                      <strong>Post 1</strong> — Fans piden equilibrio vocal
+                    </p>
+                    <p className="text-xs text-gray-600 text-center italic mt-1">
+                      "ME MOLESTA MUCHO QUE ANNIS Y KAUÊ… esperamos que no estén manteniendo a Alex y Diego solo por su baile."
                     </p>
                   </div>
 
@@ -604,20 +620,23 @@ export function WeeklyDetail() {
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
                         src="/assets/gregorio-toca-la-puerta-live.png"
-                        alt="Comentario sobre Alejandro"
+                        alt="Alta afinidad por Alejandro / repeat listens"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
                           const placeholder = document.createElement('div');
                           placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
-                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Imagen no disponible</p><p class="text-sm mt-2">Comentario Alejandro</p></div>';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">sb_comment_2.png</p></div>';
                           target.parentElement?.appendChild(placeholder);
                         }}
                       />
                     </div>
-                    <p className="text-sm text-gray-700 text-center italic">
-                      <strong>Imagen 2:</strong> "Viendo esto en Spotify sólo para reproducir la parte de Alejandro" (13 días) — 4 likes.
+                    <p className="text-sm text-gray-700 text-center">
+                      <strong>Post 2</strong> — Alta afinidad por Alejandro / repeat listens
+                    </p>
+                    <p className="text-xs text-gray-600 text-center italic mt-1">
+                      "Viendo esto en Spotify solo para reproducir la parte de Alejandro."
                     </p>
                   </div>
                 </div>
@@ -986,10 +1005,18 @@ export function WeeklyDetail() {
           {report.artist === 'SANTOS BRAVOS' ? (
             <ul className="space-y-2 list-disc list-inside text-gray-900">
               <li>
-                <strong>Spotify for Creators</strong> — Estadísticas &gt; Descripción general, Audiencia (últimos 7/30 días)
+                <strong>Spotify for Creators — Santos Bravos</strong>
+                <ul className="ml-6 mt-1 space-y-1 list-none text-sm text-gray-700">
+                  <li>Overview (últimos 30 días): reproducciones, horas, seguidores.</li>
+                  <li>Audience (últimos 7 días): género y edades.</li>
+                  <li>Top Countries (últimos 7 días): MX, AR, ES.</li>
+                </ul>
               </li>
               <li>
-                <strong>CSV:</strong> SantosBravos_EnSpotify_10-9-2025--9-10-2025.csv (plays/streams/horas/followers diarios)
+                <strong>Fan comments:</strong> capturas provistas (Instagram/YouTube/otros) — ver imágenes adjuntas.
+              </li>
+              <li>
+                <strong>Otros (Billboard/Apple/Shazam/Luminate):</strong> No data esta semana.
               </li>
             </ul>
           ) : report.artist === 'MAGNA' ? (

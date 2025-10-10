@@ -741,7 +741,7 @@ export function WeeklyDetail() {
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
                         src="/assets/santos-bravos-comment-2.png"
-                        alt="Strong opinions on line distribution"
+                        alt="Performance discussion — Iannis vs. Alex"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -754,13 +754,13 @@ export function WeeklyDetail() {
                       />
                     </div>
                     <p className="text-sm text-gray-700 text-center">
-                      <strong>Strong opinions on line distribution</strong>
+                      <strong>Performance discussion — Iannis vs. Alex</strong>
                     </p>
                     <p className="text-xs text-gray-600 text-center italic mt-1">
-                      "ME MOLESTA MUCHO QUE IANNIS Y KAUÊ CANTARON SUPER BIEN… ESPERO QUE NO ESTÉN MANTENIENDO A ALEX Y DIEGO SOLO POR SU BAILE…"
+                      "No tengo nada en contra de Alex… yo elijo a Iannis… Alex… no tiene buena voz y ya el grupo tiene buenos bailarines…"
                     </p>
                     <p className="text-xs text-gray-500 text-center mt-2">
-                      <strong>Why it matters:</strong> High-engagement feedback on fairness/roles; surface this theme in edits and comms.
+                      <strong>Why it matters:</strong> Fans are weighing members' strengths (vocals/dance); guidance for coaching and messaging.
                     </p>
                   </div>
 
@@ -768,7 +768,7 @@ export function WeeklyDetail() {
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
                         src="/assets/santos-bravos-comment-1.png"
-                        alt="Performance discussion — Iannis vs. Alex"
+                        alt="Strong opinions on line distribution"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -781,13 +781,13 @@ export function WeeklyDetail() {
                       />
                     </div>
                     <p className="text-sm text-gray-700 text-center">
-                      <strong>Performance discussion — Iannis vs. Alex</strong>
+                      <strong>Strong opinions on line distribution</strong>
                     </p>
                     <p className="text-xs text-gray-600 text-center italic mt-1">
-                      "No tengo nada en contra de Alex… yo elijo a Iannis… Alex… no tiene buena voz y ya el grupo tiene buenos bailarines…"
+                      "ME MOLESTA MUCHO QUE IANNIS Y KAUÊ CANTARON SUPER BIEN… ESPERO QUE NO ESTÉN MANTENIENDO A ALEX Y DIEGO SOLO POR SU BAILE…"
                     </p>
                     <p className="text-xs text-gray-500 text-center mt-2">
-                      <strong>Why it matters:</strong> Fans are weighing members' strengths (vocals/dance); guidance for coaching and messaging.
+                      <strong>Why it matters:</strong> High-engagement feedback on fairness/roles; surface this theme in edits and comms.
                     </p>
                   </div>
                 </div>

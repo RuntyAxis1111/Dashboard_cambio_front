@@ -336,9 +336,22 @@
     color: #dc2626 !important;
   }
 
+  .text-orange-600 {
+    color: #ea580c !important;
+  }
+
+  .text-amber-600 {
+    color: #d97706 !important;
+  }
+
   .border-purple-200,
   .border-purple-100 {
     border-color: #e9d5ff !important;
+  }
+
+  .border-orange-200,
+  .border-orange-100 {
+    border-color: #fed7aa !important;
   }
 
   .border-blue-200,
@@ -376,6 +389,18 @@
 
   .border-green-200 {
     border-color: #bbf7d0 !important;
+  }
+
+  .bg-orange-50 {
+    background: #fff7ed !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .bg-amber-50 {
+    background: #fffbeb !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   /* Tables */

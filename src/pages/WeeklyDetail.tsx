@@ -461,6 +461,55 @@ const SAMPLE_DESTINO: WeeklyReport = {
 Comment snapshots:`
 }
 
+const SAMPLE_MUSZA: WeeklyReport = {
+  artist: 'MUSZA',
+  week_start: '2025-10-02',
+  week_end: '2025-10-08',
+  highlights: [
+    'Spotify (28d): 30,655 listeners (–7.1% WoW) · 55,257 streams (+16.2%).',
+    '7d snapshot: listeners 8,041 (–17.9%), streams 15,350 (–19.2%); followers +5,676 (+9.0%) with peak of 834 on Oct 8.',
+    'Audience mix: 22.9% Active · 6.5% Previously Active · 70.6% Programmed → high dependency on playlists/algorithms.',
+    'Facebook (7d): post-peak drop: video views 179,918 (↓~67%), viewers 83,890 (↓~70%), interactions 6,872 (↓~59%), profile visits 7,684 (↓~57%), link clicks 49 (↓~99%).',
+    'Geo focus: MX first (CDMX/GDL/MTY) + pockets in USA (Chicago/Houston/San Antonio).',
+    'Action: capitalize on Oct 8 follower boom with CTAs (save/stream) and short clips.'
+  ],
+  billboard_charts: [],
+  spotify_charts: [],
+  streaming_trends: [],
+  tiktok_trends: [],
+  apple_music: [],
+  shazam: [],
+  spotify_stats: {
+    listeners: 30655,
+    streams: 55257,
+    streams_per_listener: 0,
+    saves: 0,
+    playlist_adds: 0
+  },
+  audience_segmentation: {
+    active: 22.9,
+    previously_active: 6.5,
+    programmed: 70.6
+  },
+  top_countries: [
+    { rank: 1, country: 'Mexico', listeners: 10911 },
+    { rank: 2, country: 'United States', listeners: 2728 },
+    { rank: 3, country: 'Guatemala', listeners: 210 }
+  ],
+  top_cities: [
+    { rank: 1, city: 'Mexico City, MX', listeners: 2140 },
+    { rank: 2, city: 'Guadalajara, MX', listeners: 623 },
+    { rank: 3, city: 'Monterrey, MX', listeners: 532 }
+  ],
+  fan_sentiment: `This week's takeaways:
+
+• Overall tone: Strong early excitement; clear demand signals.
+• Launch hype: Fans expressing immediate positive reactions ("Ya la tengo en repeat", "Temazo").
+• Live demand: Geographic targeting opportunities based on city-specific requests.
+
+Comment snapshots:`
+}
+
 function getColIndexByHeader(tableEl: HTMLTableElement, headerText = 'notes'): number {
   const ths = tableEl.querySelectorAll('thead th')
   for (let i = 0; i < ths.length; i++) {
@@ -572,6 +621,8 @@ export function WeeklyDetail() {
     ? SAMPLE_SANTOS_BRAVOS
     : artistId === 'destino'
     ? SAMPLE_DESTINO
+    : artistId === 'musza'
+    ? SAMPLE_MUSZA
     : null
 
   useEffect(() => {
@@ -632,7 +683,7 @@ export function WeeklyDetail() {
             </p>
           </div>
           <img
-            src={report.artist === 'DESTINO' ? '/assets/image copy copy copy copy copy copy copy copy.png' : '/assets/pinguinohybe.png'}
+            src={report.artist === 'DESTINO' ? '/assets/image copy copy copy copy copy copy copy copy.png' : report.artist === 'MUSZA' ? '/assets/image copy copy copy copy copy copy copy copy copy.png' : '/assets/pinguinohybe.png'}
             alt="HYBE"
             className="h-8"
           />
@@ -852,6 +903,87 @@ export function WeeklyDetail() {
                 </div>
               )}
 
+              {report.artist === 'MUSZA' && (
+                <div className="mt-8 space-y-6">
+                  <div className="bg-gradient-to-br from-orange-50 to-amber-50 p-6 rounded-lg border-2 border-orange-200 page-break-inside-avoid">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Instagram KPIs</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 page-break-inside-avoid">
+                      <div className="bg-white p-4 rounded-lg shadow-sm border border-orange-100">
+                        <div className="text-sm text-gray-600 mb-1">CTR (link-in-bio)</div>
+                        <div className="text-3xl font-bold text-orange-600">Pending</div>
+                        <div className="text-xs text-gray-500 mt-2">Awaiting 7d data</div>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg shadow-sm border border-orange-100">
+                        <div className="text-sm text-gray-600 mb-1">Engagement / Reach</div>
+                        <div className="text-3xl font-bold text-amber-600">Pending</div>
+                        <div className="text-xs text-gray-500 mt-2">Awaiting 7d data</div>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg shadow-sm border border-orange-100">
+                        <div className="text-sm text-gray-600 mb-1">Views per Reach</div>
+                        <div className="text-3xl font-bold text-red-600">Pending</div>
+                        <div className="text-xs text-gray-500 mt-2">Awaiting 7d data</div>
+                      </div>
+                    </div>
+                    <div className="mt-4 p-4 bg-white rounded-lg border border-orange-100">
+                      <p className="text-sm text-gray-700">
+                        <strong>Note:</strong> Big reach spikes; ensure CTAs on peak days.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-lg border-2 border-purple-200 page-break-inside-avoid">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Facebook Insights</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                      <div className="bg-white p-4 rounded-lg border border-purple-100">
+                        <div className="text-sm text-gray-600 mb-1">Video views (7d)</div>
+                        <div className="text-2xl font-bold text-gray-900">179,918</div>
+                        <div className="text-xs text-red-600 mt-1">↓ ~67% vs prev</div>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-purple-100">
+                        <div className="text-sm text-gray-600 mb-1">Viewers (7d)</div>
+                        <div className="text-2xl font-bold text-gray-900">83,890</div>
+                        <div className="text-xs text-red-600 mt-1">↓ ~70% vs prev</div>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-purple-100">
+                        <div className="text-sm text-gray-600 mb-1">Interactions (7d)</div>
+                        <div className="text-2xl font-bold text-gray-900">6,872</div>
+                        <div className="text-xs text-red-600 mt-1">↓ ~59% vs prev</div>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-purple-100">
+                        <div className="text-sm text-gray-600 mb-1">Profile visits (7d)</div>
+                        <div className="text-2xl font-bold text-gray-900">7,684</div>
+                        <div className="text-xs text-red-600 mt-1">↓ ~57% vs prev</div>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-purple-100">
+                        <div className="text-sm text-gray-600 mb-1">Link clicks (7d)</div>
+                        <div className="text-2xl font-bold text-gray-900">49</div>
+                        <div className="text-xs text-red-600 mt-1">↓ ~99% vs prev</div>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-purple-100">
+                        <div className="text-sm text-gray-600 mb-1">Followers (net)</div>
+                        <div className="text-2xl font-bold text-gray-900">+944</div>
+                        <div className="text-xs text-red-600 mt-1">↓ ~38% vs prev</div>
+                      </div>
+                    </div>
+                    <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                      <h4 className="text-sm font-semibold text-gray-900 mb-2">28d peaks:</h4>
+                      <ul className="text-xs text-gray-700 space-y-1">
+                        <li><strong>Views:</strong> 116,280 (Sep 23)</li>
+                        <li><strong>Viewers:</strong> 68,297 (Sep 23)</li>
+                        <li><strong>Interactions:</strong> 3,558 (Sep 25)</li>
+                        <li><strong>Visits:</strong> 4,263 (Sep 24)</li>
+                        <li><strong>Link clicks:</strong> 851 (Sep 29)</li>
+                      </ul>
+                    </div>
+                    <div className="mt-4 p-4 bg-white rounded-lg border border-purple-100">
+                      <p className="text-sm text-gray-700">
+                        <strong>Micro-insight:</strong> Post-launch drop after Sep 23–29 spike — add strong CTAs to convert awareness to visits/clicks.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {report.artist === 'GREGORIO' && (
                 <div className="space-y-6 mt-6">
                   <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
@@ -957,6 +1089,70 @@ export function WeeklyDetail() {
                     </p>
                     <p className="text-xs text-gray-600 text-center">
                       Clear demand for live shows; comments point to anticipation and sustained hype.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {report.artist === 'MUSZA' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                    <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
+                      <img
+                        src="/assets/musza-comment-1.png"
+                        alt="Instagram - Launch hype"
+                        className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const placeholder = document.createElement('div');
+                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">musza-comment-1.png</p></div>';
+                          target.parentElement?.appendChild(placeholder);
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-700 text-center">
+                      <strong>Instagram — Launch hype</strong>
+                    </p>
+                    <p className="text-xs text-gray-600 text-center italic mt-2">
+                      "🔥🔥🔥", "Ya la tengo en repeat", "Temazo"
+                    </p>
+                    <p className="text-xs font-semibold text-gray-800 text-center mt-3">
+                      Why it matters:
+                    </p>
+                    <p className="text-xs text-gray-600 text-center">
+                      Early excitement → opportunity to convert awareness into saves/streams.
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                    <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
+                      <img
+                        src="/assets/musza-comment-2.png"
+                        alt="Instagram - Live demand"
+                        className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const placeholder = document.createElement('div');
+                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">musza-comment-2.png</p></div>';
+                          target.parentElement?.appendChild(placeholder);
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-700 text-center">
+                      <strong>Instagram — Live demand</strong>
+                    </p>
+                    <p className="text-xs text-gray-600 text-center italic mt-2">
+                      "¿Cuándo vienen a [CDMX/GDL]?", "Necesitamos show"
+                    </p>
+                    <p className="text-xs font-semibold text-gray-800 text-center mt-3">
+                      Why it matters:
+                    </p>
+                    <p className="text-xs text-gray-600 text-center">
+                      Local demand signals; useful for content targeting and advertising.
                     </p>
                   </div>
                 </div>
@@ -1114,10 +1310,17 @@ export function WeeklyDetail() {
                 </p>
               </div>
             )}
+            {report.artist === 'MUSZA' && (
+              <div className="mt-4 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <p className="text-sm text-gray-700">
+                  <strong>Note:</strong> High programming share (70.6%) — convert to Active with CTAs & library education.
+                </p>
+              </div>
+            )}
           </section>
         )}
 
-        {report.artist !== 'DESTINO' && (
+        {report.artist !== 'DESTINO' && report.artist !== 'MUSZA' && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Streaming Trends
@@ -1143,7 +1346,7 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        {report.artist !== 'DESTINO' && (
+        {report.artist !== 'DESTINO' && report.artist !== 'MUSZA' && (
           <section className="section page-break page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               TikTok Trends
@@ -1172,7 +1375,7 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        {report.artist !== 'DESTINO' && (
+        {report.artist !== 'DESTINO' && report.artist !== 'MUSZA' && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Total MV Views
@@ -1340,6 +1543,18 @@ export function WeeklyDetail() {
               </li>
               <li>
                 <strong>Chartmetric:</strong> Milestone badges (ranking progress); used only for context, not chart placements.
+              </li>
+            </ul>
+          ) : report.artist === 'MUSZA' ? (
+            <ul className="space-y-2 list-disc list-inside text-gray-900">
+              <li>
+                <strong>Spotify for Artists:</strong> Audience timeline (28d/7d), Segments (Active 22.9%, Previously Active 6.5%, Programmed 70.6%), Top countries/cities.
+              </li>
+              <li>
+                <strong>Facebook Insights:</strong> 7d/28d CSVs; peaks Sep 23–29; negative deltas Oct 2–8 (video views ↓~67%, viewers ↓~70%, interactions ↓~59%, profile visits ↓~57%, link clicks ↓~99%).
+              </li>
+              <li>
+                <strong>Instagram Insights:</strong> (Pending) — Reach/Views/Visits/Clicks/Interactions/Followers + CTR & ER.
               </li>
             </ul>
           ) : (

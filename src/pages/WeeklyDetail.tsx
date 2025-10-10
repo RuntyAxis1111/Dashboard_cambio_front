@@ -740,33 +740,6 @@ export function WeeklyDetail() {
                   <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
                     <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
                       <img
-                        src="/assets/santos-bravos-comment-1.png"
-                        alt="Performance discussion — Iannis vs. Alex"
-                        className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          const placeholder = document.createElement('div');
-                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
-                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">santos-bravos-comment-1.png</p></div>';
-                          target.parentElement?.appendChild(placeholder);
-                        }}
-                      />
-                    </div>
-                    <p className="text-sm text-gray-700 text-center">
-                      <strong>Performance discussion — Iannis vs. Alex</strong>
-                    </p>
-                    <p className="text-xs text-gray-600 text-center italic mt-1">
-                      "No tengo nada en contra de Alex… yo elijo a Iannis… Alex… no tiene buena voz y ya el grupo tiene buenos bailarines…"
-                    </p>
-                    <p className="text-xs text-gray-500 text-center mt-2">
-                      <strong>Why it matters:</strong> Fans are weighing members' strengths (vocals/dance); guidance for coaching and messaging.
-                    </p>
-                  </div>
-
-                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
-                    <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
-                      <img
                         src="/assets/santos-bravos-comment-2.png"
                         alt="Strong opinions on line distribution"
                         className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
@@ -788,6 +761,33 @@ export function WeeklyDetail() {
                     </p>
                     <p className="text-xs text-gray-500 text-center mt-2">
                       <strong>Why it matters:</strong> High-engagement feedback on fairness/roles; surface this theme in edits and comms.
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                    <div className="bg-white rounded-lg overflow-hidden mb-3 flex items-center justify-center">
+                      <img
+                        src="/assets/santos-bravos-comment-1.png"
+                        alt="Performance discussion — Iannis vs. Alex"
+                        className="max-w-full max-h-[600px] w-auto h-auto object-contain rounded-lg shadow-sm"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const placeholder = document.createElement('div');
+                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image pending</p><p class="text-sm mt-2">santos-bravos-comment-1.png</p></div>';
+                          target.parentElement?.appendChild(placeholder);
+                        }}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-700 text-center">
+                      <strong>Performance discussion — Iannis vs. Alex</strong>
+                    </p>
+                    <p className="text-xs text-gray-600 text-center italic mt-1">
+                      "No tengo nada en contra de Alex… yo elijo a Iannis… Alex… no tiene buena voz y ya el grupo tiene buenos bailarines…"
+                    </p>
+                    <p className="text-xs text-gray-500 text-center mt-2">
+                      <strong>Why it matters:</strong> Fans are weighing members' strengths (vocals/dance); guidance for coaching and messaging.
                     </p>
                   </div>
                 </div>

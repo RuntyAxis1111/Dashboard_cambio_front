@@ -224,64 +224,64 @@ const SAMPLE_SANTOS_BRAVOS: WeeklyReport = {
   week_end: '2025-10-08',
   fan_sentiment: `This week's takeaways:
 
-• Tono general: Muy positivo (presentación en vivo + colaboración).
+• Overall tone: Very positive (live performance + collaboration).
 
-• Lo que funciona: reels cortos con captions grandes; colaboraciones/remix.
+• What works: short reels with large captions; collaborations/remixes.
 
-• Top fan comments destacan la presentación en vivo y la demanda de colaboración con Santos Bravos.
+• Top fan comments highlight the live performance and demand for collaboration with Santos Bravos.
 
-• Instagram: CTR link-in-bio 19.6%, engagement/alcance 11.6%, vistas por alcance 3.13. Reels con hook <3s + subtítulos grandes concentran la interacción.`,
+• Instagram: CTR link-in-bio 19.6%, engagement/reach 11.6%, views per reach 3.13. Reels with hook <3s + large captions concentrate interaction.`,
   highlights: [
-    'TikTok (28d): Comentarios 38K (+103.5%), Shares 52K (+255.6%) — fuerte alza de conversación y alto impulso orgánico.',
-    'Post clave TikTok: "La química se baila…" — 30K views, 491 comments (más comentado reciente). Pico: 25–27 Sep; luego estabilización.',
-    'Instagram: CTR link-in-bio 19.6%, engagement/alcance 11.6%, vistas por alcance 3.13. Reels con hook <3s + subtítulos grandes concentran la interacción.',
-    'Spotify for Creators (últimos 30 días): 946.4K reproducciones, 28,531 horas de consumo, +1,030 seguidores.',
-    'Top países (7 días, Spotify): México, Argentina, España.',
-    'Demografía Spotify: 62.6% mujeres, 31.4% hombres, 1.6% no binario, 4.4% sin especificar; pico de edad 45–59; también fuerte 23–27 y 18–22.'
+    'TikTok (28d): Comments 38K (+103.5%), Shares 52K (+255.6%) — strong surge in conversation and high organic momentum.',
+    'Key TikTok post: "La química se baila…" — 30K views, 491 comments (most commented recently). Peak: Sep 25–27; then stabilization.',
+    'Instagram: CTR link-in-bio 19.6%, engagement/reach 11.6%, views per reach 3.13. Reels with hook <3s + large captions concentrate interaction.',
+    'Spotify for Creators (last 30 days): 946.4K streams, 28,531 hours consumed, +1,030 followers.',
+    'Top countries (7 days, Spotify): Mexico, Argentina, Spain.',
+    'Spotify demographics: 62.6% female, 31.4% male, 1.6% non-binary, 4.4% unspecified; age peak 45–59; also strong 23–27 and 18–22.'
   ],
   billboard_charts: [],
   spotify_charts: [],
   streaming_trends: [
     {
-      track: 'YouTube (últimos 7 días)',
+      track: 'YouTube (last 7 days)',
       bullets: [
-        '3.5M views (+122% WoW) · 113.3K horas watch time (-19% WoW) · +32.6K subs',
+        '3.5M views (+122% WoW) · 113.3K hours watch time (-19% WoW) · +32.6K subs',
         'Top en 48h: Kenneth "Cuando estoy…" 236K, Kenneth el más pequeño… 225K, EP 3: DINAMITA 197K'
       ]
     },
     {
-      track: 'TikTok (últimos 28 días)',
+      track: 'TikTok (last 28 days)',
       bullets: [
         '19M video views (+175.7%) · 2.5M likes (+230%) · 38K comments (+103%) · 52K shares (+255.6%)',
-        'Tráfico: For You 66%, Perfil 19.5%, Búsqueda 13.5%',
-        'Post destacado semana: "La química se baila…" ≈ 30K views · 5,372 likes · 491 comments'
+        'Traffic: For You 66%, Profile 19.5%, Search 13.5%',
+        'Week\'s featured post: "La química se baila…" ≈ 30K views · 5,372 likes · 491 comments'
       ]
     },
     {
-      track: 'Spotify for Creators (últimos 30 días)',
+      track: 'Spotify for Creators (last 30 days)',
       bullets: [
-        '946.4K reproducciones · 28,531 horas de consumo · +1,030 seguidores'
+        '946.4K streams · 28,531 hours consumed · +1,030 followers'
       ]
     }
   ],
   tiktok_trends: [
     {
-      track: 'TikTok Trends (últimos 28 días)',
+      track: 'TikTok Trends (last 28 days)',
       top_posts: [
-        'Comentarios: 38K (+103.5%) — fuerte alza de conversación.',
-        'Pico: 25–27 Sep; luego estabilización.',
-        'Post clave: "La química se baila…" — 30K views, 491 comments (más comentado reciente).',
-        'Señal extra: Shares 52K (+255.6%) → alto impulso orgánico.'
+        'Comments: 38K (+103.5%) — strong surge in conversation.',
+        'Peak: Sep 25–27; then stabilization.',
+        'Key post: "La química se baila…" — 30K views, 491 comments (most commented recently).',
+        'Extra signal: Shares 52K (+255.6%) → high organic momentum.'
       ]
     }
   ],
   mv_views: [
     {
-      section: 'YouTube (últimos 7 días)',
+      section: 'YouTube (last 7 days)',
       bullets: [
         '3.5M views (+122% WoW)',
-        '113.3K horas de watch time (-19% WoW)',
-        '+32.6K suscriptores (≈ igual vs semana previa)',
+        '113.3K hours watch time (-19% WoW)',
+        '+32.6K subscribers (≈ same vs previous week)',
         '$350.84 estimated revenue (+149% WoW)',
         'Realtime (48h): 1.31M views'
       ],
@@ -307,9 +307,9 @@ const SAMPLE_SANTOS_BRAVOS: WeeklyReport = {
     }
   },
   top_countries: [
-    { rank: 1, country: 'México', listeners: 15738 },
+    { rank: 1, country: 'Mexico', listeners: 15738 },
     { rank: 2, country: 'Argentina', listeners: 59 },
-    { rank: 3, country: 'España', listeners: 52 }
+    { rank: 3, country: 'Spain', listeners: 52 }
   ]
 }
 
@@ -968,7 +968,7 @@ export function WeeklyDetail() {
         {report.top_countries && report.top_countries.length > 0 && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-              Top Countries (28 días)
+              Top Countries (last 28 days)
             </h2>
             <div className="overflow-x-auto table-wrapper">
               <table className="w-full border-collapse" role="table">
@@ -996,7 +996,7 @@ export function WeeklyDetail() {
         {report.top_cities && report.top_cities.length > 0 && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-              Top Cities (28 días)
+              Top Cities (last 28 days)
             </h2>
             <div className="overflow-x-auto table-wrapper">
               <table className="w-full border-collapse" role="table">
@@ -1024,7 +1024,7 @@ export function WeeklyDetail() {
         {report.spotify_stats && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-              Spotify for Artists — Stats (últimos 28 días)
+              Spotify for Artists — Stats (last 28 days)
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <div className="bg-gray-50 p-4 rounded-lg">
@@ -1076,7 +1076,7 @@ export function WeeklyDetail() {
         {report.demographics && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-              Demographics (28 días)
+              Demographics (last 28 days)
             </h2>
             <div className="space-y-4">
               <div>
@@ -1209,39 +1209,39 @@ export function WeeklyDetail() {
               <li>
                 <strong>Instagram Insights (CSVs)</strong>
                 <ul className="ml-6 mt-1 space-y-1 list-none text-sm text-gray-700">
-                  <li>Seguidores (28 días)</li>
-                  <li>Visitas al perfil (28 días)</li>
-                  <li>Interacciones totales (28 días)</li>
-                  <li>Clics en el enlace de la biografía (28 días)</li>
-                  <li>Alcance de cuentas (28 días)</li>
-                  <li>Visualizaciones de contenido (28 días)</li>
+                  <li>Followers (28 days)</li>
+                  <li>Profile visits (28 days)</li>
+                  <li>Total interactions (28 days)</li>
+                  <li>Bio link clicks (28 days)</li>
+                  <li>Accounts reached (28 days)</li>
+                  <li>Content views (28 days)</li>
                 </ul>
               </li>
               <li>
                 <strong>Spotify for Creators — Santos Bravos</strong>
                 <ul className="ml-6 mt-1 space-y-1 list-none text-sm text-gray-700">
-                  <li>Overview (últimos 30 días): 946.4K reproducciones, 28,531 horas, +1,030 seguidores</li>
-                  <li>Audience (últimos 7 días): género y edades (62.6% mujeres, pico 45-59)</li>
-                  <li>Top Countries (últimos 7 días): México, Argentina, España</li>
+                  <li>Overview (last 30 days): 946.4K streams, 28,531 hours, +1,030 followers</li>
+                  <li>Audience (last 7 days): gender and ages (62.6% female, peak 45-59)</li>
+                  <li>Top Countries (last 7 days): Mexico, Argentina, Spain</li>
                 </ul>
               </li>
               <li>
-                <strong>Instagram — Capturas de comentarios</strong>
+                <strong>Instagram — Comment captures</strong>
                 <ul className="ml-6 mt-1 space-y-1 list-none text-sm text-gray-700">
-                  <li>Comentario 1: "mi primera vez cantando 'toca la puerta'… en vivo…"</li>
-                  <li>Comentario 2: "UNA CANCIÓN ASÍ LES QUEDARÍA PERFECTO A SANTOS BRAVOS…"</li>
+                  <li>Comment 1: "my first time singing 'toca la puerta'… live…"</li>
+                  <li>Comment 2: "A SONG LIKE THIS WOULD BE PERFECT FOR SANTOS BRAVOS…"</li>
                 </ul>
               </li>
               <li>
-                <strong>TikTok Studio Overview (CSV, 28 días)</strong>
+                <strong>TikTok Studio Overview (CSV, 28 days)</strong>
                 <ul className="ml-6 mt-1 space-y-1 list-none text-sm text-gray-700">
                   <li>Overview.csv: Video views, Profile views, Likes, Comments, Shares</li>
-                  <li>Datos diarios permitiendo identificar pico del 25 de septiembre</li>
-                  <li>Comparativas semanales (7d vs 7d)</li>
+                  <li>Daily data allowing identification of September 25 peak</li>
+                  <li>Weekly comparisons (7d vs 7d)</li>
                 </ul>
               </li>
               <li>
-                <strong>Otros (Billboard/Apple/Shazam/Luminate):</strong> No data esta semana.
+                <strong>Other (Billboard/Apple/Shazam/Luminate):</strong> No data this week.
               </li>
             </ul>
           ) : report.artist === 'MAGNA' ? (

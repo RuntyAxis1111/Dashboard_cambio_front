@@ -792,46 +792,68 @@ export function WeeklyDetail() {
               <div className="whitespace-pre-line text-gray-900">{report.fan_sentiment}</div>
 
               {report.artist === 'MAGNA' && (
-                <div className="space-y-6 mt-6">
-                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
-                    <div className="bg-white rounded-lg overflow-hidden mb-3">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6 page-break-inside-avoid">
+                  <div className="bg-white p-4 md:p-5 rounded-2xl border border-gray-200 shadow-sm print:shadow-none page-break-inside-avoid" style={{ maxWidth: '560px' }}>
+                    <div className="mb-4">
                       <img
                         src="/assets/magna copy.png"
                         alt="Anniversary post + -50% discount"
-                        className="w-full max-w-md mx-auto rounded-lg shadow-sm"
+                        className="w-full rounded-xl"
+                        style={{ maxHeight: '260px', objectFit: 'cover' }}
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
                           const placeholder = document.createElement('div');
-                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
-                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image unavailable</p><p class="text-sm mt-2">Anniversary post + -50%</p></div>';
+                          placeholder.className = 'bg-gray-200 flex items-center justify-center text-gray-500 rounded-xl';
+                          placeholder.style.height = '260px';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image unavailable</p><p class="text-sm mt-2">Anniversary post</p></div>';
                           target.parentElement?.appendChild(placeholder);
                         }}
                       />
                     </div>
-                    <p className="text-sm text-gray-700 text-center italic">
-                      <strong>Image 1:</strong> Anniversary post celebrating first year + -50% promo — 839 likes — ~5 days ago.
+                    <h3 className="text-base font-semibold text-gray-900 mb-2">
+                      Anniversary post — 1st year + −50% promo (~5 days ago; 839 likes)
+                    </h3>
+                    <p className="text-sm text-gray-700 mb-1">
+                      "Además tiene mi canción favorita en el mundo!!!!!! Que viva NO IMPORTA EL DÍA"
+                    </p>
+                    <p className="text-sm text-gray-600 italic mb-3">
+                      <em>"It also has my favorite song in the world! Long live 'No Importa el Día'."</em>
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <strong>Why it matters:</strong> Signals strong loyalty + nostalgia around the album; promo callout is driving commerce intent while comments celebrate catalog favorites → good slot for remarketing and anniversary content sequels.
                     </p>
                   </div>
 
-                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
-                    <div className="bg-white rounded-lg overflow-hidden mb-3">
+                  <div className="bg-white p-4 md:p-5 rounded-2xl border border-gray-200 shadow-sm print:shadow-none page-break-inside-avoid" style={{ maxWidth: '560px' }}>
+                    <div className="mb-4">
                       <img
                         src="/assets/magna2 copy.png"
                         alt="Reel Deja de hablar (sing-along)"
-                        className="w-full max-w-md mx-auto rounded-lg shadow-sm"
+                        className="w-full rounded-xl"
+                        style={{ maxHeight: '260px', objectFit: 'cover' }}
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
                           const placeholder = document.createElement('div');
-                          placeholder.className = 'bg-gray-200 h-96 flex items-center justify-center text-gray-500';
-                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image unavailable</p><p class="text-sm mt-2">Reel "Deja de hablar"</p></div>';
+                          placeholder.className = 'bg-gray-200 flex items-center justify-center text-gray-500 rounded-xl';
+                          placeholder.style.height = '260px';
+                          placeholder.innerHTML = '<div class="text-center"><p class="text-lg font-semibold">Image unavailable</p><p class="text-sm mt-2">Deja de hablar reel</p></div>';
                           target.parentElement?.appendChild(placeholder);
                         }}
                       />
                     </div>
-                    <p className="text-sm text-gray-700 text-center italic">
-                      <strong>Image 2:</strong> Reel "Deja de hablar" (sing-along) — 386 likes — ~1 week ago.
+                    <h3 className="text-base font-semibold text-gray-900 mb-2">
+                      Reel — "Deja de hablar" (sing-along) (~1 week ago; 386 likes)
+                    </h3>
+                    <p className="text-sm text-gray-700 mb-1">
+                      "Se puso científico mi parceee"
+                    </p>
+                    <p className="text-sm text-gray-600 italic mb-3">
+                      <em>"He went full scientist, bro."</em>
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <strong>Why it matters:</strong> Short, meme-able clip with sing-along angle encourages UGC, keeps the track top-of-mind, and broadens reach beyond core fans via shares and stitches.
                     </p>
                   </div>
                 </div>

@@ -232,9 +232,8 @@ const SAMPLE_SANTOS_BRAVOS: WeeklyReport = {
 
 • Instagram: CTR link-in-bio 19.6%, engagement/alcance 11.6%, vistas por alcance 3.13. Reels con hook <3s + subtítulos grandes concentran la interacción.`,
   highlights: [
-    'TikTok en 28 días: 19.23M views, 626.4K profile views, 2.53M likes, 38.1K comments, 52.4K shares.',
-    'Pico de actividad el 25 de septiembre: 2.68M views, 100.3K profile views, 395.5K likes, 3.5K comments, 9.4K shares.',
-    'Semana más reciente vs la previa (7d/7d): caída esperada tras el pico → views -59%, profile views -60%, likes -63%, comments -44%, shares -60%.',
+    'TikTok (28d): Comentarios 38K (+103.5%), Shares 52K (+255.6%) — fuerte alza de conversación y alto impulso orgánico.',
+    'Post clave TikTok: "La química se baila…" — 30K views, 491 comments (más comentado reciente). Pico: 25–27 Sep; luego estabilización.',
     'Instagram: CTR link-in-bio 19.6%, engagement/alcance 11.6%, vistas por alcance 3.13. Reels con hook <3s + subtítulos grandes concentran la interacción.',
     'Spotify for Creators (últimos 30 días): 946.4K reproducciones, 28,531 horas de consumo, +1,030 seguidores.',
     'Top países (7 días, Spotify): México, Argentina, España.',
@@ -245,35 +244,13 @@ const SAMPLE_SANTOS_BRAVOS: WeeklyReport = {
   streaming_trends: [],
   tiktok_trends: [
     {
-      track: 'Overview (últimos 28 días)',
+      track: 'TikTok Trends (últimos 28 días)',
       top_posts: [
-        'Video views: 19,225,371',
-        'Profile views: 626,390',
-        'Likes: 2,530,648',
-        'Comments: 38,111',
-        'Shares: 52,377'
+        'Comentarios: 38K (+103.5%) — fuerte alza de conversación.',
+        'Pico: 25–27 Sep; luego estabilización.',
+        'Post clave: "La química se baila…" — 30K views, 491 comments (más comentado reciente).',
+        'Señal extra: Shares 52K (+255.6%) → alto impulso orgánico.'
       ]
-    },
-    {
-      track: 'Semana reciente (últimos 7 días) vs semana previa',
-      top_posts: [
-        'Video views: 4,669,037 vs 11,383,419 (-59%)',
-        'Profile views: 146,457 vs 366,702 (-60%)',
-        'Likes: 571,754 vs 1,548,447 (-63%)',
-        'Comments: 9,346 vs 16,668 (-44%)',
-        'Shares: 12,868 vs 32,048 (-60%)'
-      ]
-    },
-    {
-      track: 'Spike',
-      top_posts: [
-        'Día de mayor tracción: 25 de septiembre con 2,681,071 views, 100,255 profile views, 395,538 likes, 3,518 comments y 9,421 shares.'
-      ]
-    },
-    {
-      track: 'Notas',
-      top_posts: [],
-      note: 'El descenso 7d/7d refleja normalización post-pico del 25-Sep. Mantener monitoreo de contenidos publicados ese día para replicar formato/temas.'
     }
   ],
   apple_music: [],

@@ -376,6 +376,67 @@ const SAMPLE_GREGORIO: WeeklyReport = {
   }
 }
 
+const SAMPLE_DESTINO: WeeklyReport = {
+  artist: 'DESTINO',
+  week_start: '2025-10-02',
+  week_end: '2025-10-08',
+  highlights: [
+    'Spotify (28d): 23,728 listeners, 43,520 streams, 1.834 streams/listener, 1,711 saves, 1,635 playlist adds.',
+    'Audience quality: 27% active / 73% programmed / 0% previously active → alta dependencia de programación.',
+    'Release engagement — Máquina Del Tiempo (released 2025-09-10): 5,611 / 6,214 (90.3%) de la active audience la escuchó intencionalmente en los primeros 28 días.',
+    'Top países (28d): México, Estados Unidos, Guatemala.',
+    'Top ciudades (28d): CDMX, Guadalajara, Puebla.',
+    'Demografía (28d): 59% male, 37% female, 4% not specified; pico de edad 25–34.'
+  ],
+  billboard_charts: [],
+  spotify_charts: [],
+  streaming_trends: [],
+  tiktok_trends: [],
+  apple_music: [],
+  shazam: [],
+  spotify_stats: {
+    listeners: 23728,
+    streams: 43520,
+    streams_per_listener: 1.834,
+    saves: 1711,
+    playlist_adds: 1635
+  },
+  audience_segmentation: {
+    active: 27,
+    previously_active: 0,
+    programmed: 73
+  },
+  release_engagement: {
+    title: 'Máquina Del Tiempo',
+    days_since_release: 28,
+    active_audience_total: 6214,
+    engaged_streamed: 5611,
+    engaged_pct: 90.3
+  },
+  demographics: {
+    gender: { female: 37, male: 59, non_binary: 0, not_specified: 4 },
+    age_pct: {
+      '<18': 5,
+      '18-24': 20,
+      '25-34': 35,
+      '35-44': 22,
+      '45-54': 11,
+      '55-64': 5,
+      '65+': 2
+    }
+  },
+  top_countries: [
+    { rank: 1, country: 'Mexico', listeners: 17859 },
+    { rank: 2, country: 'United States', listeners: 4553 },
+    { rank: 3, country: 'Guatemala', listeners: 208 }
+  ],
+  top_cities: [
+    { rank: 1, city: 'Mexico City, MX', listeners: 3298 },
+    { rank: 2, city: 'Guadalajara, MX', listeners: 1081 },
+    { rank: 3, city: 'Puebla City, MX', listeners: 713 }
+  ]
+}
+
 function getColIndexByHeader(tableEl: HTMLTableElement, headerText = 'notes'): number {
   const ths = tableEl.querySelectorAll('thead th')
   for (let i = 0; i < ths.length; i++) {
@@ -480,6 +541,8 @@ export function WeeklyDetail() {
     ? SAMPLE_GREGORIO
     : artistId === 'santos-bravos'
     ? SAMPLE_SANTOS_BRAVOS
+    : artistId === 'destino'
+    ? SAMPLE_DESTINO
     : null
 
   useEffect(() => {
@@ -539,7 +602,11 @@ export function WeeklyDetail() {
               {report.week_start} — {report.week_end}
             </p>
           </div>
-          <img src="/assets/pinguinohybe.png" alt="HYBE" className="h-10" />
+          <img
+            src={report.artist === 'DESTINO' ? '/assets/image copy copy copy copy copy copy copy copy.png' : '/assets/pinguinohybe.png'}
+            alt="HYBE"
+            className="h-10"
+          />
         </div>
       </div>
 
@@ -1145,6 +1212,22 @@ export function WeeklyDetail() {
               </li>
               <li>
                 <strong>Meltwater</strong> — Social media insights (pending)
+              </li>
+            </ul>
+          ) : report.artist === 'DESTINO' ? (
+            <ul className="space-y-2 list-disc list-inside text-gray-900">
+              <li>
+                <strong>Spotify for Artists</strong>
+                <ul className="ml-6 mt-1 space-y-1 list-none text-sm text-gray-700">
+                  <li>Audience Overview (28 días): listeners, streams, streams/listener, saves, playlist adds</li>
+                  <li>Segments: active (27%), programmed (73%), previously active (0%)</li>
+                  <li>Demographics: gender distribution and age breakdown</li>
+                  <li>Location: Top Countries (México, Estados Unidos, Guatemala) and Top Cities (CDMX, Guadalajara, Puebla)</li>
+                  <li>Release Engagement: Máquina Del Tiempo (90.3% of active audience streamed intentionally in first 28 days)</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Otros (Billboard/Apple/Shazam/Luminate/Instagram/TikTok):</strong> No data esta semana.
               </li>
             </ul>
           ) : (

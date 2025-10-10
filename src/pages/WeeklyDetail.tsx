@@ -1166,7 +1166,27 @@ export function WeeklyDetail() {
           <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
             TikTok Trends
           </h2>
-          <p className="text-gray-600 italic">No data this week</p>
+          {report.tiktok_trends && report.tiktok_trends.length > 0 ? (
+            <div className="space-y-4">
+              {report.tiktok_trends.map((trend, idx) => (
+                <div key={idx}>
+                  {trend.track && <h3 className="font-semibold text-gray-900 mb-2">{trend.track}</h3>}
+                  {trend.top_posts && trend.top_posts.length > 0 && (
+                    <ul className="space-y-1 list-disc list-inside text-gray-900">
+                      {trend.top_posts.map((post, pIdx) => (
+                        <li key={pIdx}>{post}</li>
+                      ))}
+                    </ul>
+                  )}
+                  {trend.note && (
+                    <p className="text-sm text-gray-700 italic mt-2">{trend.note}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-600 italic">No data this week</p>
+          )}
         </section>
 
         <section className="section page-break-inside-avoid">

@@ -1602,7 +1602,7 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        {report.demographics && (
+        {report.demographics && report.demographics.gender && report.demographics.age_pct && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Demographics (last 28 days)

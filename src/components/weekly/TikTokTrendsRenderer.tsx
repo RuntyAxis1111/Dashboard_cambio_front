@@ -29,7 +29,7 @@ export function TikTokTrendsRenderer({ data }: TikTokTrendsRendererProps) {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {data.total_videos !== undefined && (
+        {data.total_videos != null && (
           <div className="bg-gradient-to-br from-pink-500 to-purple-600 text-white rounded-xl p-6">
             <div className="flex items-center gap-2 mb-2">
               <Video className="w-5 h-5" />
@@ -41,7 +41,7 @@ export function TikTokTrendsRenderer({ data }: TikTokTrendsRendererProps) {
           </div>
         )}
 
-        {data.total_views !== undefined && (
+        {data.total_views != null && (
           <div className="bg-gradient-to-br from-blue-500 to-cyan-600 text-white rounded-xl p-6">
             <div className="flex items-center gap-2 mb-2">
               <TrendingUp className="w-5 h-5" />
@@ -65,7 +65,7 @@ export function TikTokTrendsRenderer({ data }: TikTokTrendsRendererProps) {
               <div key={index} className="bg-gray-100 border border-gray-300 rounded-lg p-4">
                 <div className="font-medium text-black">{sound.name}</div>
                 <div className="text-sm text-gray-600 mt-1">
-                  {sound.videos.toLocaleString()} videos
+                  {sound.videos != null ? sound.videos.toLocaleString() : 0} videos
                 </div>
               </div>
             ))}
@@ -85,10 +85,10 @@ export function TikTokTrendsRenderer({ data }: TikTokTrendsRendererProps) {
                       <div className="font-medium text-black mb-1">@{post.creator}</div>
                     )}
                     <div className="flex items-center gap-4 text-sm text-gray-600">
-                      {post.views !== undefined && (
+                      {post.views != null && (
                         <span>{post.views.toLocaleString()} views</span>
                       )}
-                      {post.likes !== undefined && (
+                      {post.likes != null && (
                         <span>{post.likes.toLocaleString()} likes</span>
                       )}
                     </div>

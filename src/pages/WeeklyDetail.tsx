@@ -1408,7 +1408,7 @@ export function WeeklyDetail() {
                     <tr key={idx} className="border-b border-gray-200">
                       <td className="py-3 px-4 text-gray-700">#{row.rank}</td>
                       <td className="py-3 px-4 font-medium text-black">{row.country}</td>
-                      <td className="py-3 px-4 text-right text-gray-700">{row.listeners.toLocaleString()}</td>
+                      <td className="py-3 px-4 text-right text-gray-700">{row.listeners != null ? row.listeners.toLocaleString() : '-'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -1436,7 +1436,7 @@ export function WeeklyDetail() {
                     <tr key={idx} className="border-b border-gray-200">
                       <td className="py-3 px-4 text-gray-700">#{row.rank}</td>
                       <td className="py-3 px-4 font-medium text-black">{row.city}</td>
-                      <td className="py-3 px-4 text-right text-gray-700">{row.listeners.toLocaleString()}</td>
+                      <td className="py-3 px-4 text-right text-gray-700">{row.listeners != null ? row.listeners.toLocaleString() : '-'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -1453,23 +1453,23 @@ export function WeeklyDetail() {
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <div className="bg-gray-50 p-4 rounded-lg">
                 <p className="text-sm text-gray-600 mb-1">Listeners</p>
-                <p className="text-2xl font-bold text-black">{report.spotify_stats.listeners.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-black">{report.spotify_stats.listeners != null ? report.spotify_stats.listeners.toLocaleString() : '-'}</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-lg">
                 <p className="text-sm text-gray-600 mb-1">Streams</p>
-                <p className="text-2xl font-bold text-black">{report.spotify_stats.streams.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-black">{report.spotify_stats.streams != null ? report.spotify_stats.streams.toLocaleString() : '-'}</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-lg">
                 <p className="text-sm text-gray-600 mb-1">Streams/Listener</p>
-                <p className="text-2xl font-bold text-black">{report.spotify_stats.streams_per_listener.toFixed(3)}</p>
+                <p className="text-2xl font-bold text-black">{report.spotify_stats.streams_per_listener != null ? report.spotify_stats.streams_per_listener.toFixed(3) : '-'}</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-lg">
                 <p className="text-sm text-gray-600 mb-1">Saves</p>
-                <p className="text-2xl font-bold text-black">{report.spotify_stats.saves.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-black">{report.spotify_stats.saves != null ? report.spotify_stats.saves.toLocaleString() : '-'}</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-lg">
                 <p className="text-sm text-gray-600 mb-1">Playlist Adds</p>
-                <p className="text-2xl font-bold text-black">{report.spotify_stats.playlist_adds.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-black">{report.spotify_stats.playlist_adds != null ? report.spotify_stats.playlist_adds.toLocaleString() : '-'}</p>
               </div>
             </div>
           </section>

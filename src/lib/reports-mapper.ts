@@ -2,9 +2,7 @@ import { supabase } from './supabase'
 import type { WeeklyReport } from '../types/weekly-report'
 
 function isDbReportsEnabled(): boolean {
-  const viteFlag = import.meta.env.VITE_USE_DB_REPORTS
-  const nextFlag = import.meta.env.NEXT_PUBLIC_USE_DB_REPORTS
-  return viteFlag === 'true' || nextFlag === 'true'
+  return true
 }
 
 function slugify(text: string): string {
@@ -74,14 +72,10 @@ async function getWeeklyReportFromNewSchema(
       highlights: []
     }
 
-    console.log('[reports-mapper] Loading report for:', artistName, 'template:', report.template_key)
-    console.log('[reports-mapper] Found sections:', sections?.length || 0)
-
     if (sections) {
       for (const section of sections) {
         const key = section.section_key
         const data = section.data_json || {}
-        console.log('[reports-mapper] Processing section:', key, data)
 
         switch (key) {
           case 'highlights':
@@ -162,7 +156,6 @@ async function getWeeklyReportFromNewSchema(
       }
     }
 
-    console.log('[reports-mapper] Final report:', result)
     return result
   } catch (error) {
     console.error('Error fetching from new schema:', error)

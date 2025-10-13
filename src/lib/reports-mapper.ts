@@ -21,17 +21,26 @@ async function getWeeklyReportFromNewSchema(
   weekEnd?: string
 ): Promise<WeeklyReport | null> {
   try {
+    const searchTerm = artistSlug.replace(/-/g, ' ')
+
     const { data: artists } = await supabase
       .from('artistas_registry')
       .select('id, nombre')
-      .ilike('nombre', `%${artistSlug.replace(/-/g, ' ')}%`)
 
     if (!artists || artists.length === 0) {
       return null
     }
 
-    const artistId = artists[0].id
-    const artistName = artists[0].nombre
+    const matchedArtist = artists.find(a =>
+      slugify(a.nombre) === artistSlug
+    )
+
+    if (!matchedArtist) {
+      return null
+    }
+
+    const artistId = matchedArtist.id
+    const artistName = matchedArtist.nombre
 
     let query = supabase
       .from('reports')

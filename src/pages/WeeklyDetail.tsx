@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { Download, ExternalLink } from 'lucide-react'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { WeeklyReport } from '../types/weekly-report'
+import { getWeeklyReportDetailed } from '../lib/reports-mapper'
 
 const SAMPLE_KATSEYE: WeeklyReport = {
   artist: 'KATSEYE',
@@ -667,33 +668,70 @@ function exportWeeklyPDF() {
   }
 }
 
+function getSampleForArtist(artistId?: string): WeeklyReport | null {
+  if (!artistId) return null
+
+  switch (artistId) {
+    case 'katseye':
+      return SAMPLE_KATSEYE
+    case 'adrian-cota':
+      return SAMPLE_ADRIAN_COTA
+    case 'magna':
+      return SAMPLE_MAGNA
+    case 'gregorio':
+      return SAMPLE_GREGORIO
+    case 'santos-bravos':
+      return SAMPLE_SANTOS_BRAVOS
+    case 'destino':
+      return SAMPLE_DESTINO
+    case 'musza':
+      return SAMPLE_MUSZA
+    case 'low-clika':
+      return SAMPLE_LOW_CLIKA
+    default:
+      return null
+  }
+}
+
 export function WeeklyDetail() {
   const { artistId } = useParams<{ artistId: string }>()
+  const [searchParams] = useSearchParams()
+  const weekEnd = searchParams.get('week') || undefined
 
-  const report = artistId === 'katseye'
-    ? SAMPLE_KATSEYE
-    : artistId === 'adrian-cota'
-    ? SAMPLE_ADRIAN_COTA
-    : artistId === 'magna'
-    ? SAMPLE_MAGNA
-    : artistId === 'gregorio'
-    ? SAMPLE_GREGORIO
-    : artistId === 'santos-bravos'
-    ? SAMPLE_SANTOS_BRAVOS
-    : artistId === 'destino'
-    ? SAMPLE_DESTINO
-    : artistId === 'musza'
-    ? SAMPLE_MUSZA
-    : artistId === 'low-clika'
-    ? SAMPLE_LOW_CLIKA
-    : null
+  const [report, setReport] = useState<WeeklyReport | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    requestAnimationFrame(() => {
-      colorizeAllNotes()
-      colorizeDeltas()
-    })
-  }, [report])
+    async function loadReport() {
+      const sample = getSampleForArtist(artistId)
+      const dbReport = await getWeeklyReportDetailed(artistId || '', weekEnd, sample)
+      setReport(dbReport)
+      setLoading(false)
+    }
+    loadReport()
+  }, [artistId, weekEnd])
+
+  useEffect(() => {
+    if (!loading && report) {
+      requestAnimationFrame(() => {
+        colorizeAllNotes()
+        colorizeDeltas()
+      })
+    }
+  }, [report, loading])
+
+  if (loading) {
+    return (
+      <div className="p-8 bg-white">
+        <div className="max-w-7xl mx-auto text-center py-12">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-64 mx-auto mb-4"></div>
+            <div className="h-4 bg-gray-200 rounded w-48 mx-auto"></div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (!report) {
     return (

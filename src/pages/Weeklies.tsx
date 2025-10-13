@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Calendar, ExternalLink } from 'lucide-react'
-import { getLatestWeekEnd, getArtistsForWeek, ArtistSummary } from '../lib/reports-api'
+import { listWeeklyReports, ArtistSummary } from '../lib/reports-api'
 import { Breadcrumb } from '../components/Breadcrumb'
 
 const SAMPLE_ARTISTS: ArtistSummary[] = [
@@ -60,8 +60,12 @@ export function Weeklies() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setArtists(SAMPLE_ARTISTS)
-    setLoading(false)
+    async function loadReports() {
+      const reports = await listWeeklyReports(SAMPLE_ARTISTS)
+      setArtists(reports)
+      setLoading(false)
+    }
+    loadReports()
   }, [])
 
   const breadcrumbItems = [

@@ -148,3 +148,139 @@ export async function getReportMedia(reportId: string): Promise<ReportMedia[]> {
 
   return data || []
 }
+
+function isDbReportsEnabled(): boolean {
+  const viteFlag = import.meta.env.VITE_USE_DB_REPORTS
+  const nextFlag = import.meta.env.NEXT_PUBLIC_USE_DB_REPORTS
+
+  return viteFlag === 'true' || nextFlag === 'true'
+}
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+export async function listWeeklyReportsNew(): Promise<ArtistSummary[]> {
+  if (!isDbReportsEnabled()) {
+    return []
+  }
+
+  try {
+    const { data: reports, error: reportsError } = await supabase
+      .from('reports')
+      .select(`
+        id,
+        artist_id,
+        week_end,
+        title
+      `)
+      .eq('report_type', 'artist')
+      .order('week_end', { ascending: false })
+
+    if (reportsError || !reports || reports.length === 0) {
+      return []
+    }
+
+    const artistIds = [...new Set(reports.map(r => r.artist_id))]
+    const { data: artists, error: artistsError } = await supabase
+      .from('artistas_registry')
+      .select('id, nombre')
+      .in('id', artistIds)
+
+    if (artistsError || !artists) {
+      return []
+    }
+
+    const artistMap = new Map(artists.map(a => [a.id, a.nombre]))
+
+    const artistSummaries: ArtistSummary[] = []
+    const seenArtists = new Set<number>()
+
+    for (const report of reports) {
+      if (seenArtists.has(report.artist_id)) continue
+      seenArtists.add(report.artist_id)
+
+      const artistName = artistMap.get(report.artist_id)
+      if (!artistName) continue
+
+      const artistId = slugify(artistName)
+
+      const { data: oldReport } = await supabase
+        .from('spotify_report_weekly')
+        .select('cover_image_url')
+        .eq('artist_id', artistId)
+        .order('week_end', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      artistSummaries.push({
+        artist_id: artistId,
+        artist_name: artistName.toUpperCase(),
+        week_end: report.week_end,
+        cover_image_url: oldReport?.cover_image_url || null
+      })
+    }
+
+    return artistSummaries
+  } catch (error) {
+    console.error('Error in listWeeklyReportsNew:', error)
+    return []
+  }
+}
+
+export async function listWeeklyReportsOld(): Promise<ArtistSummary[]> {
+  try {
+    const { data, error } = await supabase
+      .from('spotify_report_weekly')
+      .select('artist_id, artist_name, week_end, cover_image_url')
+      .eq('status', 'ready')
+      .order('week_end', { ascending: false })
+
+    if (error || !data) {
+      return []
+    }
+
+    const seen = new Set<string>()
+    const results: ArtistSummary[] = []
+
+    for (const row of data) {
+      if (!seen.has(row.artist_id)) {
+        seen.add(row.artist_id)
+        results.push({
+          artist_id: row.artist_id,
+          artist_name: row.artist_name,
+          week_end: row.week_end,
+          cover_image_url: row.cover_image_url
+        })
+      }
+    }
+
+    return results
+  } catch (error) {
+    console.error('Error in listWeeklyReportsOld:', error)
+    return []
+  }
+}
+
+export async function listWeeklyReports(fallbackSamples: ArtistSummary[]): Promise<ArtistSummary[]> {
+  if (!isDbReportsEnabled()) {
+    return fallbackSamples
+  }
+
+  const newResults = await listWeeklyReportsNew()
+  if (newResults.length > 0) {
+    return newResults
+  }
+
+  const oldResults = await listWeeklyReportsOld()
+  if (oldResults.length > 0) {
+    return oldResults
+  }
+
+  return fallbackSamples
+}

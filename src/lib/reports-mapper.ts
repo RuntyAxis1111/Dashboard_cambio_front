@@ -74,10 +74,14 @@ async function getWeeklyReportFromNewSchema(
       highlights: []
     }
 
+    console.log('[reports-mapper] Loading report for:', artistName, 'template:', report.template_key)
+    console.log('[reports-mapper] Found sections:', sections?.length || 0)
+
     if (sections) {
       for (const section of sections) {
         const key = section.section_key
         const data = section.data_json || {}
+        console.log('[reports-mapper] Processing section:', key, data)
 
         switch (key) {
           case 'highlights':
@@ -150,10 +154,15 @@ async function getWeeklyReportFromNewSchema(
           case 'total_audience':
             result.total_audience = data.total || 0
             break
+
+          case 'instagram_kpis':
+            result.instagram_kpis = section.content_md || data.summary || ''
+            break
         }
       }
     }
 
+    console.log('[reports-mapper] Final report:', result)
     return result
   } catch (error) {
     console.error('Error fetching from new schema:', error)

@@ -1344,6 +1344,14 @@ export function WeeklyDetail() {
           </section>
         )}
 
+        {report.instagram_kpis && (
+          <section className="section page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Instagram KPIs
+            </h2>
+            <div className="whitespace-pre-line text-gray-900">{report.instagram_kpis}</div>
+          </section>
+        )}
 
         {report.playlist_adds && report.playlist_adds.length > 0 && (
           <section className="section page-break-inside-avoid">

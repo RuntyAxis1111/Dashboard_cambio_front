@@ -150,7 +150,10 @@ export async function getReportMedia(reportId: string): Promise<ReportMedia[]> {
 }
 
 function isDbReportsEnabled(): boolean {
-  return true
+  const viteFlag = import.meta.env.VITE_USE_DB_REPORTS
+  const nextFlag = import.meta.env.NEXT_PUBLIC_USE_DB_REPORTS
+
+  return viteFlag === 'true' || nextFlag === 'true'
 }
 
 function slugify(text: string): string {

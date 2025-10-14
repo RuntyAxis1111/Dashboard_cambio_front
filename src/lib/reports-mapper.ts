@@ -2,7 +2,9 @@ import { supabase } from './supabase'
 import type { WeeklyReport } from '../types/weekly-report'
 
 function isDbReportsEnabled(): boolean {
-  return true
+  const viteFlag = import.meta.env.VITE_USE_DB_REPORTS
+  const nextFlag = import.meta.env.NEXT_PUBLIC_USE_DB_REPORTS
+  return viteFlag === 'true' || nextFlag === 'true'
 }
 
 function slugify(text: string): string {
@@ -19,26 +21,17 @@ async function getWeeklyReportFromNewSchema(
   weekEnd?: string
 ): Promise<WeeklyReport | null> {
   try {
-    const searchTerm = artistSlug.replace(/-/g, ' ')
-
     const { data: artists } = await supabase
       .from('artistas_registry')
       .select('id, nombre')
+      .ilike('nombre', `%${artistSlug.replace(/-/g, ' ')}%`)
 
     if (!artists || artists.length === 0) {
       return null
     }
 
-    const matchedArtist = artists.find(a =>
-      slugify(a.nombre) === artistSlug
-    )
-
-    if (!matchedArtist) {
-      return null
-    }
-
-    const artistId = matchedArtist.id
-    const artistName = matchedArtist.nombre
+    const artistId = artists[0].id
+    const artistName = artists[0].nombre
 
     let query = supabase
       .from('reports')
@@ -147,10 +140,6 @@ async function getWeeklyReportFromNewSchema(
 
           case 'total_audience':
             result.total_audience = data.total || 0
-            break
-
-          case 'instagram_kpis':
-            result.instagram_kpis = section.content_md || data.summary || ''
             break
         }
       }

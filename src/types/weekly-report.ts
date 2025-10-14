@@ -104,5 +104,4 @@ export type WeeklyReport = {
   fan_sentiment?: string
   spotify_stats?: SpotifyStats
   audience_segmentation?: AudienceSegmentation
-  instagram_kpis?: string
 }

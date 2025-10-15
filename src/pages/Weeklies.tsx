@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Calendar, ExternalLink } from 'lucide-react'
+import { Calendar, Database } from 'lucide-react'
 import { listWeeklyReports, ArtistSummary } from '../lib/reports-api'
 import { Breadcrumb } from '../components/Breadcrumb'
+import { ReportCard } from '../components/ReportCard'
+import { supabase } from '../lib/supabase'
 
 const SAMPLE_ARTISTS: ArtistSummary[] = [
   {
@@ -55,9 +56,22 @@ const SAMPLE_ARTISTS: ArtistSummary[] = [
   }
 ]
 
+interface LiveReport {
+  entidad_id: string
+  nombre: string
+  slug: string
+  tipo: string
+  imagen_url: string | null
+  semana_inicio: string | null
+  semana_fin: string | null
+  status: string | null
+}
+
 export function Weeklies() {
   const [artists, setArtists] = useState<ArtistSummary[]>([])
   const [loading, setLoading] = useState(true)
+  const [liveReports, setLiveReports] = useState<LiveReport[]>([])
+  const [loadingLive, setLoadingLive] = useState(true)
 
   useEffect(() => {
     async function loadReports() {
@@ -66,6 +80,26 @@ export function Weeklies() {
       setLoading(false)
     }
     loadReports()
+  }, [])
+
+  useEffect(() => {
+    async function loadLiveReports() {
+      try {
+        const { data, error } = await supabase
+          .from('reportes_v_ultimos')
+          .select('entidad_id, nombre, slug, tipo, imagen_url, semana_inicio, semana_fin, status')
+          .order('nombre', { ascending: true })
+
+        if (error) throw error
+        setLiveReports(data || [])
+      } catch (error) {
+        console.error('Error loading live reports:', error)
+        setLiveReports([])
+      } finally {
+        setLoadingLive(false)
+      }
+    }
+    loadLiveReports()
   }, [])
 
   const breadcrumbItems = [
@@ -102,39 +136,56 @@ export function Weeklies() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {artists.map((artist) => (
-              <Link
+              <ReportCard
                 key={artist.artist_id}
-                to={`/reports/weeklies/${artist.artist_id}?week=${artist.week_end}`}
-                className="group bg-gray-100 border border-gray-300 rounded-2xl p-6 hover:border-gray-400 transition-all duration-200 hover:scale-105"
-              >
+                artistId={`weeklies/${artist.artist_id}`}
+                artistName={artist.artist_name}
+                weekEnd={artist.week_end}
+                imageUrl={artist.cover_image_url}
+              />
+            ))}
+          </div>
+        )}
+
+        <div className="relative my-8 border-t border-gray-200">
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white px-3 flex items-center gap-2">
+            <Database className="w-4 h-4 text-gray-500" />
+            <span className="text-xs text-gray-500">Live from database</span>
+          </div>
+        </div>
+
+        {loadingLive ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-gray-100 border border-gray-300 rounded-2xl p-6 animate-pulse" style={{ minHeight: '140px' }}>
                 <div className="flex items-center gap-4 mb-4">
-                  {artist.cover_image_url ? (
-                    <img
-                      src={artist.cover_image_url}
-                      alt={artist.artist_name}
-                      className="w-16 h-16 rounded-full object-cover shadow-lg"
-                    />
-                  ) : (
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-                      <span className="text-white text-xl font-bold">
-                        {artist.artist_name.charAt(0)}
-                      </span>
-                    </div>
-                  )}
+                  <div className="w-16 h-16 bg-gray-300 rounded-full"></div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-black">{artist.artist_name}</h3>
-                    <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                      <Calendar className="w-3 h-3" />
-                      <span>Week ending {artist.week_end}</span>
-                    </div>
+                    <div className="h-5 bg-gray-300 rounded mb-2 w-3/4"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
                   </div>
                 </div>
-
-                <div className="flex items-center justify-between pt-4 border-t border-gray-300">
-                  <span className="text-sm font-medium text-gray-700">View Report</span>
-                  <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-black transition-colors" />
-                </div>
-              </Link>
+              </div>
+            ))}
+          </div>
+        ) : liveReports.length === 0 ? (
+          <div className="bg-gray-100 border border-gray-300 rounded-2xl p-8 text-center" style={{ minHeight: '140px' }}>
+            <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <Database className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-lg font-medium text-black mb-2">No live reports yet</h3>
+            <p className="text-gray-600">When we create a report in the database, it will appear here</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {liveReports.map((report) => (
+              <ReportCard
+                key={report.entidad_id}
+                artistId={report.slug}
+                artistName={report.nombre}
+                weekEnd={report.semana_fin}
+                imageUrl={report.imagen_url}
+              />
             ))}
           </div>
         )}

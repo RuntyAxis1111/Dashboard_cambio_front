@@ -16,6 +16,7 @@ import { AuthCallback } from './pages/AuthCallback'
 import { Reports } from './pages/Reports'
 import { Weeklies } from './pages/Weeklies'
 import { WeeklyDetail } from './pages/WeeklyDetail'
+import { ReportDetail } from './pages/ReportDetail'
 
 export default function App() {
   console.log('🎯 App component rendering...')
@@ -42,6 +43,7 @@ export default function App() {
                   <Route path="/reports" element={<Reports />} />
                   <Route path="/reports/weeklies" element={<Weeklies />} />
                   <Route path="/reports/weeklies/:artistId" element={<WeeklyDetail />} />
+                  <Route path="/reports/:slug" element={<ReportDetail />} />
                   <Route path="/about" element={<About />} />
                 </Routes>
               </Layout>

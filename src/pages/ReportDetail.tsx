@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabase'
 interface EntityDetail {
   id: string
   tipo: string
+  subtipo?: string | null
   nombre: string
   slug: string
   imagen_url: string | null
@@ -16,6 +17,21 @@ interface ReportStatus {
   semana_inicio: string | null
   semana_fin: string | null
   status: string | null
+}
+
+function reportKindLabel(tipo?: string | null, subtipo?: string | null): string {
+  const norm = (s?: string | null) => (s ?? '').toLowerCase()
+  const t = norm(tipo)
+  const st = norm(subtipo)
+
+  if (st === 'banda')   return 'Band Report'
+  if (st === 'solista') return 'Solo Artist Report'
+  if (st === 'duo')     return 'Duo Report'
+
+  if (t === 'show')   return 'Show Report'
+  if (t === 'artist') return 'Artist Report'
+
+  return 'Report'
 }
 
 export function ReportDetail() {
@@ -36,7 +52,7 @@ export function ReportDetail() {
       try {
         const { data: entityData, error: entityError } = await supabase
           .from('reportes_entidades')
-          .select('id, tipo, nombre, slug, imagen_url')
+          .select('id, tipo, subtipo, nombre, slug, imagen_url')
           .eq('slug', slug)
           .maybeSingle()
 
@@ -133,7 +149,7 @@ export function ReportDetail() {
             )}
             <div>
               <h1 className="text-3xl font-bold text-black">{entity.nombre}</h1>
-              <p className="text-gray-600 capitalize">{entity.tipo} Report</p>
+              <p className="text-gray-600">{reportKindLabel(entity.tipo, entity.subtipo)}</p>
             </div>
           </div>
 

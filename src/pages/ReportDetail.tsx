@@ -298,7 +298,7 @@ export function ReportDetail() {
                   const nextIsPlatform = nextSection?.seccion_clave === 'platform_growth'
 
                   if ((isMembers && nextIsPlatform) || (isPlatform && nextIsMembers)) {
-                    if (isPlatform && nextIsMembers) return null
+                    if (isMembers && nextIsPlatform) return null
 
                     const membersSection = isMembers ? section : nextSection
                     const platformSection = isPlatform ? section : nextSection
@@ -309,16 +309,16 @@ export function ReportDetail() {
 
                     return (
                       <div key={`${section.seccion_clave}-combined`} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {membersData?.component && (
-                          <div>
-                            <h3 className="text-xl font-bold text-black mb-4">{membersSection.titulo}</h3>
-                            {membersData.component}
-                          </div>
-                        )}
                         {platformData?.component && (
                           <div>
                             <h3 className="text-xl font-bold text-black mb-4">{platformSection.titulo}</h3>
                             {platformData.component}
+                          </div>
+                        )}
+                        {membersData?.component && (
+                          <div>
+                            <h3 className="text-xl font-bold text-black mb-4">{membersSection.titulo}</h3>
+                            {membersData.component}
                           </div>
                         )}
                       </div>

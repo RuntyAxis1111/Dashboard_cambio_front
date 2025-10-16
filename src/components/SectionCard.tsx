@@ -34,30 +34,30 @@ export function SectionCard({
   return (
     <div className="bg-gray-100 border border-gray-300 rounded-2xl overflow-hidden hover:border-gray-400 transition-all duration-200">
       {/* Header */}
-      <div className="p-6">
-        <div className="flex items-start gap-4 mb-4">
+      <div className="p-4 sm:p-6">
+        <div className="flex items-start gap-3 sm:gap-4 mb-4">
           {icon && (
-            <div className={`flex items-center justify-center w-12 h-12 rounded-xl transition-colors ${colorClass}`}>
+            <div className={`flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl transition-colors ${colorClass}`}>
               {icon}
             </div>
           )}
-          <div className="flex-1">
-            <h3 className="text-xl font-semibold text-black mb-1">{title}</h3>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg sm:text-xl font-semibold text-black mb-1">{title}</h3>
             {description && (
-              <p className="text-gray-600 text-sm">{description}</p>
+              <p className="text-gray-600 text-xs sm:text-sm">{description}</p>
             )}
           </div>
           <button
             onClick={onToggle}
-            className="p-2 hover:bg-gray-200 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="p-2 hover:bg-gray-200 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex-shrink-0"
             aria-expanded={open}
             aria-controls={`section-${id}`}
             title={open ? 'Collapse section' : 'Expand section'}
           >
-            <ChevronDown 
+            <ChevronDown
               className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
                 open ? 'rotate-180' : ''
-              }`} 
+              }`}
             />
           </button>
         </div>

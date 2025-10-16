@@ -1,5 +1,4 @@
-import { ReactNode } from 'react'
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
@@ -12,21 +11,29 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   console.log('🏗️ Layout component rendering...')
   const [isVoiceAgentOpen, setIsVoiceAgentOpen] = useState(false)
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
   const { user } = useAuth()
 
   try {
     return (
-      <div className="h-screen bg-white text-black grid grid-cols-[260px_1fr] overflow-hidden">
-        <Sidebar user={user} />
-        <div className="flex flex-col overflow-hidden">
-          <Topbar user={user} />
+      <div className="h-screen bg-white text-black lg:grid lg:grid-cols-[260px_1fr] overflow-hidden">
+        <Sidebar
+          user={user}
+          isMobileOpen={isMobileSidebarOpen}
+          onMobileClose={() => setIsMobileSidebarOpen(false)}
+        />
+        <div className="flex flex-col overflow-hidden h-screen">
+          <Topbar
+            user={user}
+            onMobileMenuToggle={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+          />
           <main className="flex-1 overflow-auto">
             {children}
           </main>
         </div>
-        <VoiceAgent 
-          isOpen={isVoiceAgentOpen} 
-          onToggle={() => setIsVoiceAgentOpen(!isVoiceAgentOpen)} 
+        <VoiceAgent
+          isOpen={isVoiceAgentOpen}
+          onToggle={() => setIsVoiceAgentOpen(!isVoiceAgentOpen)}
         />
       </div>
     )

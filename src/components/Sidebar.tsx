@@ -1,13 +1,15 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Chrome as Home, ChartBar as BarChart3, Brain, Bell, Search, Info, LogOut, FileText } from 'lucide-react'
+import { Chrome as Home, ChartBar as BarChart3, Brain, Bell, Search, Info, LogOut, FileText, X } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { User } from '@supabase/supabase-js'
 
 interface SidebarProps {
   user: User | null
+  isMobileOpen?: boolean
+  onMobileClose?: () => void
 }
 
-export function Sidebar({ user }: SidebarProps) {
+export function Sidebar({ user, isMobileOpen = false, onMobileClose }: SidebarProps) {
   const location = useLocation()
   const { signOut } = useAuth()
   
@@ -33,10 +35,33 @@ export function Sidebar({ user }: SidebarProps) {
   ]
 
   return (
-    <div className="bg-gray-50 border-r border-gray-200 flex flex-col">
-      <div className="p-6 border-b border-gray-200">
-        <h1 className="text-xl font-bold text-black">HYBE LATAM</h1>
-        <p className="text-sm text-gray-600">Data & AI Lab</p>
+    <>
+      {/* Mobile backdrop */}
+      {isMobileOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={onMobileClose}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={`
+        bg-gray-50 border-r border-gray-200 flex flex-col
+        fixed lg:static inset-y-0 left-0 z-50
+        w-[260px] transform transition-transform duration-300 ease-in-out
+        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+      <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-black">HYBE LATAM</h1>
+          <p className="text-sm text-gray-600">Data & AI Lab</p>
+        </div>
+        <button
+          onClick={onMobileClose}
+          className="lg:hidden p-2 hover:bg-gray-200 rounded-lg transition-colors"
+        >
+          <X className="w-5 h-5 text-gray-600" />
+        </button>
       </div>
       
       <nav className="flex-1 p-4">
@@ -108,5 +133,6 @@ export function Sidebar({ user }: SidebarProps) {
         </div>
       </div>
     </div>
+    </>
   )
 }

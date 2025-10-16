@@ -27,25 +27,25 @@ export function StreamingTrendsSection({ metrics }: StreamingTrendsSectionProps)
   return (
     <div className="space-y-6">
       {youtubeMetrics.length > 0 && (
-        <div className="bg-white border border-gray-300 rounded-2xl p-6">
-          <h4 className="font-semibold text-black mb-4">YouTube</h4>
+        <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6 overflow-hidden">
+          <h4 className="font-semibold text-black mb-3 sm:mb-4 text-sm sm:text-base">YouTube</h4>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-300">
-                  <th className="text-left py-2 px-3 text-sm font-medium text-gray-600">Metric</th>
-                  <th className="text-right py-2 px-3 text-sm font-medium text-gray-600">This Week</th>
-                  <th className="text-right py-2 px-3 text-sm font-medium text-gray-600">Previous</th>
-                  <th className="text-right py-2 px-3 text-sm font-medium text-gray-600">Δ%</th>
+                  <th className="text-left py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Metric</th>
+                  <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">This Week</th>
+                  <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Previous</th>
+                  <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Δ%</th>
                 </tr>
               </thead>
               <tbody>
                 {youtubeMetrics.map((metric, idx) => (
                   <tr key={idx} className="border-b border-gray-200 last:border-0">
-                    <td className="py-2 px-3 text-sm text-gray-700">{getMetricLabel(metric.metrica_clave)}</td>
-                    <td className="py-2 px-3 text-sm text-right font-medium text-black">{formatNumber(metric.valor)}</td>
-                    <td className="py-2 px-3 text-sm text-right text-gray-600">{formatNumber(metric.valor_prev)}</td>
-                    <td className={`py-2 px-3 text-sm text-right font-medium ${getDeltaColor(metric.delta_pct)}`}>
+                    <td className="py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm text-gray-700 whitespace-nowrap">{getMetricLabel(metric.metrica_clave)}</td>
+                    <td className="py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm text-right font-medium text-black whitespace-nowrap">{formatNumber(metric.valor)}</td>
+                    <td className="py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm text-right text-gray-600 whitespace-nowrap">{formatNumber(metric.valor_prev)}</td>
+                    <td className={`py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm text-right font-medium whitespace-nowrap ${getDeltaColor(metric.delta_pct)}`}>
                       {formatDelta(metric.delta_pct)}
                     </td>
                   </tr>
@@ -57,25 +57,25 @@ export function StreamingTrendsSection({ metrics }: StreamingTrendsSectionProps)
       )}
 
       {spotifyMetrics.length > 0 && (
-        <div className="bg-white border border-gray-300 rounded-2xl p-6">
-          <h4 className="font-semibold text-black mb-4">Spotify</h4>
+        <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6 overflow-hidden">
+          <h4 className="font-semibold text-black mb-3 sm:mb-4 text-sm sm:text-base">Spotify</h4>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-300">
-                  <th className="text-left py-2 px-3 text-sm font-medium text-gray-600">Metric</th>
-                  <th className="text-right py-2 px-3 text-sm font-medium text-gray-600">This Week</th>
-                  <th className="text-right py-2 px-3 text-sm font-medium text-gray-600">Previous</th>
-                  <th className="text-right py-2 px-3 text-sm font-medium text-gray-600">Δ%</th>
+                  <th className="text-left py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Metric</th>
+                  <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">This Week</th>
+                  <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Previous</th>
+                  <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Δ%</th>
                 </tr>
               </thead>
               <tbody>
                 {spotifyMetrics.map((metric, idx) => (
                   <tr key={idx} className="border-b border-gray-200 last:border-0">
-                    <td className="py-2 px-3 text-sm text-gray-700">{getMetricLabel(metric.metrica_clave)}</td>
-                    <td className="py-2 px-3 text-sm text-right font-medium text-black">{formatNumber(metric.valor)}</td>
-                    <td className="py-2 px-3 text-sm text-right text-gray-600">{formatNumber(metric.valor_prev)}</td>
-                    <td className={`py-2 px-3 text-sm text-right font-medium ${getDeltaColor(metric.delta_pct)}`}>
+                    <td className="py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm text-gray-700 whitespace-nowrap">{getMetricLabel(metric.metrica_clave)}</td>
+                    <td className="py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm text-right font-medium text-black whitespace-nowrap">{formatNumber(metric.valor)}</td>
+                    <td className="py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm text-right text-gray-600 whitespace-nowrap">{formatNumber(metric.valor_prev)}</td>
+                    <td className={`py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm text-right font-medium whitespace-nowrap ${getDeltaColor(metric.delta_pct)}`}>
                       {formatDelta(metric.delta_pct)}
                     </td>
                   </tr>

@@ -60,17 +60,17 @@ export function StreamingDataSection({ spotify, apple, amazon, tidal, activeFilt
             <div className="space-y-6">
               {currentData.charts && currentData.charts.length > 0 && (
                 <div>
-                  <h5 className="text-sm font-semibold text-gray-700 mb-3">Charts</h5>
+                  <h5 className="text-xs sm:text-sm font-semibold text-gray-700 mb-3">Charts</h5>
                   <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
+                    <table className="w-full text-xs sm:text-sm">
                       <thead>
                         <tr className="border-b border-gray-300">
-                          <th className="text-left py-2 px-3 font-medium text-gray-700">Chart</th>
-                          <th className="text-left py-2 px-3 font-medium text-gray-700">Country/Global</th>
-                          <th className="text-left py-2 px-3 font-medium text-gray-700">Track/Album</th>
-                          <th className="text-center py-2 px-3 font-medium text-gray-700">Rank</th>
-                          <th className="text-center py-2 px-3 font-medium text-gray-700">Change</th>
-                          <th className="text-center py-2 px-3 font-medium text-gray-700">Weeks</th>
+                          <th className="text-left py-2 px-2 sm:px-3 lg:px-4 font-medium text-gray-700 whitespace-nowrap">Chart</th>
+                          <th className="text-left py-2 px-2 sm:px-3 lg:px-4 font-medium text-gray-700 whitespace-nowrap">Country/Global</th>
+                          <th className="text-left py-2 px-2 sm:px-3 lg:px-4 font-medium text-gray-700 whitespace-nowrap">Track/Album</th>
+                          <th className="text-center py-2 px-2 sm:px-3 lg:px-4 font-medium text-gray-700 whitespace-nowrap">Rank</th>
+                          <th className="text-center py-2 px-2 sm:px-3 lg:px-4 font-medium text-gray-700 whitespace-nowrap">Change</th>
+                          <th className="text-center py-2 px-2 sm:px-3 lg:px-4 font-medium text-gray-700 whitespace-nowrap">Weeks</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -79,11 +79,11 @@ export function StreamingDataSection({ spotify, apple, amazon, tidal, activeFilt
                           const isNegative = (chart.delta || 0) < 0
                           return (
                             <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
-                              <td className="py-3 px-3">{chart.chart_name}</td>
-                              <td className="py-3 px-3">{chart.country}</td>
-                              <td className="py-3 px-3 font-medium">{chart.entity_name}</td>
-                              <td className="py-3 px-3 text-center font-semibold">#{chart.rank}</td>
-                              <td className="py-3 px-3 text-center">
+                              <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 whitespace-nowrap">{chart.chart_name}</td>
+                              <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 whitespace-nowrap">{chart.country}</td>
+                              <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 font-medium whitespace-nowrap">{chart.entity_name}</td>
+                              <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 text-center font-semibold whitespace-nowrap">#{chart.rank}</td>
+                              <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 text-center whitespace-nowrap">
                                 {chart.delta !== undefined && (
                                   <span className={`inline-flex items-center gap-1 ${
                                     isPositive ? 'text-green-600' : isNegative ? 'text-red-600' : 'text-gray-600'
@@ -94,7 +94,7 @@ export function StreamingDataSection({ spotify, apple, amazon, tidal, activeFilt
                                   </span>
                                 )}
                               </td>
-                              <td className="py-3 px-3 text-center text-gray-600">
+                              <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 text-center text-gray-600 whitespace-nowrap">
                                 {chart.weeks_on_chart || '-'}
                               </td>
                             </tr>

@@ -32,11 +32,11 @@ export function ChartsRenderer({ data, platform }: ChartsRendererProps) {
       <table className="w-full">
         <thead>
           <tr className="border-b border-gray-300">
-            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Rank</th>
-            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Chart</th>
-            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Track/Album</th>
-            <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Weeks</th>
-            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Notes</th>
+            <th className="text-left py-2 sm:py-3 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">Rank</th>
+            <th className="text-left py-2 sm:py-3 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">Chart</th>
+            <th className="text-left py-2 sm:py-3 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">Track/Album</th>
+            <th className="text-center py-2 sm:py-3 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">Weeks</th>
+            <th className="text-left py-2 sm:py-3 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">Notes</th>
           </tr>
         </thead>
         <tbody>
@@ -46,9 +46,9 @@ export function ChartsRenderer({ data, platform }: ChartsRendererProps) {
 
             return (
               <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
-                <td className="py-3 px-4">
+                <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 whitespace-nowrap">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-black">#{item.rank}</span>
+                    <span className="text-base sm:text-lg font-bold text-black">#{item.rank}</span>
                     {item.delta && (
                       <span className={`text-xs font-medium ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
                         {isPositive ? <TrendingUp className="w-3 h-3 inline" /> : <TrendingDown className="w-3 h-3 inline" />}
@@ -57,17 +57,17 @@ export function ChartsRenderer({ data, platform }: ChartsRendererProps) {
                     )}
                   </div>
                 </td>
-                <td className="py-3 px-4 text-sm text-gray-600">{item.chart || '-'}</td>
-                <td className="py-3 px-4">
-                  <div className="font-medium text-black">{item.track || item.album || '-'}</div>
+                <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm text-gray-600 whitespace-nowrap">{item.chart || '-'}</td>
+                <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 whitespace-nowrap">
+                  <div className="font-medium text-black text-xs sm:text-sm">{item.track || item.album || '-'}</div>
                   {item.markets && (
                     <div className="text-xs text-gray-500 mt-1">{item.markets} markets</div>
                   )}
                 </td>
-                <td className="py-3 px-4 text-center text-sm text-gray-600">
+                <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 text-center text-xs sm:text-sm text-gray-600 whitespace-nowrap">
                   {item.weeks_on_chart || '-'}
                 </td>
-                <td className="py-3 px-4 text-sm text-gray-600">
+                <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm text-gray-600 whitespace-nowrap">
                   {item.notes || '-'}
                 </td>
               </tr>

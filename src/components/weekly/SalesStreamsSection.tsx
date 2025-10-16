@@ -30,15 +30,15 @@ export function SalesStreamsSection({ sales }: SalesStreamsSectionProps) {
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-sm">
+      <table className="w-full text-xs sm:text-sm">
         <thead>
           <tr className="border-b border-gray-300">
-            <th className="text-left py-2 px-3 font-medium text-gray-700">Release</th>
-            <th className="text-left py-2 px-3 font-medium text-gray-700">Type</th>
-            <th className="text-right py-2 px-3 font-medium text-gray-700">TW Units</th>
-            <th className="text-right py-2 px-3 font-medium text-gray-700">TW Change</th>
-            <th className="text-right py-2 px-3 font-medium text-gray-700">RTD Units</th>
-            <th className="text-right py-2 px-3 font-medium text-gray-700">RTD Change</th>
+            <th className="text-left py-2 px-2 sm:px-3 lg:px-4 font-medium text-gray-700 whitespace-nowrap">Release</th>
+            <th className="text-left py-2 px-2 sm:px-3 lg:px-4 font-medium text-gray-700 whitespace-nowrap">Type</th>
+            <th className="text-right py-2 px-2 sm:px-3 lg:px-4 font-medium text-gray-700 whitespace-nowrap">TW Units</th>
+            <th className="text-right py-2 px-2 sm:px-3 lg:px-4 font-medium text-gray-700 whitespace-nowrap">TW Change</th>
+            <th className="text-right py-2 px-2 sm:px-3 lg:px-4 font-medium text-gray-700 whitespace-nowrap">RTD Units</th>
+            <th className="text-right py-2 px-2 sm:px-3 lg:px-4 font-medium text-gray-700 whitespace-nowrap">RTD Change</th>
           </tr>
         </thead>
         <tbody>
@@ -48,14 +48,14 @@ export function SalesStreamsSection({ sales }: SalesStreamsSectionProps) {
 
             return (
               <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
-                <td className="py-3 px-3 font-medium">{entry.release_name}</td>
-                <td className="py-3 px-3">
+                <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 font-medium whitespace-nowrap">{entry.release_name}</td>
+                <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 whitespace-nowrap">
                   <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-200 text-gray-700 rounded">
                     {entry.type}
                   </span>
                 </td>
-                <td className="py-3 px-3 text-right font-semibold">{formatNumber(entry.tw_units)}</td>
-                <td className="py-3 px-3 text-right">
+                <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 text-right font-semibold whitespace-nowrap">{formatNumber(entry.tw_units)}</td>
+                <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 text-right whitespace-nowrap">
                   <span className={`inline-flex items-center gap-1 ${
                     twPositive ? 'text-green-600' : 'text-red-600'
                   }`}>
@@ -63,8 +63,8 @@ export function SalesStreamsSection({ sales }: SalesStreamsSectionProps) {
                     {twPositive ? '+' : ''}{entry.tw_change}%
                   </span>
                 </td>
-                <td className="py-3 px-3 text-right font-semibold">{formatNumber(entry.rtd_units)}</td>
-                <td className="py-3 px-3 text-right">
+                <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 text-right font-semibold whitespace-nowrap">{formatNumber(entry.rtd_units)}</td>
+                <td className="py-2 sm:py-3 px-2 sm:px-3 lg:px-4 text-right whitespace-nowrap">
                   <span className={`inline-flex items-center gap-1 ${
                     rtdPositive ? 'text-green-600' : 'text-red-600'
                   }`}>

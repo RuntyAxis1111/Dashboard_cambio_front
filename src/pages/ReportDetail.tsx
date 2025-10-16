@@ -13,6 +13,7 @@ import { MVViewsSection } from '../components/band-report/MVViewsSection'
 import { DemographicsSection } from '../components/band-report/DemographicsSection'
 import { TopCountriesSection } from '../components/band-report/TopCountriesSection'
 import { MembersGrowthSection } from '../components/band-report/MembersGrowthSection'
+import { PlatformGrowthSection } from '../components/band-report/PlatformGrowthSection'
 import { SourcesSection } from '../components/band-report/SourcesSection'
 
 interface EntityDetail {
@@ -48,6 +49,7 @@ interface BandReportData {
   demographics: any[]
   topCountries: any[]
   membersGrowth: any[]
+  platformGrowth: any[]
   sources: any[]
 }
 
@@ -117,6 +119,7 @@ export function ReportDetail() {
           demographicsRes,
           topCountriesRes,
           membersRes,
+          platformGrowthRes,
           sourcesRes
         ] = await Promise.all([
           supabase.from('reportes_secciones').select('*').eq('entidad_id', entidadId).eq('lista', true).order('orden'),
@@ -130,6 +133,7 @@ export function ReportDetail() {
           supabase.from('reportes_buckets').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'demographics'),
           supabase.from('reportes_buckets').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'top_countries').eq('dimension', 'country').eq('metrica_clave', 'listeners_28d').order('posicion'),
           supabase.from('reportes_metricas').select('*, participante:reportes_participantes!inner(nombre, orden)').eq('entidad_id', entidadId).eq('seccion_clave', 'members_ig_growth').eq('metrica_clave', 'ig_followers').eq('plataforma', 'instagram').order('participante(orden)'),
+          supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'platform_growth').is('participante_id', null).order('orden'),
           supabase.from('reportes_fuentes').select('*').eq('entidad_id', entidadId)
         ])
 
@@ -150,6 +154,7 @@ export function ReportDetail() {
           demographics: demographicsRes.data || [],
           topCountries: topCountriesRes.data || [],
           membersGrowth: membersData,
+          platformGrowth: platformGrowthRes.data || [],
           sources: sourcesRes.data || []
         })
       } catch (err) {
@@ -214,6 +219,7 @@ export function ReportDetail() {
     'demographics': { component: bandData ? <DemographicsSection buckets={bandData.demographics} /> : null, title: 'Demographics (last 28 days)' },
     'top_countries': { component: bandData ? <TopCountriesSection buckets={bandData.topCountries} /> : null, title: 'Top Countries (last 28 days)' },
     'members_ig_growth': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} /> : null, title: 'Members\' IG Weekly Social Growth' },
+    'platform_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} /> : null, title: 'Social Platform Weekly Social Growth' },
     'sources': { component: bandData ? <SourcesSection sources={bandData.sources} /> : null, title: 'Sources' }
   }
 
@@ -284,9 +290,43 @@ export function ReportDetail() {
                   </p>
                 </div>
               ) : (
-                bandData.sections.map((section) => {
+                bandData.sections.map((section, idx) => {
+                  const nextSection = bandData.sections[idx + 1]
+                  const isMembers = section.seccion_clave === 'members_ig_growth'
+                  const isPlatform = section.seccion_clave === 'platform_growth'
+                  const nextIsMembers = nextSection?.seccion_clave === 'members_ig_growth'
+                  const nextIsPlatform = nextSection?.seccion_clave === 'platform_growth'
+
+                  if ((isMembers && nextIsPlatform) || (isPlatform && nextIsMembers)) {
+                    if (isPlatform && nextIsMembers) return null
+
+                    const membersSection = isMembers ? section : nextSection
+                    const platformSection = isPlatform ? section : nextSection
+                    const membersData = sectionMap['members_ig_growth']
+                    const platformData = sectionMap['platform_growth']
+
+                    if (!membersData?.component && !platformData?.component) return null
+
+                    return (
+                      <div key={`${section.seccion_clave}-combined`} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {membersData?.component && (
+                          <div>
+                            <h3 className="text-xl font-bold text-black mb-4">{membersSection.titulo}</h3>
+                            {membersData.component}
+                          </div>
+                        )}
+                        {platformData?.component && (
+                          <div>
+                            <h3 className="text-xl font-bold text-black mb-4">{platformSection.titulo}</h3>
+                            {platformData.component}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  }
+
                   const sectionData = sectionMap[section.seccion_clave]
-                  if (!sectionData) return null
+                  if (!sectionData || !sectionData.component) return null
 
                   return (
                     <div key={section.seccion_clave}>

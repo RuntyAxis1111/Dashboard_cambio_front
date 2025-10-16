@@ -33,29 +33,29 @@ export function PlatformGrowthSection({ metrics }: PlatformGrowthSectionProps) {
   const regularMetrics = sortedMetrics.filter(m => m.plataforma !== 'total')
 
   return (
-    <div className="bg-gray-50 border border-gray-300 rounded-xl overflow-hidden">
-      <table className="w-full">
+    <div className="bg-gray-50 border border-gray-300 rounded-xl overflow-x-auto">
+      <table className="w-full min-w-[600px]">
         <thead className="bg-gray-200">
           <tr>
-            <th className="text-left px-4 py-3 text-sm font-medium text-gray-700">Platform</th>
-            <th className="text-right px-4 py-3 text-sm font-medium text-gray-700">Previous</th>
-            <th className="text-right px-4 py-3 text-sm font-medium text-gray-700">Current</th>
-            <th className="text-right px-4 py-3 text-sm font-medium text-gray-700">Growth</th>
+            <th className="text-left px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700">Platform</th>
+            <th className="text-right px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700">Previous</th>
+            <th className="text-right px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700">Current</th>
+            <th className="text-right px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700">Growth</th>
           </tr>
         </thead>
         <tbody>
           {regularMetrics.map(m => (
             <tr key={m.plataforma} className="border-t border-gray-200">
-              <td className="px-4 py-3 text-sm text-black">
+              <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black">
                 {PLATFORM_LABELS[m.plataforma] || m.plataforma}
               </td>
-              <td className="px-4 py-3 text-sm text-gray-600 text-right">
+              <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right">
                 {formatNumberCompact(m.valor_prev)}
               </td>
-              <td className="px-4 py-3 text-sm text-black text-right font-medium">
+              <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black text-right font-medium">
                 {formatNumberCompact(m.valor)}
               </td>
-              <td className="px-4 py-3 text-sm text-right">
+              <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-right">
                 <span className={getDeltaColor(m.delta_pct)}>
                   {formatDeltaNum(m.delta_num)} ({formatDeltaPct(m.delta_pct)})
                 </span>
@@ -64,16 +64,16 @@ export function PlatformGrowthSection({ metrics }: PlatformGrowthSectionProps) {
           ))}
           {totalMetric && (
             <tr className="border-t-2 border-gray-300 bg-gray-100">
-              <td className="px-4 py-3 text-sm text-black font-bold">
+              <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black font-bold">
                 {PLATFORM_LABELS[totalMetric.plataforma] || totalMetric.plataforma}
               </td>
-              <td className="px-4 py-3 text-sm text-gray-600 text-right font-medium">
+              <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right font-medium">
                 {formatNumberCompact(totalMetric.valor_prev)}
               </td>
-              <td className="px-4 py-3 text-sm text-black text-right font-bold">
+              <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black text-right font-bold">
                 {formatNumberCompact(totalMetric.valor)}
               </td>
-              <td className="px-4 py-3 text-sm text-right font-medium">
+              <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-right font-medium">
                 <span className={getDeltaColor(totalMetric.delta_pct)}>
                   {formatDeltaNum(totalMetric.delta_num)} ({formatDeltaPct(totalMetric.delta_pct)})
                 </span>

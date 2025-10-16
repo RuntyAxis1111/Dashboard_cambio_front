@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { BarChart3, Brain, Bell } from 'lucide-react'
+import { BarChart3, Brain, Bell, FileText } from 'lucide-react'
 
 export function Home() {
   return (
@@ -16,6 +16,19 @@ export function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          <Link
+            to="/reports"
+            className="group bg-gray-100 border border-gray-300 rounded-2xl p-6 sm:p-8 hover:border-gray-400 transition-all duration-200 hover:scale-105"
+          >
+            <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-emerald-600/20 rounded-xl mb-4 sm:mb-6 group-hover:bg-emerald-600/30 transition-colors">
+              <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-400" />
+            </div>
+            <h3 className="text-lg sm:text-xl font-semibold text-black mb-2 sm:mb-3">View Reports</h3>
+            <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+              Access weekly performance reports, analytics summaries, and detailed insights for all your artists.
+            </p>
+          </Link>
+
           <Link
             to="/dashboards"
             className="group bg-gray-100 border border-gray-300 rounded-2xl p-6 sm:p-8 hover:border-gray-400 transition-all duration-200 hover:scale-105"
@@ -48,8 +61,8 @@ export function Home() {
             to="/subscriptions"
             className="group bg-gray-100 border border-gray-300 rounded-2xl p-6 sm:p-8 hover:border-gray-400 transition-all duration-200 hover:scale-105"
           >
-            <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-green-600/20 rounded-xl mb-4 sm:mb-6 group-hover:bg-green-600/30 transition-colors">
-              <Bell className="w-6 h-6 sm:w-8 sm:h-8 text-green-400" />
+            <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-amber-600/20 rounded-xl mb-4 sm:mb-6 group-hover:bg-amber-600/30 transition-colors">
+              <Bell className="w-6 h-6 sm:w-8 sm:h-8 text-amber-400" />
             </div>
             <h3 className="text-lg sm:text-xl font-semibold text-black mb-2 sm:mb-3">Create Subscription</h3>
             <p className="text-sm sm:text-base text-gray-600 leading-relaxed">

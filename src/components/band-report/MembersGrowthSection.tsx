@@ -18,29 +18,29 @@ export function MembersGrowthSection({ members }: MembersGrowthSectionProps) {
   }
 
   return (
-    <div className="bg-gray-50 border border-gray-300 rounded-xl overflow-hidden">
-      <table className="w-full">
+    <div className="bg-gray-50 border border-gray-300 rounded-xl overflow-x-auto">
+      <table className="w-full min-w-[600px]">
         <thead className="bg-gray-200">
           <tr>
-            <th className="text-left px-4 py-3 text-sm font-medium text-gray-700">Member</th>
-            <th className="text-right px-4 py-3 text-sm font-medium text-gray-700">Previous</th>
-            <th className="text-right px-4 py-3 text-sm font-medium text-gray-700">Current</th>
-            <th className="text-right px-4 py-3 text-sm font-medium text-gray-700">Growth</th>
+            <th className="text-left px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700">Member</th>
+            <th className="text-right px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700">Previous</th>
+            <th className="text-right px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700">Current</th>
+            <th className="text-right px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700">Growth</th>
           </tr>
         </thead>
         <tbody>
           {members.map((member, idx) => (
             <tr key={idx} className="border-t border-gray-200">
-              <td className="px-4 py-3 text-sm text-black font-medium">
+              <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black font-medium">
                 {member.participante_nombre}
               </td>
-              <td className="px-4 py-3 text-sm text-gray-600 text-right">
+              <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right">
                 {formatNumberCompact(member.valor_prev)}
               </td>
-              <td className="px-4 py-3 text-sm text-black text-right font-medium">
+              <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black text-right font-medium">
                 {formatNumberCompact(member.valor)}
               </td>
-              <td className="px-4 py-3 text-sm text-right">
+              <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-right">
                 <span className={getDeltaColor(member.delta_pct)}>
                   {formatDeltaNum(member.delta_num)} ({formatDeltaPct(member.delta_pct)})
                 </span>

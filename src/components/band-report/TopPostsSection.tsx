@@ -28,11 +28,11 @@ export function TopPostsSection({ posts }: TopPostsSectionProps) {
   const ytPosts = posts.filter(p => p.plataforma === 'youtube').sort((a, b) => a.posicion - b.posicion)
 
   return (
-    <div className="bg-gray-50 border border-gray-300 rounded-xl p-6 overflow-x-auto">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 min-w-[600px]">
+    <div className="bg-gray-50 border border-gray-300 rounded-xl p-4 sm:p-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
         <div>
-          <h4 className="text-sm font-semibold text-gray-700 mb-4 text-center">IG</h4>
-          <div className="space-y-3">
+          <h4 className="text-xs sm:text-sm font-semibold text-gray-700 mb-3 sm:mb-4 text-center">IG</h4>
+          <div className="space-y-2 sm:space-y-3">
             {igPosts.map((post, idx) => (
               <PostCard key={idx} post={post} />
             ))}
@@ -40,8 +40,8 @@ export function TopPostsSection({ posts }: TopPostsSectionProps) {
         </div>
 
         <div>
-          <h4 className="text-sm font-semibold text-gray-700 mb-4 text-center">TikTok</h4>
-          <div className="space-y-3">
+          <h4 className="text-xs sm:text-sm font-semibold text-gray-700 mb-3 sm:mb-4 text-center">TikTok</h4>
+          <div className="space-y-2 sm:space-y-3">
             {ttPosts.map((post, idx) => (
               <PostCard key={idx} post={post} />
             ))}
@@ -49,8 +49,8 @@ export function TopPostsSection({ posts }: TopPostsSectionProps) {
         </div>
 
         <div>
-          <h4 className="text-sm font-semibold text-gray-700 mb-4 text-center">YTS</h4>
-          <div className="space-y-3">
+          <h4 className="text-xs sm:text-sm font-semibold text-gray-700 mb-3 sm:mb-4 text-center">YTS</h4>
+          <div className="space-y-2 sm:space-y-3">
             {ytPosts.map((post, idx) => (
               <PostCard key={idx} post={post} />
             ))}
@@ -65,7 +65,7 @@ function PostCard({ post }: { post: TopPost }) {
   const linkUrl = post.link_url || post.url
 
   const content = (
-    <div className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-sm transition-shadow">
+    <div className="bg-white border border-gray-200 rounded-lg p-2 sm:p-3 hover:shadow-sm transition-shadow">
       {post.titulo && (
         <p className="text-xs font-medium text-black mb-1 line-clamp-2">
           {linkUrl ? (
@@ -82,7 +82,7 @@ function PostCard({ post }: { post: TopPost }) {
           )}
         </p>
       )}
-      <p className="text-xs text-gray-600 line-clamp-2">{post.texto}</p>
+      <p className="text-xs text-gray-600 line-clamp-3">{post.texto}</p>
     </div>
   )
 

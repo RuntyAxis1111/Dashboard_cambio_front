@@ -48,8 +48,7 @@ interface BandReportData {
   instagramKPIs: any[]
   streamingTrends: any[]
   tiktokTrends: any[]
-  mvMainMetric: any | null
-  mvTopContent: any[]
+  mvItems: any[]
   demographics: any[]
   topCountries: any[]
   membersGrowth: any[]
@@ -122,8 +121,7 @@ export function ReportDetail() {
           instagramKPIsRes,
           streamingTrendsRes,
           tiktokTrendsRes,
-          mvMetricRes,
-          mvContentRes,
+          mvItemsRes,
           demographicsRes,
           topCountriesRes,
           membersRes,
@@ -140,8 +138,7 @@ export function ReportDetail() {
           supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'instagram_kpis').eq('plataforma', 'instagram').order('orden'),
           supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'streaming_trends').order('orden'),
           supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'tiktok_trends').eq('plataforma', 'tiktok').order('orden'),
-          supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'mv_views').eq('plataforma', 'youtube').maybeSingle(),
-          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'top_contenido').order('plataforma').order('posicion'),
+          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).in('categoria', ['mv_total_views', 'spotify_streams']).order('posicion'),
           supabase.from('reportes_buckets').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'demographics'),
           supabase.from('reportes_buckets').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'top_countries').eq('dimension', 'country').eq('metrica_clave', 'listeners_28d').order('posicion'),
           supabase.from('reportes_metricas').select('*, participante:reportes_participantes!inner(nombre, orden)').eq('entidad_id', entidadId).eq('seccion_clave', 'members_ig_growth').eq('metrica_clave', 'ig_followers').eq('plataforma', 'instagram').order('participante(orden)'),
@@ -165,8 +162,7 @@ export function ReportDetail() {
           instagramKPIs: instagramKPIsRes.data || [],
           streamingTrends: streamingTrendsRes.data || [],
           tiktokTrends: tiktokTrendsRes.data || [],
-          mvMainMetric: mvMetricRes.data,
-          mvTopContent: mvContentRes.data || [],
+          mvItems: mvItemsRes.data || [],
           demographics: demographicsRes.data || [],
           topCountries: topCountriesRes.data || [],
           membersGrowth: membersData,
@@ -235,7 +231,7 @@ export function ReportDetail() {
     'instagram_kpis': { component: bandData ? <InstagramKPIsSection metrics={bandData.instagramKPIs} /> : null },
     'streaming_trends': { component: bandData ? <StreamingTrendsSection metrics={bandData.streamingTrends} /> : null },
     'tiktok_trends': { component: bandData ? <TikTokTrendsSection metrics={bandData.tiktokTrends} /> : null },
-    'mv_views': { component: bandData ? <MVViewsSection mainMetric={bandData.mvMainMetric} topContent={bandData.mvTopContent} /> : null },
+    'mv_views': { component: bandData ? <MVViewsSection items={bandData.mvItems} /> : null },
     'demographics': { component: bandData ? <DemographicsSection buckets={bandData.demographics} /> : null },
     'top_countries': { component: bandData ? <TopCountriesSection buckets={bandData.topCountries} /> : null },
     'members_ig_growth': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} /> : null },

@@ -1,8 +1,8 @@
-import { formatNumber } from '../../lib/report-utils'
+import { formatNumberCompact } from '../../lib/report-utils'
 
 interface TopPost {
   texto: string
-  valor: number
+  valor?: number | null
   categoria: string
   url?: string | null
   imagen_url?: string | null
@@ -20,11 +20,9 @@ export function TopPostsSection({ posts }: TopPostsSectionProps) {
   const ttPosts = posts.filter(p => p.categoria === 'top_tt').sort((a, b) => a.orden - b.orden)
   const ytPosts = posts.filter(p => p.categoria === 'top_yt').sort((a, b) => a.orden - b.orden)
 
-  const maxRows = Math.max(igPosts.length, ttPosts.length, ytPosts.length)
-
   return (
     <div className="bg-gray-50 border border-gray-300 rounded-xl p-6 overflow-x-auto">
-      <div className="grid grid-cols-3 gap-4 min-w-[600px]">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 min-w-[600px]">
         <div>
           <h4 className="text-sm font-semibold text-gray-700 mb-4 text-center">IG</h4>
           <div className="space-y-3">
@@ -60,15 +58,17 @@ function PostCard({ post }: { post: TopPost }) {
   const content = (
     <div className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-sm transition-shadow">
       <p className="text-xs text-gray-700 mb-2 line-clamp-2">{post.texto}</p>
-      <p className="text-xs font-semibold text-gray-900">
-        {formatNumber(post.valor)} views
-      </p>
+      {post.valor != null && (
+        <p className="text-xs font-semibold text-gray-900">
+          {formatNumberCompact(post.valor)} views
+        </p>
+      )}
     </div>
   )
 
   if (post.url) {
     return (
-      <a href={post.url} target="_blank" rel="noopener noreferrer">
+      <a href={post.url} target="_blank" rel="noopener noreferrer" className="block">
         {content}
       </a>
     )

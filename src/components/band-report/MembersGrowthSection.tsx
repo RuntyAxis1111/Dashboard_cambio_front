@@ -1,4 +1,4 @@
-import { formatNumber, formatDelta, getDeltaColor, getDeltaBgColor } from '../../lib/report-utils'
+import { formatNumberCompact, formatDeltaNum, formatDeltaPct, getDeltaColor, getDeltaBgColor } from '../../lib/report-utils'
 
 interface MemberMetric {
   participante_nombre: string
@@ -18,40 +18,37 @@ export function MembersGrowthSection({ members }: MembersGrowthSectionProps) {
   }
 
   return (
-    <div className="bg-white border border-gray-300 rounded-2xl p-6">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-gray-300">
-              <th className="text-left py-2 px-3 text-sm font-medium text-gray-600">Member</th>
-              <th className="text-right py-2 px-3 text-sm font-medium text-gray-600">Previous</th>
-              <th className="text-right py-2 px-3 text-sm font-medium text-gray-600">Current</th>
-              <th className="text-right py-2 px-3 text-sm font-medium text-gray-600">Growth</th>
+    <div className="bg-gray-50 border border-gray-300 rounded-xl overflow-hidden">
+      <table className="w-full">
+        <thead className="bg-gray-200">
+          <tr>
+            <th className="text-left px-4 py-3 text-sm font-medium text-gray-700">Member</th>
+            <th className="text-right px-4 py-3 text-sm font-medium text-gray-700">Previous</th>
+            <th className="text-right px-4 py-3 text-sm font-medium text-gray-700">Current</th>
+            <th className="text-right px-4 py-3 text-sm font-medium text-gray-700">Growth</th>
+          </tr>
+        </thead>
+        <tbody>
+          {members.map((member, idx) => (
+            <tr key={idx} className="border-t border-gray-200">
+              <td className="px-4 py-3 text-sm text-black font-medium">
+                {member.participante_nombre}
+              </td>
+              <td className="px-4 py-3 text-sm text-gray-600 text-right">
+                {formatNumberCompact(member.valor_prev)}
+              </td>
+              <td className="px-4 py-3 text-sm text-black text-right font-medium">
+                {formatNumberCompact(member.valor)}
+              </td>
+              <td className="px-4 py-3 text-sm text-right">
+                <span className={getDeltaColor(member.delta_pct)}>
+                  {formatDeltaNum(member.delta_num)} ({formatDeltaPct(member.delta_pct)})
+                </span>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {members.map((member, idx) => (
-              <tr key={idx} className="border-b border-gray-200 last:border-0">
-                <td className="py-2 px-3 text-sm text-gray-700 font-medium">{member.participante_nombre}</td>
-                <td className="py-2 px-3 text-sm text-right text-gray-600">{formatNumber(member.valor_prev)}</td>
-                <td className="py-2 px-3 text-sm text-right font-semibold text-black">{formatNumber(member.valor)}</td>
-                <td className="py-2 px-3 text-sm text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    <span className="text-gray-700">
-                      {member.delta_num != null ? `+${formatNumber(member.delta_num)}` : 'N/A'}
-                    </span>
-                    {member.delta_pct != null && (
-                      <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${getDeltaBgColor(member.delta_pct)} ${getDeltaColor(member.delta_pct)}`}>
-                        {formatDelta(member.delta_pct)}
-                      </span>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }

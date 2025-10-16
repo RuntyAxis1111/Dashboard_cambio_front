@@ -51,10 +51,31 @@ export function formatNumber(num: number | null | undefined): string {
   return num.toLocaleString()
 }
 
+export function formatNumberCompact(num: number | null | undefined): string {
+  if (num == null) return 'N/A'
+  if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(2)}M`
+  if (num >= 1_000) return `${(num / 1_000).toFixed(1)}K`
+  return num.toLocaleString()
+}
+
+export function formatDeltaNum(delta: number | null | undefined): string {
+  if (delta == null) return 'N/A'
+  const sign = delta >= 0 ? '+' : ''
+  if (Math.abs(delta) >= 1_000_000) return `${sign}${(delta / 1_000_000).toFixed(1)}M`
+  if (Math.abs(delta) >= 1_000) return `${sign}${(delta / 1_000).toFixed(1)}K`
+  return `${sign}${delta.toLocaleString()}`
+}
+
 export function formatDelta(delta: number | null | undefined, decimals = 1): string {
   if (delta == null) return 'N/A'
   const sign = delta >= 0 ? '+' : ''
   return `${sign}${delta.toFixed(decimals)}%`
+}
+
+export function formatDeltaPct(delta: number | null | undefined): string {
+  if (delta == null) return 'N/A'
+  const sign = delta >= 0 ? '+' : ''
+  return `${sign}${delta.toFixed(1)}%`
 }
 
 export function getDeltaColor(delta: number | null | undefined): string {

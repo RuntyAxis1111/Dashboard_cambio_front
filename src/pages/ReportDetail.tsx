@@ -58,6 +58,7 @@ interface BandReportData {
   prPress: any[]
   weeklyContent: any[]
   topPosts: any[]
+  sentiment: any[]
 }
 
 export function ReportDetail() {
@@ -130,7 +131,8 @@ export function ReportDetail() {
           spotifyInsightsRes,
           prPressRes,
           weeklyContentRes,
-          topPostsRes
+          topPostsRes,
+          sentimentRes
         ] = await Promise.all([
           supabase.from('reportes_secciones').select('*').eq('entidad_id', entidadId).eq('lista', true).order('orden'),
           supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'highlight').eq('plataforma', '').order('posicion'),
@@ -144,10 +146,11 @@ export function ReportDetail() {
           supabase.from('reportes_metricas').select('*, participante:reportes_participantes!inner(nombre, orden)').eq('entidad_id', entidadId).eq('seccion_clave', 'members_growth').eq('metrica_clave', 'ig_followers').eq('plataforma', 'instagram').order('participante(orden)'),
           supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'social_growth').is('participante_id', null).order('orden'),
           supabase.from('reportes_fuentes').select('*').eq('entidad_id', entidadId),
-          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'spotify_insight').order('posicion'),
-          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).in('categoria', ['pr_us', 'pr_kr']).order('posicion'),
+          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'spotify_insights').order('posicion'),
+          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'pr').order('posicion'),
           supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'weekly_recap').order('posicion'),
-          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).in('categoria', ['top_ig', 'top_tt', 'top_yt']).order('posicion')
+          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'top_posts').order('posicion'),
+          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'sentiment').order('posicion')
         ])
 
         const membersData = (membersRes.data || []).map((m: any) => ({
@@ -171,7 +174,8 @@ export function ReportDetail() {
           spotifyInsights: spotifyInsightsRes.data || [],
           prPress: prPressRes.data || [],
           weeklyContent: weeklyContentRes.data || [],
-          topPosts: topPostsRes.data || []
+          topPosts: topPostsRes.data || [],
+          sentiment: sentimentRes.data || []
         })
       } catch (err) {
         console.error('Error loading band report data:', err)
@@ -227,7 +231,7 @@ export function ReportDetail() {
   const showBandReport = isBandReport(entity.tipo, entity.subtipo)
   const sectionMap: Record<string, { component: JSX.Element | null }> = {
     'highlights': { component: bandData ? <HighlightsSection items={bandData.highlights} /> : null },
-    'fan_sentiment': { component: bandData ? <FanSentimentSection items={bandData.fanSentiment} /> : null },
+    'fan_sentiment': { component: bandData ? <FanSentimentSection items={bandData.sentiment} /> : null },
     'instagram_kpis': { component: bandData ? <InstagramKPIsSection metrics={bandData.instagramKPIs} /> : null },
     'streaming_trends': { component: bandData ? <StreamingTrendsSection metrics={bandData.streamingTrends} /> : null },
     'tiktok_trends': { component: bandData ? <TikTokTrendsSection metrics={bandData.tiktokTrends} /> : null },
@@ -237,7 +241,7 @@ export function ReportDetail() {
     'members_growth': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} /> : null },
     'social_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} /> : null },
     'sources': { component: bandData ? <SourcesSection sources={bandData.sources} /> : null },
-    'spotify_insights': { component: bandData ? <SpotifyInsightsSection insights={bandData.spotifyInsights} /> : null },
+    'spotify_insights': { component: bandData ? <SpotifyInsightsSection items={bandData.spotifyInsights} /> : null },
     'pr_press': { component: bandData ? <PRPressSection items={bandData.prPress} /> : null },
     'weekly_content': { component: bandData ? <WeeklyContentSection items={bandData.weeklyContent} /> : null },
     'top_posts': { component: bandData ? <TopPostsSection posts={bandData.topPosts} /> : null }

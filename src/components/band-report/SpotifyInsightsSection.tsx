@@ -1,26 +1,32 @@
 interface SpotifyInsight {
+  posicion: number
+  titulo: string | null
   texto: string
   valor?: string | number | null
-  orden: number
 }
 
 interface SpotifyInsightsSectionProps {
-  insights: SpotifyInsight[]
+  items: SpotifyInsight[]
 }
 
-export function SpotifyInsightsSection({ insights }: SpotifyInsightsSectionProps) {
-  if (insights.length === 0) return null
+export function SpotifyInsightsSection({ items }: SpotifyInsightsSectionProps) {
+  if (items.length === 0) {
+    return (
+      <div className="bg-gray-50 border border-gray-300 rounded-xl p-6">
+        <p className="text-gray-500 text-center">No data for this section yet</p>
+      </div>
+    )
+  }
+
+  const sortedItems = [...items].sort((a, b) => a.posicion - b.posicion)
 
   return (
     <div className="bg-gray-50 border border-gray-300 rounded-xl p-6">
       <ul className="space-y-2">
-        {insights.map((insight, idx) => (
+        {sortedItems.map((item, idx) => (
           <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
             <span className="text-gray-400 mt-0.5">•</span>
-            <span>
-              {insight.texto}
-              {insight.valor && <strong className="ml-1">{insight.valor}</strong>}
-            </span>
+            <span>{item.texto}</span>
           </li>
         ))}
       </ul>

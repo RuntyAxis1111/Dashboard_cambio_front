@@ -1,12 +1,12 @@
 import { formatNumberCompact } from '../../lib/report-utils'
 
 interface TopPost {
+  posicion: number
+  plataforma: string
+  titulo: string | null
   texto: string
-  valor?: number | null
-  categoria: string
   url?: string | null
-  imagen_url?: string | null
-  orden: number
+  vistas?: number | null
 }
 
 interface TopPostsSectionProps {
@@ -14,11 +14,17 @@ interface TopPostsSectionProps {
 }
 
 export function TopPostsSection({ posts }: TopPostsSectionProps) {
-  if (posts.length === 0) return null
+  if (posts.length === 0) {
+    return (
+      <div className="bg-gray-50 border border-gray-300 rounded-xl p-6">
+        <p className="text-gray-500 text-center">No data for this section yet</p>
+      </div>
+    )
+  }
 
-  const igPosts = posts.filter(p => p.categoria === 'top_ig').sort((a, b) => a.orden - b.orden)
-  const ttPosts = posts.filter(p => p.categoria === 'top_tt').sort((a, b) => a.orden - b.orden)
-  const ytPosts = posts.filter(p => p.categoria === 'top_yt').sort((a, b) => a.orden - b.orden)
+  const igPosts = posts.filter(p => p.plataforma === 'instagram').sort((a, b) => a.posicion - b.posicion)
+  const ttPosts = posts.filter(p => p.plataforma === 'tiktok').sort((a, b) => a.posicion - b.posicion)
+  const ytPosts = posts.filter(p => p.plataforma === 'youtube').sort((a, b) => a.posicion - b.posicion)
 
   return (
     <div className="bg-gray-50 border border-gray-300 rounded-xl p-6 overflow-x-auto">
@@ -57,12 +63,10 @@ export function TopPostsSection({ posts }: TopPostsSectionProps) {
 function PostCard({ post }: { post: TopPost }) {
   const content = (
     <div className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-sm transition-shadow">
-      <p className="text-xs text-gray-700 mb-2 line-clamp-2">{post.texto}</p>
-      {post.valor != null && (
-        <p className="text-xs font-semibold text-gray-900">
-          {formatNumberCompact(post.valor)} views
-        </p>
+      {post.titulo && (
+        <p className="text-xs font-medium text-black mb-1 line-clamp-2">{post.titulo}</p>
       )}
+      <p className="text-xs text-gray-600 line-clamp-2">{post.texto}</p>
     </div>
   )
 

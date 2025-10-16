@@ -313,9 +313,9 @@ export function ReportDetail() {
                 bandData.sections
                   .map((section, idx) => {
                     const prevSection = bandData.sections[idx - 1]
-                    const isPlatform = section.seccion_clave === 'platform_growth'
-                    const isMembers = section.seccion_clave === 'members_ig_growth'
-                    const prevIsPlatform = prevSection?.seccion_clave === 'platform_growth'
+                    const isPlatform = section.seccion_clave === 'social_growth'
+                    const isMembers = section.seccion_clave === 'members_growth'
+                    const prevIsPlatform = prevSection?.seccion_clave === 'social_growth'
 
                     // Skip members if it comes right after platform (already rendered together)
                     if (isMembers && prevIsPlatform) {
@@ -323,12 +323,12 @@ export function ReportDetail() {
                     }
 
                     const nextSection = bandData.sections[idx + 1]
-                    const nextIsMembers = nextSection?.seccion_clave === 'members_ig_growth'
+                    const nextIsMembers = nextSection?.seccion_clave === 'members_growth'
 
                     // If this is platform and next is members, render them side by side
                     if (isPlatform && nextIsMembers) {
-                      const platformData = sectionMap['platform_growth']
-                      const membersData = sectionMap['members_ig_growth']
+                      const platformData = sectionMap['social_growth']
+                      const membersData = sectionMap['members_growth']
 
                       return (
                         <div key={`combined-platform-members`} className="grid grid-cols-1 lg:grid-cols-2 gap-6">

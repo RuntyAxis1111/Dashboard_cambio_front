@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Search, ArrowRight, Hash, Music, BarChart3, Users, Megaphone } from 'lucide-react'
+import { Search, ArrowRight, Hash, Music, BarChart3, Users, Megaphone, FileText } from 'lucide-react'
 import { projects, artists } from '../lib/dashboards'
+import { supabase } from '../lib/supabase'
 
 interface CommandPaletteProps {
   isOpen: boolean
@@ -20,6 +21,25 @@ interface SearchResult {
 export function CommandPalette({ isOpen, onClose, onNavigate }: CommandPaletteProps) {
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [reports, setReports] = useState<Array<{ id: string; nombre: string; slug: string; tipo: string }>>([]);
+
+  // Fetch reports from database
+  useEffect(() => {
+    async function fetchReports() {
+      const { data } = await supabase
+        .from('reportes_entidades')
+        .select('id, nombre, slug, tipo')
+        .order('nombre')
+
+      if (data) {
+        setReports(data)
+      }
+    }
+
+    if (isOpen) {
+      fetchReports()
+    }
+  }, [isOpen])
 
   // Build search results
   const searchResults: SearchResult[] = []
@@ -28,6 +48,8 @@ export function CommandPalette({ isOpen, onClose, onNavigate }: CommandPalettePr
   const mainSections = [
     { title: 'Home', path: '/', icon: <Hash className="w-4 h-4" />, category: 'Navigation' },
     { title: 'Dashboards', path: '/dashboards', icon: <BarChart3 className="w-4 h-4" />, category: 'Navigation' },
+    { title: 'Reports', path: '/reports', icon: <FileText className="w-4 h-4" />, category: 'Navigation' },
+    { title: 'Weekly Reports', path: '/reports/weeklies', icon: <FileText className="w-4 h-4" />, category: 'Reports' },
     { title: 'AI Studio', path: '/ai', icon: <BarChart3 className="w-4 h-4" />, category: 'Navigation' },
     { title: 'MMM', path: '/ai/mmm', icon: <BarChart3 className="w-4 h-4" />, category: 'AI Studio' },
     { title: 'Hybe LLM', path: '/ai/llm', icon: <BarChart3 className="w-4 h-4" />, category: 'AI Studio' },
@@ -58,6 +80,18 @@ export function CommandPalette({ isOpen, onClose, onNavigate }: CommandPalettePr
       path: `/dashboard/artists/${artist.id}`,
       icon: <Megaphone className="w-4 h-4" />,
       category: 'Artists'
+    })
+  })
+
+  // Add reports
+  reports.forEach(report => {
+    searchResults.push({
+      id: `report-${report.id}`,
+      title: report.nombre,
+      subtitle: `${report.tipo === 'band' ? 'Band' : 'Artist'} Report`,
+      path: `/reports/weekly/${report.slug}`,
+      icon: <FileText className="w-4 h-4" />,
+      category: 'Reports'
     })
   })
 
@@ -103,6 +137,7 @@ export function CommandPalette({ isOpen, onClose, onNavigate }: CommandPalettePr
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        e.preventDefault()
         onClose()
       } else if (e.key === 'ArrowDown') {
         e.preventDefault()
@@ -114,6 +149,7 @@ export function CommandPalette({ isOpen, onClose, onNavigate }: CommandPalettePr
         e.preventDefault()
         if (filteredResults[selectedIndex]) {
           onNavigate(filteredResults[selectedIndex].path)
+          onClose()
         }
       }
     }
@@ -130,8 +166,14 @@ export function CommandPalette({ isOpen, onClose, onNavigate }: CommandPalettePr
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
-      <div className="fixed top-[20%] left-1/2 transform -translate-x-1/2 w-full max-w-2xl mx-auto">
+    <div
+      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="fixed top-[20%] left-1/2 transform -translate-x-1/2 w-full max-w-2xl mx-auto px-4"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="bg-neutral-900 border border-neutral-700 rounded-2xl shadow-2xl overflow-hidden">
           {/* Search Input */}
           <div className="flex items-center gap-3 p-4 border-b border-neutral-800">

@@ -17,6 +17,17 @@ export function MembersGrowthSection({ members }: MembersGrowthSectionProps) {
     return null
   }
 
+  const sortedMembers = [...members].sort((a, b) => {
+    const deltaA = a.delta_num || 0
+    const deltaB = b.delta_num || 0
+    return deltaB - deltaA
+  })
+
+  const totalPrev = sortedMembers.reduce((sum, m) => sum + (m.valor_prev || 0), 0)
+  const totalCurrent = sortedMembers.reduce((sum, m) => sum + m.valor, 0)
+  const totalDeltaNum = totalCurrent - totalPrev
+  const totalDeltaPct = totalPrev > 0 ? (totalDeltaNum / totalPrev) * 100 : 0
+
   return (
     <div className="bg-gray-50 border border-gray-300 rounded-xl overflow-hidden">
       <div className="overflow-x-auto">
@@ -30,7 +41,7 @@ export function MembersGrowthSection({ members }: MembersGrowthSectionProps) {
             </tr>
           </thead>
           <tbody>
-            {members.map((member, idx) => (
+            {sortedMembers.map((member, idx) => (
               <tr key={idx} className="border-t border-gray-200">
                 <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black font-medium whitespace-nowrap">
                   {member.participante_nombre}
@@ -48,6 +59,22 @@ export function MembersGrowthSection({ members }: MembersGrowthSectionProps) {
                 </td>
               </tr>
             ))}
+            <tr className="border-t-2 border-gray-300 bg-gray-100">
+              <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black font-bold whitespace-nowrap">
+                Total
+              </td>
+              <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right font-medium whitespace-nowrap">
+                {formatNumberCompact(totalPrev)}
+              </td>
+              <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black text-right font-bold whitespace-nowrap">
+                {formatNumberCompact(totalCurrent)}
+              </td>
+              <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-right font-medium whitespace-nowrap">
+                <span className={getDeltaColor(totalDeltaPct)}>
+                  {formatDeltaNum(totalDeltaNum)} ({formatDeltaPct(totalDeltaPct)})
+                </span>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>

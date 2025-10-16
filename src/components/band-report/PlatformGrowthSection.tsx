@@ -28,9 +28,30 @@ export function PlatformGrowthSection({ metrics }: PlatformGrowthSectionProps) {
     return <p className="text-gray-500">No data for this section yet</p>
   }
 
-  const sortedMetrics = [...metrics].sort((a, b) => a.orden - b.orden)
-  const totalMetric = sortedMetrics.find(m => m.plataforma === 'total')
-  const regularMetrics = sortedMetrics.filter(m => m.plataforma !== 'total')
+  let totalMetric = metrics.find(m => m.plataforma === 'total')
+  const regularMetrics = metrics.filter(m => m.plataforma !== 'total')
+
+  const sortedMetrics = [...regularMetrics].sort((a, b) => {
+    const deltaA = a.delta_num || 0
+    const deltaB = b.delta_num || 0
+    return deltaB - deltaA
+  })
+
+  if (!totalMetric && sortedMetrics.length > 0) {
+    const totalPrev = sortedMetrics.reduce((sum, m) => sum + (m.valor_prev || 0), 0)
+    const totalCurrent = sortedMetrics.reduce((sum, m) => sum + m.valor, 0)
+    const totalDeltaNum = totalCurrent - totalPrev
+    const totalDeltaPct = totalPrev > 0 ? (totalDeltaNum / totalPrev) * 100 : 0
+
+    totalMetric = {
+      plataforma: 'total',
+      valor: totalCurrent,
+      valor_prev: totalPrev,
+      delta_num: totalDeltaNum,
+      delta_pct: totalDeltaPct,
+      orden: 999
+    }
+  }
 
   return (
     <div className="bg-gray-50 border border-gray-300 rounded-xl overflow-hidden">
@@ -45,7 +66,7 @@ export function PlatformGrowthSection({ metrics }: PlatformGrowthSectionProps) {
             </tr>
           </thead>
           <tbody>
-            {regularMetrics.map(m => (
+            {sortedMetrics.map(m => (
               <tr key={m.plataforma} className="border-t border-gray-200">
                 <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black whitespace-nowrap">
                   {PLATFORM_LABELS[m.plataforma] || m.plataforma}

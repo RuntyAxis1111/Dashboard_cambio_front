@@ -2,8 +2,9 @@ import { formatNumberCompact } from '../../lib/report-utils'
 
 interface MVItem {
   texto: string
+  titulo?: string | null
   valor?: number | null
-  orden: number
+  posicion: number
 }
 
 interface MVViewsSectionProps {
@@ -19,22 +20,18 @@ export function MVViewsSection({ items }: MVViewsSectionProps) {
     )
   }
 
-  const sortedItems = [...items].sort((a, b) => a.orden - b.orden)
+  const sortedItems = [...items].sort((a, b) => a.posicion - b.posicion)
 
   return (
-    <div className="bg-gray-50 border border-gray-300 rounded-xl p-6 space-y-3">
-      {sortedItems.map((item, idx) => (
-        <div key={idx} className="flex items-center justify-between py-2 border-b border-gray-200 last:border-0">
-          <div className="text-sm text-gray-700 font-medium">
-            {item.texto}
-          </div>
-          {item.valor != null && (
-            <div className="text-sm text-black font-semibold">
-              {formatNumberCompact(item.valor)} {item.texto.toLowerCase().includes('stream') ? 'streams' : 'views'}
-            </div>
-          )}
-        </div>
-      ))}
+    <div className="bg-gray-50 border border-gray-300 rounded-xl p-6">
+      <ul className="space-y-2">
+        {sortedItems.map((item, idx) => (
+          <li key={idx} className="flex items-start text-sm text-gray-700">
+            <span className="mr-2 text-gray-500">•</span>
+            <span className="flex-1">{item.texto}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

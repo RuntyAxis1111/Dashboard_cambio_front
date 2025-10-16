@@ -15,6 +15,10 @@ import { TopCountriesSection } from '../components/band-report/TopCountriesSecti
 import { MembersGrowthSection } from '../components/band-report/MembersGrowthSection'
 import { PlatformGrowthSection } from '../components/band-report/PlatformGrowthSection'
 import { SourcesSection } from '../components/band-report/SourcesSection'
+import { SpotifyInsightsSection } from '../components/band-report/SpotifyInsightsSection'
+import { PRPressSection } from '../components/band-report/PRPressSection'
+import { WeeklyContentSection } from '../components/band-report/WeeklyContentSection'
+import { TopPostsSection } from '../components/band-report/TopPostsSection'
 
 interface EntityDetail {
   id: string
@@ -51,6 +55,10 @@ interface BandReportData {
   membersGrowth: any[]
   platformGrowth: any[]
   sources: any[]
+  spotifyInsights: any[]
+  prPress: any[]
+  weeklyContent: any[]
+  topPosts: any[]
 }
 
 export function ReportDetail() {
@@ -120,7 +128,11 @@ export function ReportDetail() {
           topCountriesRes,
           membersRes,
           platformGrowthRes,
-          sourcesRes
+          sourcesRes,
+          spotifyInsightsRes,
+          prPressRes,
+          weeklyContentRes,
+          topPostsRes
         ] = await Promise.all([
           supabase.from('reportes_secciones').select('*').eq('entidad_id', entidadId).eq('lista', true).order('orden'),
           supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'highlight').eq('plataforma', '').order('posicion'),
@@ -134,7 +146,11 @@ export function ReportDetail() {
           supabase.from('reportes_buckets').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'top_countries').eq('dimension', 'country').eq('metrica_clave', 'listeners_28d').order('posicion'),
           supabase.from('reportes_metricas').select('*, participante:reportes_participantes!inner(nombre, orden)').eq('entidad_id', entidadId).eq('seccion_clave', 'members_ig_growth').eq('metrica_clave', 'ig_followers').eq('plataforma', 'instagram').order('participante(orden)'),
           supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'platform_growth').is('participante_id', null).order('orden'),
-          supabase.from('reportes_fuentes').select('*').eq('entidad_id', entidadId)
+          supabase.from('reportes_fuentes').select('*').eq('entidad_id', entidadId),
+          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'spotify_insight').order('posicion'),
+          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).in('categoria', ['pr_us', 'pr_kr']).order('posicion'),
+          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'weekly_recap').order('posicion'),
+          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).in('categoria', ['top_ig', 'top_tt', 'top_yt']).order('posicion')
         ])
 
         const membersData = (membersRes.data || []).map((m: any) => ({
@@ -155,7 +171,11 @@ export function ReportDetail() {
           topCountries: topCountriesRes.data || [],
           membersGrowth: membersData,
           platformGrowth: platformGrowthRes.data || [],
-          sources: sourcesRes.data || []
+          sources: sourcesRes.data || [],
+          spotifyInsights: spotifyInsightsRes.data || [],
+          prPress: prPressRes.data || [],
+          weeklyContent: weeklyContentRes.data || [],
+          topPosts: topPostsRes.data || []
         })
       } catch (err) {
         console.error('Error loading band report data:', err)
@@ -209,18 +229,22 @@ export function ReportDetail() {
   }
 
   const showBandReport = isBandReport(entity.tipo, entity.subtipo)
-  const sectionMap: Record<string, { component: JSX.Element | null, title: string }> = {
-    'highlights': { component: bandData ? <HighlightsSection items={bandData.highlights} /> : null, title: 'Highlights / Overall Summary' },
-    'fan_sentiment': { component: bandData ? <FanSentimentSection items={bandData.fanSentiment} /> : null, title: 'Fan Sentiment' },
-    'instagram_kpis': { component: bandData ? <InstagramKPIsSection metrics={bandData.instagramKPIs} /> : null, title: 'Instagram KPIs' },
-    'streaming_trends': { component: bandData ? <StreamingTrendsSection metrics={bandData.streamingTrends} /> : null, title: 'Streaming Trends' },
-    'tiktok_trends': { component: bandData ? <TikTokTrendsSection metrics={bandData.tiktokTrends} /> : null, title: 'TikTok Trends' },
-    'mv_views': { component: bandData ? <MVViewsSection mainMetric={bandData.mvMainMetric} topContent={bandData.mvTopContent} /> : null, title: 'Total MV Views' },
-    'demographics': { component: bandData ? <DemographicsSection buckets={bandData.demographics} /> : null, title: 'Demographics (last 28 days)' },
-    'top_countries': { component: bandData ? <TopCountriesSection buckets={bandData.topCountries} /> : null, title: 'Top Countries (last 28 days)' },
-    'members_ig_growth': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} /> : null, title: 'Members\' IG Weekly Social Growth' },
-    'platform_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} /> : null, title: 'Social Platform Weekly Social Growth' },
-    'sources': { component: bandData ? <SourcesSection sources={bandData.sources} /> : null, title: 'Sources' }
+  const sectionMap: Record<string, { component: JSX.Element | null }> = {
+    'highlights': { component: bandData ? <HighlightsSection items={bandData.highlights} /> : null },
+    'fan_sentiment': { component: bandData ? <FanSentimentSection items={bandData.fanSentiment} /> : null },
+    'instagram_kpis': { component: bandData ? <InstagramKPIsSection metrics={bandData.instagramKPIs} /> : null },
+    'streaming_trends': { component: bandData ? <StreamingTrendsSection metrics={bandData.streamingTrends} /> : null },
+    'tiktok_trends': { component: bandData ? <TikTokTrendsSection metrics={bandData.tiktokTrends} /> : null },
+    'mv_views': { component: bandData ? <MVViewsSection mainMetric={bandData.mvMainMetric} topContent={bandData.mvTopContent} /> : null },
+    'demographics': { component: bandData ? <DemographicsSection buckets={bandData.demographics} /> : null },
+    'top_countries': { component: bandData ? <TopCountriesSection buckets={bandData.topCountries} /> : null },
+    'members_ig_growth': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} /> : null },
+    'platform_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} /> : null },
+    'sources': { component: bandData ? <SourcesSection sources={bandData.sources} /> : null },
+    'spotify_insights': { component: bandData ? <SpotifyInsightsSection insights={bandData.spotifyInsights} /> : null },
+    'pr_press': { component: bandData ? <PRPressSection items={bandData.prPress} /> : null },
+    'weekly_content': { component: bandData ? <WeeklyContentSection items={bandData.weeklyContent} /> : null },
+    'top_posts': { component: bandData ? <TopPostsSection posts={bandData.topPosts} /> : null }
   }
 
   return (

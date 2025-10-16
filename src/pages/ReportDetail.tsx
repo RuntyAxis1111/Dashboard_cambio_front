@@ -135,16 +135,16 @@ export function ReportDetail() {
           sentimentRes
         ] = await Promise.all([
           supabase.from('reportes_secciones').select('*').eq('entidad_id', entidadId).eq('lista', true).order('orden'),
-          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'highlight').eq('plataforma', '').order('posicion'),
-          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'fan_sentiment').eq('plataforma', '').order('posicion'),
+          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'highlight').order('posicion'),
+          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'fan_sentiment').order('posicion'),
           supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'instagram_kpis').eq('plataforma', 'instagram').order('orden'),
           supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'streaming_trends').order('orden'),
           supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'tiktok_trends').eq('plataforma', 'tiktok').order('orden'),
           supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'mv_totales').order('posicion'),
           supabase.from('reportes_buckets').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'demographics'),
           supabase.from('reportes_buckets').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'top_countries').eq('dimension', 'country').eq('metrica_clave', 'listeners_28d').order('posicion'),
-          supabase.from('reportes_metricas').select('*, participante:reportes_participantes!inner(nombre, orden)').eq('entidad_id', entidadId).eq('seccion_clave', 'members_growth').eq('metrica_clave', 'ig_followers').eq('plataforma', 'instagram').order('participante(orden)'),
-          supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'social_growth').is('participante_id', null).order('orden'),
+          supabase.from('reportes_metricas').select('*, participante:reportes_participantes!inner(nombre, orden)').eq('entidad_id', entidadId).eq('seccion_clave', 'ig_members').eq('metrica_clave', 'followers').eq('plataforma', 'instagram').order('participante(orden)'),
+          supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'platform_growth').eq('metrica_clave', 'total_social').is('participante_id', null).order('orden'),
           supabase.from('reportes_fuentes').select('*').eq('entidad_id', entidadId),
           supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'spotify_insights').order('posicion'),
           supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'pr').order('posicion'),
@@ -238,7 +238,9 @@ export function ReportDetail() {
     'mv_totales': { component: bandData ? <MVViewsSection items={bandData.mvItems} /> : null },
     'demographics': { component: bandData ? <DemographicsSection buckets={bandData.demographics} /> : null },
     'top_countries': { component: bandData ? <TopCountriesSection buckets={bandData.topCountries} /> : null },
+    'ig_members': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} /> : null },
     'members_growth': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} /> : null },
+    'platform_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} /> : null },
     'social_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} /> : null },
     'sources': { component: bandData ? <SourcesSection sources={bandData.sources} /> : null },
     'spotify_insights': { component: bandData ? <SpotifyInsightsSection items={bandData.spotifyInsights} /> : null },
@@ -317,9 +319,9 @@ export function ReportDetail() {
                 bandData.sections
                   .map((section, idx) => {
                     const prevSection = bandData.sections[idx - 1]
-                    const isPlatform = section.seccion_clave === 'social_growth'
-                    const isMembers = section.seccion_clave === 'members_growth'
-                    const prevIsPlatform = prevSection?.seccion_clave === 'social_growth'
+                    const isPlatform = section.seccion_clave === 'social_growth' || section.seccion_clave === 'platform_growth'
+                    const isMembers = section.seccion_clave === 'members_growth' || section.seccion_clave === 'ig_members'
+                    const prevIsPlatform = prevSection?.seccion_clave === 'social_growth' || prevSection?.seccion_clave === 'platform_growth'
 
                     // Skip members if it comes right after platform (already rendered together)
                     if (isMembers && prevIsPlatform) {
@@ -327,12 +329,12 @@ export function ReportDetail() {
                     }
 
                     const nextSection = bandData.sections[idx + 1]
-                    const nextIsMembers = nextSection?.seccion_clave === 'members_growth'
+                    const nextIsMembers = nextSection?.seccion_clave === 'members_growth' || nextSection?.seccion_clave === 'ig_members'
 
                     // If this is platform and next is members, render them side by side
                     if (isPlatform && nextIsMembers) {
-                      const platformData = sectionMap['social_growth']
-                      const membersData = sectionMap['members_growth']
+                      const platformData = sectionMap[section.seccion_clave]
+                      const membersData = sectionMap[nextSection.seccion_clave]
 
                       return (
                         <div key={`combined-platform-members`} className="grid grid-cols-1 lg:grid-cols-2 gap-6">

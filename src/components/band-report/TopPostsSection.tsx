@@ -5,6 +5,7 @@ interface TopPost {
   plataforma: string
   titulo: string | null
   texto: string
+  link_url?: string | null
   url?: string | null
   vistas?: number | null
 }
@@ -61,22 +62,29 @@ export function TopPostsSection({ posts }: TopPostsSectionProps) {
 }
 
 function PostCard({ post }: { post: TopPost }) {
+  const linkUrl = post.link_url || post.url
+
   const content = (
     <div className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-sm transition-shadow">
       {post.titulo && (
-        <p className="text-xs font-medium text-black mb-1 line-clamp-2">{post.titulo}</p>
+        <p className="text-xs font-medium text-black mb-1 line-clamp-2">
+          {linkUrl ? (
+            <a
+              href={linkUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-600"
+            >
+              {post.titulo}
+            </a>
+          ) : (
+            post.titulo
+          )}
+        </p>
       )}
       <p className="text-xs text-gray-600 line-clamp-2">{post.texto}</p>
     </div>
   )
-
-  if (post.url) {
-    return (
-      <a href={post.url} target="_blank" rel="noopener noreferrer" className="block">
-        {content}
-      </a>
-    )
-  }
 
   return content
 }

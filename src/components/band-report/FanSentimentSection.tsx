@@ -2,6 +2,7 @@ interface SentimentItem {
   posicion: number
   titulo: string | null
   texto: string
+  link_url?: string | null
   por_que_importa?: string | null
 }
 
@@ -25,7 +26,20 @@ export function FanSentimentSection({ items }: FanSentimentSectionProps) {
       {sortedItems.map((item, idx) => (
         <div key={idx} className="bg-white border border-gray-300 rounded-2xl p-6">
           {item.titulo && (
-            <h4 className="font-semibold text-black mb-2">{item.titulo}</h4>
+            <h4 className="font-semibold text-black mb-2">
+              {item.link_url ? (
+                <a
+                  href={item.link_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-blue-600"
+                >
+                  {item.titulo}
+                </a>
+              ) : (
+                item.titulo
+              )}
+            </h4>
           )}
           <p className="text-gray-700 mb-3">{item.texto}</p>
           {item.por_que_importa && (

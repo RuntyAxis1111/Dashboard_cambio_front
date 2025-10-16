@@ -3,6 +3,7 @@ interface ContentItem {
   plataforma: string
   titulo: string | null
   texto: string
+  link_url?: string | null
   imagen_url?: string | null
 }
 
@@ -53,7 +54,20 @@ export function WeeklyContentSection({ items }: WeeklyContentSectionProps) {
                 <span className="mr-2 text-gray-500">•</span>
                 <div className="flex-1">
                   {item.titulo && (
-                    <div className="font-medium text-black mb-1">{item.titulo}</div>
+                    <div className="font-medium text-black mb-1">
+                      {item.link_url ? (
+                        <a
+                          href={item.link_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-blue-600"
+                        >
+                          {item.titulo}
+                        </a>
+                      ) : (
+                        item.titulo
+                      )}
+                    </div>
                   )}
                   <div className="text-gray-700">{item.texto}</div>
                 </div>

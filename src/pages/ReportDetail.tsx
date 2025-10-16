@@ -3,6 +3,17 @@ import { useParams } from 'react-router-dom'
 import { Calendar, Database } from 'lucide-react'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { supabase } from '../lib/supabase'
+import { reportKindLabel, isBandReport } from '../lib/report-utils'
+import { HighlightsSection } from '../components/band-report/HighlightsSection'
+import { FanSentimentSection } from '../components/band-report/FanSentimentSection'
+import { InstagramKPIsSection } from '../components/band-report/InstagramKPIsSection'
+import { StreamingTrendsSection } from '../components/band-report/StreamingTrendsSection'
+import { TikTokTrendsSection } from '../components/band-report/TikTokTrendsSection'
+import { MVViewsSection } from '../components/band-report/MVViewsSection'
+import { DemographicsSection } from '../components/band-report/DemographicsSection'
+import { TopCountriesSection } from '../components/band-report/TopCountriesSection'
+import { MembersGrowthSection } from '../components/band-report/MembersGrowthSection'
+import { SourcesSection } from '../components/band-report/SourcesSection'
 
 interface EntityDetail {
   id: string
@@ -19,25 +30,32 @@ interface ReportStatus {
   status: string | null
 }
 
-function reportKindLabel(tipo?: string | null, subtipo?: string | null): string {
-  const norm = (s?: string | null) => (s ?? '').toLowerCase()
-  const t = norm(tipo)
-  const st = norm(subtipo)
+interface Section {
+  seccion_clave: string
+  titulo: string
+  orden: number
+}
 
-  if (st === 'banda')   return 'Band Report'
-  if (st === 'solista') return 'Solo Artist Report'
-  if (st === 'duo')     return 'Duo Report'
-
-  if (t === 'show')   return 'Show Report'
-  if (t === 'artist') return 'Artist Report'
-
-  return 'Report'
+interface BandReportData {
+  sections: Section[]
+  highlights: any[]
+  fanSentiment: any[]
+  instagramKPIs: any[]
+  streamingTrends: any[]
+  tiktokTrends: any[]
+  mvMainMetric: any | null
+  mvTopContent: any[]
+  demographics: any[]
+  topCountries: any[]
+  membersGrowth: any[]
+  sources: any[]
 }
 
 export function ReportDetail() {
   const { slug } = useParams<{ slug: string }>()
   const [entity, setEntity] = useState<EntityDetail | null>(null)
   const [reportStatus, setReportStatus] = useState<ReportStatus | null>(null)
+  const [bandData, setBandData] = useState<BandReportData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -73,11 +91,69 @@ export function ReportDetail() {
 
         if (statusError) throw statusError
         setReportStatus(statusData || { semana_inicio: null, semana_fin: null, status: null })
+
+        if (isBandReport(entityData.tipo, entityData.subtipo)) {
+          await loadBandReportData(entityData.id)
+        }
       } catch (err) {
         console.error('Error loading report detail:', err)
         setError('Failed to load report')
       } finally {
         setLoading(false)
+      }
+    }
+
+    async function loadBandReportData(entidadId: string) {
+      try {
+        const [
+          sectionsRes,
+          highlightsRes,
+          fanSentimentRes,
+          instagramKPIsRes,
+          streamingTrendsRes,
+          tiktokTrendsRes,
+          mvMetricRes,
+          mvContentRes,
+          demographicsRes,
+          topCountriesRes,
+          membersRes,
+          sourcesRes
+        ] = await Promise.all([
+          supabase.from('reportes_secciones').select('*').eq('entidad_id', entidadId).eq('lista', true).order('orden'),
+          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'highlight').eq('plataforma', '').order('posicion'),
+          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'fan_sentiment').eq('plataforma', '').order('posicion'),
+          supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'instagram_kpis').eq('plataforma', 'instagram').order('orden'),
+          supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'streaming_trends').order('orden'),
+          supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'tiktok_trends').eq('plataforma', 'tiktok').order('orden'),
+          supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'mv_views').eq('plataforma', 'youtube').maybeSingle(),
+          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'top_contenido').order('plataforma').order('posicion'),
+          supabase.from('reportes_buckets').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'demographics'),
+          supabase.from('reportes_buckets').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'top_countries').eq('dimension', 'country').eq('metrica_clave', 'listeners_28d').order('posicion'),
+          supabase.from('reportes_metricas').select('*, participante:reportes_participantes!inner(nombre, orden)').eq('entidad_id', entidadId).eq('seccion_clave', 'members_ig_growth').eq('metrica_clave', 'ig_followers').eq('plataforma', 'instagram').order('participante(orden)'),
+          supabase.from('reportes_fuentes').select('*').eq('entidad_id', entidadId)
+        ])
+
+        const membersData = (membersRes.data || []).map((m: any) => ({
+          ...m,
+          participante_nombre: m.participante?.nombre || 'Unknown'
+        }))
+
+        setBandData({
+          sections: sectionsRes.data || [],
+          highlights: highlightsRes.data || [],
+          fanSentiment: fanSentimentRes.data || [],
+          instagramKPIs: instagramKPIsRes.data || [],
+          streamingTrends: streamingTrendsRes.data || [],
+          tiktokTrends: tiktokTrendsRes.data || [],
+          mvMainMetric: mvMetricRes.data,
+          mvTopContent: mvContentRes.data || [],
+          demographics: demographicsRes.data || [],
+          topCountries: topCountriesRes.data || [],
+          membersGrowth: membersData,
+          sources: sourcesRes.data || []
+        })
+      } catch (err) {
+        console.error('Error loading band report data:', err)
       }
     }
 
@@ -125,6 +201,20 @@ export function ReportDetail() {
         </div>
       </div>
     )
+  }
+
+  const showBandReport = isBandReport(entity.tipo, entity.subtipo)
+  const sectionMap: Record<string, { component: JSX.Element | null, title: string }> = {
+    'highlights': { component: bandData ? <HighlightsSection items={bandData.highlights} /> : null, title: 'Highlights / Overall Summary' },
+    'fan_sentiment': { component: bandData ? <FanSentimentSection items={bandData.fanSentiment} /> : null, title: 'Fan Sentiment' },
+    'instagram_kpis': { component: bandData ? <InstagramKPIsSection metrics={bandData.instagramKPIs} /> : null, title: 'Instagram KPIs' },
+    'streaming_trends': { component: bandData ? <StreamingTrendsSection metrics={bandData.streamingTrends} /> : null, title: 'Streaming Trends' },
+    'tiktok_trends': { component: bandData ? <TikTokTrendsSection metrics={bandData.tiktokTrends} /> : null, title: 'TikTok Trends' },
+    'mv_views': { component: bandData ? <MVViewsSection mainMetric={bandData.mvMainMetric} topContent={bandData.mvTopContent} /> : null, title: 'Total MV Views' },
+    'demographics': { component: bandData ? <DemographicsSection buckets={bandData.demographics} /> : null, title: 'Demographics (last 28 days)' },
+    'top_countries': { component: bandData ? <TopCountriesSection buckets={bandData.topCountries} /> : null, title: 'Top Countries (last 28 days)' },
+    'members_ig_growth': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} /> : null, title: 'Members\' IG Weekly Social Growth' },
+    'sources': { component: bandData ? <SourcesSection sources={bandData.sources} /> : null, title: 'Sources' }
   }
 
   return (
@@ -181,15 +271,43 @@ export function ReportDetail() {
             </div>
           </div>
 
-          <div className="bg-gray-50 border border-gray-300 rounded-2xl p-8 text-center">
-            <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <Database className="w-8 h-8 text-gray-400" />
+          {showBandReport && bandData ? (
+            <div className="space-y-8">
+              {bandData.sections.length === 0 ? (
+                <div className="bg-gray-50 border border-gray-300 rounded-2xl p-8 text-center">
+                  <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <Database className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-medium text-black mb-2">No Sections Configured</h3>
+                  <p className="text-gray-600">
+                    This report has no sections configured in the database yet
+                  </p>
+                </div>
+              ) : (
+                bandData.sections.map((section) => {
+                  const sectionData = sectionMap[section.seccion_clave]
+                  if (!sectionData) return null
+
+                  return (
+                    <div key={section.seccion_clave}>
+                      <h3 className="text-xl font-bold text-black mb-4">{section.titulo}</h3>
+                      {sectionData.component}
+                    </div>
+                  )
+                })
+              )}
             </div>
-            <h3 className="text-lg font-medium text-black mb-2">Report Sections Coming Soon</h3>
-            <p className="text-gray-600">
-              Detailed sections with KPIs, metrics, and analytics will be displayed here in the next update
-            </p>
-          </div>
+          ) : (
+            <div className="bg-gray-50 border border-gray-300 rounded-2xl p-8 text-center">
+              <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <Database className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-medium text-black mb-2">Report Sections Coming Soon</h3>
+              <p className="text-gray-600">
+                Detailed sections with KPIs, metrics, and analytics will be displayed here in the next update
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

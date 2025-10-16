@@ -290,51 +290,52 @@ export function ReportDetail() {
                   </p>
                 </div>
               ) : (
-                bandData.sections.map((section, idx) => {
-                  const nextSection = bandData.sections[idx + 1]
-                  const isMembers = section.seccion_clave === 'members_ig_growth'
-                  const isPlatform = section.seccion_clave === 'platform_growth'
-                  const nextIsMembers = nextSection?.seccion_clave === 'members_ig_growth'
-                  const nextIsPlatform = nextSection?.seccion_clave === 'platform_growth'
+                bandData.sections
+                  .map((section, idx) => {
+                    const prevSection = bandData.sections[idx - 1]
+                    const isPlatform = section.seccion_clave === 'platform_growth'
+                    const isMembers = section.seccion_clave === 'members_ig_growth'
+                    const prevIsPlatform = prevSection?.seccion_clave === 'platform_growth'
 
-                  if ((isMembers && nextIsPlatform) || (isPlatform && nextIsMembers)) {
-                    if (isMembers && nextIsPlatform) return null
+                    // Skip members if it comes right after platform (already rendered together)
+                    if (isMembers && prevIsPlatform) {
+                      return null
+                    }
 
-                    const membersSection = isMembers ? section : nextSection
-                    const platformSection = isPlatform ? section : nextSection
-                    const membersData = sectionMap['members_ig_growth']
-                    const platformData = sectionMap['platform_growth']
+                    const nextSection = bandData.sections[idx + 1]
+                    const nextIsMembers = nextSection?.seccion_clave === 'members_ig_growth'
 
-                    if (!membersData?.component && !platformData?.component) return null
+                    // If this is platform and next is members, render them side by side
+                    if (isPlatform && nextIsMembers) {
+                      const platformData = sectionMap['platform_growth']
+                      const membersData = sectionMap['members_ig_growth']
+
+                      return (
+                        <div key={`combined-platform-members`} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                          <div>
+                            <h3 className="text-xl font-bold text-black mb-4">{section.titulo}</h3>
+                            {platformData?.component || <p className="text-gray-500">No data available</p>}
+                          </div>
+                          <div>
+                            <h3 className="text-xl font-bold text-black mb-4">{nextSection.titulo}</h3>
+                            {membersData?.component || <p className="text-gray-500">No data available</p>}
+                          </div>
+                        </div>
+                      )
+                    }
+
+                    // Regular single section
+                    const sectionData = sectionMap[section.seccion_clave]
+                    if (!sectionData?.component) return null
 
                     return (
-                      <div key={`${section.seccion_clave}-combined`} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {platformData?.component && (
-                          <div>
-                            <h3 className="text-xl font-bold text-black mb-4">{platformSection.titulo}</h3>
-                            {platformData.component}
-                          </div>
-                        )}
-                        {membersData?.component && (
-                          <div>
-                            <h3 className="text-xl font-bold text-black mb-4">{membersSection.titulo}</h3>
-                            {membersData.component}
-                          </div>
-                        )}
+                      <div key={section.seccion_clave}>
+                        <h3 className="text-xl font-bold text-black mb-4">{section.titulo}</h3>
+                        {sectionData.component}
                       </div>
                     )
-                  }
-
-                  const sectionData = sectionMap[section.seccion_clave]
-                  if (!sectionData || !sectionData.component) return null
-
-                  return (
-                    <div key={section.seccion_clave}>
-                      <h3 className="text-xl font-bold text-black mb-4">{section.titulo}</h3>
-                      {sectionData.component}
-                    </div>
-                  )
-                })
+                  })
+                  .filter(Boolean)
               )}
             </div>
           ) : (

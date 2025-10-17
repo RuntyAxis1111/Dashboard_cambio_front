@@ -14,7 +14,11 @@ interface MembersGrowthSectionProps {
 
 export function MembersGrowthSection({ members }: MembersGrowthSectionProps) {
   if (members.length === 0) {
-    return null
+    return (
+      <div className="bg-gray-50 border border-gray-300 rounded-xl p-8 text-center">
+        <p className="text-gray-500 text-sm">No data available for this section yet</p>
+      </div>
+    )
   }
 
   const sortedMembers = [...members].sort((a, b) => {

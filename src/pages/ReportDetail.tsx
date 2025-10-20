@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Calendar, Database } from 'lucide-react'
+import { Calendar, Database, Download } from 'lucide-react'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { supabase } from '../lib/supabase'
 import { reportKindLabel, isBandReport } from '../lib/report-utils'
@@ -59,6 +59,15 @@ interface BandReportData {
   weeklyContent: any[]
   topPosts: any[]
   sentiment: any[]
+}
+
+function exportReportPDF() {
+  document.body.classList.add('print-mode')
+  window.scrollTo(0, 0)
+  window.print()
+  window.onafterprint = () => {
+    document.body.classList.remove('print-mode')
+  }
 }
 
 export function ReportDetail() {
@@ -250,32 +259,63 @@ export function ReportDetail() {
   }
 
   return (
-    <div className="p-8 bg-white">
-      <div className="max-w-7xl mx-auto">
-        <Breadcrumb items={breadcrumbItems} />
+    <div className="bg-white min-h-screen report-page">
+      <div className="print:hidden border-b border-gray-200 bg-white sticky top-0 z-10 shadow-sm">
+        <div className="max-w-7xl mx-auto px-8 py-4">
+          <Breadcrumb items={breadcrumbItems} />
 
-        <div className="mt-8">
-          <div className="flex items-center gap-4 mb-6">
-            {entity.imagen_url ? (
-              <img
-                src={entity.imagen_url}
-                alt={entity.nombre}
-                className="w-20 h-20 rounded-full object-cover shadow-lg"
-              />
-            ) : (
-              <div className="w-20 h-20 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-white text-2xl font-bold">
-                  {entity.nombre.charAt(0)}
-                </span>
+          <div className="flex items-center justify-between mt-4">
+            <div className="flex items-center gap-4">
+              {entity.imagen_url ? (
+                <img
+                  src={entity.imagen_url}
+                  alt={entity.nombre}
+                  className="w-16 h-16 rounded-full object-cover shadow-lg"
+                />
+              ) : (
+                <div className="w-16 h-16 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center shadow-lg">
+                  <span className="text-white text-2xl font-bold">
+                    {entity.nombre.charAt(0)}
+                  </span>
+                </div>
+              )}
+              <div>
+                <h1 className="text-2xl font-bold text-black">{entity.nombre}</h1>
+                <p className="text-sm text-gray-600">{reportKindLabel(entity.tipo, entity.subtipo)}</p>
               </div>
-            )}
-            <div>
-              <h1 className="text-3xl font-bold text-black">{entity.nombre}</h1>
-              <p className="text-gray-600">{reportKindLabel(entity.tipo, entity.subtipo)}</p>
             </div>
-          </div>
 
-          <div className="bg-gray-100 border border-gray-300 rounded-2xl p-6 mb-6">
+            <button
+              onClick={exportReportPDF}
+              className="export-btn px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 text-sm font-medium"
+            >
+              <Download className="w-4 h-4" />
+              Export PDF
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="print-header">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-lg font-bold text-black">{entity.nombre} Report</h1>
+            <p className="text-xs text-gray-600 mt-0.5">
+              {reportStatus?.semana_inicio && reportStatus?.semana_fin
+                ? `${reportStatus.semana_inicio} to ${reportStatus.semana_fin}`
+                : 'Live Data'} · Generated {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+            </p>
+          </div>
+          <img
+            src="/assets/pinguinohybe.png"
+            alt="HYBE"
+            className="h-8"
+          />
+        </div>
+      </div>
+
+      <div className="report-content max-w-7xl mx-auto px-8 py-8">
+          <div className="bg-gray-100 border border-gray-300 rounded-2xl p-6 mb-6 print:hidden">
             <h2 className="text-lg font-semibold text-black mb-4 flex items-center gap-2">
               <Calendar className="w-5 h-5" />
               Current Week
@@ -375,7 +415,6 @@ export function ReportDetail() {
               </p>
             </div>
           )}
-        </div>
       </div>
     </div>
   )

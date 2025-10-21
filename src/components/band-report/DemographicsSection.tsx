@@ -37,9 +37,6 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
   const genderData = buckets.filter(b => b.dimension === 'gender').sort((a, b) => b.valor_num - a.valor_num)
   const ageData = buckets.filter(b => b.dimension === 'age').sort((a, b) => b.valor_num - a.valor_num)
 
-  const maxGenderValue = Math.max(...genderData.map(d => d.valor_num), 1)
-  const maxAgeValue = Math.max(...ageData.map(d => d.valor_num), 1)
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {genderData.length > 0 && (
@@ -48,7 +45,6 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
 
           <div className="space-y-3 sm:space-y-4">
             {genderData.map((item, idx) => {
-              const barWidth = (item.valor_num / maxGenderValue) * 100
               const color = GENDER_COLORS[item.bucket] || '#9CA3AF'
 
               return (
@@ -61,7 +57,7 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
                     <div
                       className="h-full rounded-full transition-all duration-700 ease-out"
                       style={{
-                        width: `${barWidth}%`,
+                        width: `${item.valor_num}%`,
                         backgroundColor: color
                       }}
                     />
@@ -73,7 +69,6 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
 
           <div className="mt-6 sm:mt-8 h-48 sm:h-64 flex items-end justify-around gap-2 sm:gap-4 px-2">
             {genderData.map((item, idx) => {
-              const barHeight = (item.valor_num / maxGenderValue) * 100
               const color = GENDER_COLORS[item.bucket] || '#9CA3AF'
 
               return (
@@ -84,7 +79,7 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
                   <div
                     className="w-full rounded-t-lg transition-all duration-700 ease-out shadow-md"
                     style={{
-                      height: `${barHeight}%`,
+                      height: `${item.valor_num}%`,
                       backgroundColor: color,
                       minHeight: '24px'
                     }}
@@ -105,7 +100,6 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
 
           <div className="space-y-2.5 sm:space-y-3">
             {ageData.map((item, idx) => {
-              const barWidth = (item.valor_num / maxAgeValue) * 100
               const color = AGE_COLORS[idx % AGE_COLORS.length]
 
               return (
@@ -118,7 +112,7 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
                     <div
                       className="h-full rounded-full transition-all duration-700 ease-out"
                       style={{
-                        width: `${barWidth}%`,
+                        width: `${item.valor_num}%`,
                         backgroundColor: color
                       }}
                     />
@@ -130,7 +124,6 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
 
           <div className="mt-6 sm:mt-8 h-48 sm:h-64 flex items-end justify-between gap-1 sm:gap-2">
             {ageData.map((item, idx) => {
-              const barHeight = (item.valor_num / maxAgeValue) * 100
               const color = AGE_COLORS[idx % AGE_COLORS.length]
 
               return (
@@ -141,7 +134,7 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
                   <div
                     className="w-full rounded-t-lg transition-all duration-700 ease-out shadow-md"
                     style={{
-                      height: `${barHeight}%`,
+                      height: `${item.valor_num}%`,
                       backgroundColor: color,
                       minHeight: '16px'
                     }}

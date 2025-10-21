@@ -67,12 +67,23 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
             })}
           </div>
 
-          <div className="mt-6 sm:mt-8 h-48 sm:h-64 flex items-end justify-around gap-2 sm:gap-4 px-2">
+          <div className="mt-6 sm:mt-8 h-48 sm:h-64 flex items-end justify-center gap-3 sm:gap-6 px-2">
             {genderData.map((item, idx) => {
               const color = GENDER_COLORS[item.bucket] || '#9CA3AF'
+              const widthPercent = item.valor_num
 
               return (
-                <div key={idx} className="flex-1 flex flex-col items-center max-w-[120px]">
+                <div
+                  key={idx}
+                  className="flex flex-col items-center transition-all duration-700"
+                  style={{
+                    flexGrow: widthPercent,
+                    flexShrink: 0,
+                    flexBasis: '0',
+                    minWidth: '50px',
+                    maxWidth: '200px'
+                  }}
+                >
                   <div className="text-xs sm:text-sm font-bold text-black mb-1 sm:mb-2">
                     {item.valor_num.toFixed(1)}%
                   </div>
@@ -122,12 +133,23 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
             })}
           </div>
 
-          <div className="mt-6 sm:mt-8 h-48 sm:h-64 flex items-end justify-between gap-1 sm:gap-2">
+          <div className="mt-6 sm:mt-8 h-48 sm:h-64 flex items-end justify-center gap-1.5 sm:gap-2 px-2">
             {ageData.map((item, idx) => {
               const color = AGE_COLORS[idx % AGE_COLORS.length]
+              const widthPercent = item.valor_num
 
               return (
-                <div key={idx} className="flex-1 flex flex-col items-center min-w-0">
+                <div
+                  key={idx}
+                  className="flex flex-col items-center transition-all duration-700"
+                  style={{
+                    flexGrow: widthPercent,
+                    flexShrink: 0,
+                    flexBasis: '0',
+                    minWidth: '35px',
+                    maxWidth: '150px'
+                  }}
+                >
                   <div className="text-[10px] sm:text-xs font-bold text-black mb-1 sm:mb-2 whitespace-nowrap">
                     {item.valor_num.toFixed(1)}%
                   </div>

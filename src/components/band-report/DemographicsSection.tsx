@@ -34,36 +34,34 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
     )
   }
 
-  const genderData = buckets.filter(b => b.dimension === 'gender')
-  const ageData = buckets.filter(b => b.dimension === 'age')
+  const genderData = buckets.filter(b => b.dimension === 'gender').sort((a, b) => b.valor_num - a.valor_num)
+  const ageData = buckets.filter(b => b.dimension === 'age').sort((a, b) => b.valor_num - a.valor_num)
 
-  const totalGender = genderData.reduce((sum, d) => sum + d.valor_num, 0)
-  const totalAge = ageData.reduce((sum, d) => sum + d.valor_num, 0)
-  const maxGenderValue = Math.max(...genderData.map(d => d.valor_num))
-  const maxAgeValue = Math.max(...ageData.map(d => d.valor_num))
+  const maxGenderValue = Math.max(...genderData.map(d => d.valor_num), 1)
+  const maxAgeValue = Math.max(...ageData.map(d => d.valor_num), 1)
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {genderData.length > 0 && (
-        <div className="bg-white border border-gray-300 rounded-2xl p-6">
-          <h4 className="font-semibold text-black mb-6">Gender Distribution</h4>
+        <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6">
+          <h4 className="font-semibold text-black mb-4 sm:mb-6">Gender Distribution</h4>
 
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {genderData.map((item, idx) => {
-              const percentage = (item.valor_num / maxGenderValue) * 100
+              const barWidth = (item.valor_num / maxGenderValue) * 100
               const color = GENDER_COLORS[item.bucket] || '#9CA3AF'
 
               return (
                 <div key={idx}>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-sm text-gray-700 capitalize">{item.bucket}</span>
-                    <span className="text-sm font-semibold text-black">{item.valor_num.toFixed(1)}%</span>
+                    <span className="text-xs sm:text-sm text-gray-700 capitalize">{item.bucket}</span>
+                    <span className="text-xs sm:text-sm font-semibold text-black">{item.valor_num.toFixed(1)}%</span>
                   </div>
-                  <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+                  <div className="w-full bg-gray-100 rounded-full h-2.5 sm:h-3 overflow-hidden">
                     <div
-                      className="h-full rounded-full transition-all duration-500"
+                      className="h-full rounded-full transition-all duration-700 ease-out"
                       style={{
-                        width: `${percentage}%`,
+                        width: `${barWidth}%`,
                         backgroundColor: color
                       }}
                     />
@@ -73,25 +71,25 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
             })}
           </div>
 
-          <div className="mt-8 h-56 flex items-end justify-around gap-3">
+          <div className="mt-6 sm:mt-8 h-48 sm:h-64 flex items-end justify-around gap-2 sm:gap-4 px-2">
             {genderData.map((item, idx) => {
-              const heightPercentage = totalGender > 0 ? (item.valor_num / totalGender) * 100 : 0
+              const barHeight = (item.valor_num / maxGenderValue) * 100
               const color = GENDER_COLORS[item.bucket] || '#9CA3AF'
 
               return (
-                <div key={idx} className="flex-1 flex flex-col items-center">
-                  <div className="text-sm font-bold text-black mb-2">
+                <div key={idx} className="flex-1 flex flex-col items-center max-w-[120px]">
+                  <div className="text-xs sm:text-sm font-bold text-black mb-1 sm:mb-2">
                     {item.valor_num.toFixed(1)}%
                   </div>
                   <div
-                    className="w-full rounded-t-lg transition-all duration-700 shadow-sm"
+                    className="w-full rounded-t-lg transition-all duration-700 ease-out shadow-md"
                     style={{
-                      height: `${heightPercentage}%`,
+                      height: `${barHeight}%`,
                       backgroundColor: color,
-                      minHeight: '30px'
+                      minHeight: '24px'
                     }}
                   />
-                  <div className="text-xs text-gray-600 mt-2 text-center capitalize font-medium">
+                  <div className="text-[10px] sm:text-xs text-gray-600 mt-2 text-center capitalize font-medium leading-tight">
                     {item.bucket}
                   </div>
                 </div>
@@ -102,25 +100,25 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
       )}
 
       {ageData.length > 0 && (
-        <div className="bg-white border border-gray-300 rounded-2xl p-6">
-          <h4 className="font-semibold text-black mb-6">Age Distribution</h4>
+        <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6">
+          <h4 className="font-semibold text-black mb-4 sm:mb-6">Age Distribution</h4>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5 sm:space-y-3">
             {ageData.map((item, idx) => {
-              const percentage = (item.valor_num / maxAgeValue) * 100
+              const barWidth = (item.valor_num / maxAgeValue) * 100
               const color = AGE_COLORS[idx % AGE_COLORS.length]
 
               return (
                 <div key={idx}>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-sm text-gray-700">{item.bucket}</span>
-                    <span className="text-sm font-semibold text-black">{item.valor_num.toFixed(1)}%</span>
+                    <span className="text-xs sm:text-sm text-gray-700">{item.bucket}</span>
+                    <span className="text-xs sm:text-sm font-semibold text-black">{item.valor_num.toFixed(1)}%</span>
                   </div>
-                  <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                  <div className="w-full bg-gray-100 rounded-full h-2 sm:h-2.5 overflow-hidden">
                     <div
-                      className="h-full rounded-full transition-all duration-500"
+                      className="h-full rounded-full transition-all duration-700 ease-out"
                       style={{
-                        width: `${percentage}%`,
+                        width: `${barWidth}%`,
                         backgroundColor: color
                       }}
                     />
@@ -130,25 +128,25 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
             })}
           </div>
 
-          <div className="mt-8 h-56 flex items-end justify-between gap-1.5">
+          <div className="mt-6 sm:mt-8 h-48 sm:h-64 flex items-end justify-between gap-1 sm:gap-2">
             {ageData.map((item, idx) => {
-              const heightPercentage = totalAge > 0 ? (item.valor_num / totalAge) * 100 : 0
+              const barHeight = (item.valor_num / maxAgeValue) * 100
               const color = AGE_COLORS[idx % AGE_COLORS.length]
 
               return (
-                <div key={idx} className="flex-1 flex flex-col items-center">
-                  <div className="text-[11px] font-bold text-black mb-2">
+                <div key={idx} className="flex-1 flex flex-col items-center min-w-0">
+                  <div className="text-[10px] sm:text-xs font-bold text-black mb-1 sm:mb-2 whitespace-nowrap">
                     {item.valor_num.toFixed(1)}%
                   </div>
                   <div
-                    className="w-full rounded-t-lg transition-all duration-700 shadow-sm"
+                    className="w-full rounded-t-lg transition-all duration-700 ease-out shadow-md"
                     style={{
-                      height: `${heightPercentage}%`,
+                      height: `${barHeight}%`,
                       backgroundColor: color,
-                      minHeight: '20px'
+                      minHeight: '16px'
                     }}
                   />
-                  <div className="text-[10px] text-gray-600 mt-2 text-center font-medium">
+                  <div className="text-[9px] sm:text-[10px] text-gray-600 mt-1.5 sm:mt-2 text-center font-medium leading-tight break-words w-full px-0.5">
                     {item.bucket}
                   </div>
                 </div>

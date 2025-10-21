@@ -379,11 +379,20 @@ export function ReportDetail() {
                       return (
                         <div key={`combined-platform-members`} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                           <div>
-                            <h3 className="text-xl font-bold text-black mb-4">{section.titulo}</h3>
+                            <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
+                              {section.titulo}
+                            </h3>
                             {platformData?.component || <p className="text-gray-500">No data available</p>}
                           </div>
                           <div>
-                            <h3 className="text-xl font-bold text-black mb-4">{nextSection.titulo}</h3>
+                            <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
+                              {nextSection.titulo}
+                              <img
+                                src="/assets/artificial-intelligence.png"
+                                alt="AI"
+                                className="w-5 h-5 object-contain"
+                              />
+                            </h3>
                             {membersData?.component || <p className="text-gray-500">No data available</p>}
                           </div>
                         </div>
@@ -394,14 +403,17 @@ export function ReportDetail() {
                     const sectionData = sectionMap[section.seccion_clave]
                     if (!sectionData?.component) return null
 
+                    // Don't show AI icon for Social Platform Weekly Social Growth
+                    const showAIIcon = section.seccion_clave !== 'social_growth' && section.seccion_clave !== 'platform_growth'
+
                     return (
                       <div key={section.seccion_clave}>
                         <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
                           {section.titulo}
-                          {section.seccion_clave === 'demographics' && (
+                          {showAIIcon && (
                             <img
-                              src="/assets/image copy copy copy copy copy copy copy copy copy copy copy copy.png"
-                              alt="Spotify"
+                              src="/assets/artificial-intelligence.png"
+                              alt="AI"
                               className="w-5 h-5 object-contain"
                             />
                           )}

@@ -396,7 +396,16 @@ export function ReportDetail() {
 
                     return (
                       <div key={section.seccion_clave}>
-                        <h3 className="text-xl font-bold text-black mb-4">{section.titulo}</h3>
+                        <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
+                          {section.titulo}
+                          {section.seccion_clave === 'demographics' && (
+                            <img
+                              src="/assets/image copy copy copy copy copy copy copy copy copy copy copy copy.png"
+                              alt="Spotify"
+                              className="w-5 h-5 object-contain"
+                            />
+                          )}
+                        </h3>
                         {sectionData.component}
                       </div>
                     )

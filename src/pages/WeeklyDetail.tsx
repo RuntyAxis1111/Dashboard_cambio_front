@@ -1603,22 +1603,12 @@ export function WeeklyDetail() {
               <div>
                 <h3 className="text-lg font-semibold text-black mb-2">Gender</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-sm text-gray-600">Female</p>
-                    <p className="text-2xl font-bold text-black">{report.demographics.gender.female}%</p>
-                  </div>
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-sm text-gray-600">Male</p>
-                    <p className="text-2xl font-bold text-black">{report.demographics.gender.male}%</p>
-                  </div>
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-sm text-gray-600">Non-binary</p>
-                    <p className="text-2xl font-bold text-black">{report.demographics.gender.non_binary}%</p>
-                  </div>
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-sm text-gray-600">Not specified</p>
-                    <p className="text-2xl font-bold text-black">{report.demographics.gender.not_specified}%</p>
-                  </div>
+                  {Object.entries(report.demographics.gender).map(([gender, pct]) => (
+                    <div key={gender} className="bg-gray-50 p-3 rounded">
+                      <p className="text-sm text-gray-600 capitalize">{gender.replace(/_/g, ' ')}</p>
+                      <p className="text-2xl font-bold text-black">{pct}%</p>
+                    </div>
+                  ))}
                 </div>
               </div>
               <div>

@@ -35,7 +35,7 @@ export type PlaylistAdd = {
 }
 
 export type Demographics = {
-  gender: { female: number; male: number; non_binary: number; not_specified: number }
+  gender: Record<string, number>
   age_pct: Record<string, number>
 }
 

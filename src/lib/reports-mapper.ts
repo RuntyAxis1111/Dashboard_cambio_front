@@ -58,11 +58,52 @@ async function getWeeklyReportFromNewSchema(
       .eq('report_id', report.id)
       .order('order_no', { ascending: true })
 
+    // Fetch demographics from reportes_buckets (using entidad_id from reports)
+    const { data: entidad } = await supabase
+      .from('reportes_entidades')
+      .select('id')
+      .eq('tipo', 'artist')
+      .ilike('nombre', artistName)
+      .maybeSingle()
+
+    let demographics: { gender: Record<string, number>; age_pct: Record<string, number> } | null = null
+    if (entidad) {
+      const { data: buckets } = await supabase
+        .from('reportes_buckets')
+        .select('*')
+        .eq('entidad_id', entidad.id)
+        .eq('seccion_clave', 'demographics')
+
+      if (buckets && buckets.length > 0) {
+        // Transform buckets to the format expected by WeeklyDetail
+        const genderBuckets = buckets.filter((b: any) => b.dimension === 'gender')
+        const ageBuckets = buckets.filter((b: any) => b.dimension === 'age')
+
+        const genderMap: Record<string, number> = {}
+        const ageMap: Record<string, number> = {}
+
+        genderBuckets.forEach((b: any) => {
+          const key = b.bucket.toLowerCase().replace(/\s+/g, '_').replace(/-/g, '_')
+          genderMap[key] = b.valor_num
+        })
+
+        ageBuckets.forEach((b: any) => {
+          ageMap[b.bucket] = b.valor_num
+        })
+
+        demographics = {
+          gender: genderMap,
+          age_pct: ageMap
+        }
+      }
+    }
+
     const result: WeeklyReport = {
       artist: artistName.toUpperCase(),
       week_start: report.week_start,
       week_end: report.week_end,
-      highlights: []
+      highlights: [],
+      demographics: demographics || undefined
     }
 
     if (sections) {

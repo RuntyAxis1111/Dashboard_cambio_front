@@ -37,6 +37,9 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
   const genderData = buckets.filter(b => b.dimension === 'gender').sort((a, b) => b.valor_num - a.valor_num)
   const ageData = buckets.filter(b => b.dimension === 'age').sort((a, b) => b.valor_num - a.valor_num)
 
+  const maxGenderValue = Math.max(...genderData.map(d => d.valor_num), 1)
+  const maxAgeValue = Math.max(...ageData.map(d => d.valor_num), 1)
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {genderData.length > 0 && (
@@ -67,29 +70,32 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
             })}
           </div>
 
-          <div className="mt-6 sm:mt-8 h-48 sm:h-64 flex items-end justify-around gap-2 sm:gap-4 px-2">
-            {genderData.map((item, idx) => {
-              const color = GENDER_COLORS[item.bucket] || '#9CA3AF'
+          <div className="mt-6 sm:mt-8 relative" style={{ height: '256px' }}>
+            <div className="absolute inset-0 flex items-end justify-around gap-3 sm:gap-6 px-2">
+              {genderData.map((item, idx) => {
+                const color = GENDER_COLORS[item.bucket] || '#9CA3AF'
+                const heightPercent = (item.valor_num / maxGenderValue) * 100
 
-              return (
-                <div key={idx} className="flex-1 flex flex-col items-center max-w-[120px]">
-                  <div className="text-xs sm:text-sm font-bold text-black mb-1 sm:mb-2">
-                    {item.valor_num.toFixed(1)}%
+                return (
+                  <div key={idx} className="flex-1 flex flex-col justify-end items-center max-w-[140px]">
+                    <div className="text-xs sm:text-sm font-bold text-black mb-2">
+                      {item.valor_num.toFixed(1)}%
+                    </div>
+                    <div
+                      className="w-full rounded-t-lg transition-all duration-700 ease-out shadow-lg"
+                      style={{
+                        height: `${heightPercent}%`,
+                        backgroundColor: color,
+                        minHeight: '30px'
+                      }}
+                    />
+                    <div className="text-[10px] sm:text-xs text-gray-700 font-medium mt-3 text-center capitalize">
+                      {item.bucket}
+                    </div>
                   </div>
-                  <div
-                    className="w-full rounded-t-lg transition-all duration-700 ease-out shadow-md"
-                    style={{
-                      height: `${item.valor_num}%`,
-                      backgroundColor: color,
-                      minHeight: '24px'
-                    }}
-                  />
-                  <div className="text-[10px] sm:text-xs text-gray-600 mt-2 text-center capitalize font-medium leading-tight">
-                    {item.bucket}
-                  </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
           </div>
         </div>
       )}
@@ -122,29 +128,32 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
             })}
           </div>
 
-          <div className="mt-6 sm:mt-8 h-48 sm:h-64 flex items-end justify-between gap-1 sm:gap-2">
-            {ageData.map((item, idx) => {
-              const color = AGE_COLORS[idx % AGE_COLORS.length]
+          <div className="mt-6 sm:mt-8 relative" style={{ height: '256px' }}>
+            <div className="absolute inset-0 flex items-end justify-around gap-1 sm:gap-2 px-2">
+              {ageData.map((item, idx) => {
+                const color = AGE_COLORS[idx % AGE_COLORS.length]
+                const heightPercent = (item.valor_num / maxAgeValue) * 100
 
-              return (
-                <div key={idx} className="flex-1 flex flex-col items-center min-w-0">
-                  <div className="text-[10px] sm:text-xs font-bold text-black mb-1 sm:mb-2 whitespace-nowrap">
-                    {item.valor_num.toFixed(1)}%
+                return (
+                  <div key={idx} className="flex-1 flex flex-col justify-end items-center min-w-0 max-w-[100px]">
+                    <div className="text-[10px] sm:text-xs font-bold text-black mb-2 whitespace-nowrap">
+                      {item.valor_num.toFixed(1)}%
+                    </div>
+                    <div
+                      className="w-full rounded-t-lg transition-all duration-700 ease-out shadow-lg"
+                      style={{
+                        height: `${heightPercent}%`,
+                        backgroundColor: color,
+                        minHeight: '20px'
+                      }}
+                    />
+                    <div className="text-[9px] sm:text-[10px] text-gray-700 font-medium mt-2 text-center leading-tight">
+                      {item.bucket}
+                    </div>
                   </div>
-                  <div
-                    className="w-full rounded-t-lg transition-all duration-700 ease-out shadow-md"
-                    style={{
-                      height: `${item.valor_num}%`,
-                      backgroundColor: color,
-                      minHeight: '16px'
-                    }}
-                  />
-                  <div className="text-[9px] sm:text-[10px] text-gray-600 mt-1.5 sm:mt-2 text-center font-medium leading-tight break-words w-full px-0.5">
-                    {item.bucket}
-                  </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
           </div>
         </div>
       )}

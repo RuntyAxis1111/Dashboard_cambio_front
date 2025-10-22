@@ -120,7 +120,7 @@ function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
           )}
         </div>
 
-        <div className="w-full lg:w-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2 sm:gap-3">
+        <div className="w-full lg:w-auto grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
           {slices.map((slice, idx) => (
             <div
               key={idx}

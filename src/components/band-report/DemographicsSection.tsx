@@ -70,27 +70,28 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
             })}
           </div>
 
-          <div className="mt-6 sm:mt-8 bg-gray-50 rounded-xl p-4" style={{ height: '280px' }}>
-            <div className="h-full flex items-end justify-around gap-4 sm:gap-8">
+          <div className="mt-6 sm:mt-8 bg-gray-50 rounded-xl p-6">
+            <div className="flex items-end justify-around gap-8 sm:gap-12" style={{ height: '200px' }}>
               {genderData.map((item, idx) => {
                 const color = GENDER_COLORS[item.bucket] || '#9CA3AF'
-                const heightPx = (item.valor_num / maxGenderValue) * 200
+                const heightPercent = (item.valor_num / maxGenderValue) * 100
 
                 return (
-                  <div key={idx} className="flex flex-col items-center gap-2" style={{ width: '100px' }}>
-                    <div className="text-sm font-bold text-black">
+                  <div key={idx} className="flex flex-col justify-end items-center flex-1 max-w-[110px]">
+                    <div className="text-sm sm:text-base font-bold text-black mb-2">
                       {item.valor_num.toFixed(1)}%
                     </div>
                     <div
                       className="w-full rounded-t-xl transition-all duration-700 ease-out shadow-lg relative"
                       style={{
-                        height: `${heightPx}px`,
-                        backgroundColor: color
+                        height: `${heightPercent}%`,
+                        backgroundColor: color,
+                        minHeight: '30px'
                       }}
                     >
                       <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-t-xl" />
                     </div>
-                    <div className="text-xs text-gray-700 font-semibold mt-1 capitalize">
+                    <div className="text-xs sm:text-sm text-gray-700 font-semibold mt-2 capitalize">
                       {item.bucket}
                     </div>
                   </div>
@@ -129,27 +130,28 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
             })}
           </div>
 
-          <div className="mt-6 sm:mt-8 bg-gray-50 rounded-xl p-4 overflow-x-auto" style={{ height: '280px' }}>
-            <div className="h-full flex items-end justify-center gap-2 sm:gap-3 min-w-max px-2">
+          <div className="mt-6 sm:mt-8 bg-gray-50 rounded-xl p-6 overflow-x-auto">
+            <div className="flex items-end justify-center gap-3 sm:gap-4 min-w-max" style={{ height: '200px' }}>
               {ageData.map((item, idx) => {
                 const color = AGE_COLORS[idx % AGE_COLORS.length]
-                const heightPx = (item.valor_num / maxAgeValue) * 200
+                const heightPercent = (item.valor_num / maxAgeValue) * 100
 
                 return (
-                  <div key={idx} className="flex flex-col items-center gap-2" style={{ width: '70px' }}>
-                    <div className="text-xs font-bold text-black">
+                  <div key={idx} className="flex flex-col justify-end items-center" style={{ width: '65px' }}>
+                    <div className="text-xs sm:text-sm font-bold text-black mb-2">
                       {item.valor_num.toFixed(1)}%
                     </div>
                     <div
                       className="w-full rounded-t-xl transition-all duration-700 ease-out shadow-lg relative"
                       style={{
-                        height: `${heightPx}px`,
-                        backgroundColor: color
+                        height: `${heightPercent}%`,
+                        backgroundColor: color,
+                        minHeight: '20px'
                       }}
                     >
                       <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-t-xl" />
                     </div>
-                    <div className="text-[10px] text-gray-700 font-semibold mt-1 text-center leading-tight">
+                    <div className="text-[10px] sm:text-xs text-gray-700 font-semibold mt-2 text-center leading-tight">
                       {item.bucket}
                     </div>
                   </div>

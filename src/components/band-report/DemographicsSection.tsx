@@ -49,9 +49,9 @@ function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
     }
   })
 
-  const size = 280
+  const size = 240
   const center = size / 2
-  const radius = size / 2 - 20
+  const radius = size / 2 - 15
 
   const polarToCartesian = (angle: number, r: number) => {
     const rad = (angle * Math.PI) / 180
@@ -75,10 +75,10 @@ function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
   }
 
   return (
-    <div className="mt-6 sm:mt-8 bg-gray-50 rounded-xl p-4 sm:p-6">
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-8">
-        <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
-          <svg width={size} height={size} className="transform transition-transform duration-300">
+    <div className="mt-4 sm:mt-6 bg-gray-50 rounded-xl p-3 sm:p-4 lg:p-6">
+      <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-4 sm:gap-6 lg:gap-8">
+        <div className="relative flex-shrink-0 w-full max-w-[240px] aspect-square">
+          <svg width="100%" height="100%" viewBox={`0 0 ${size} ${size}`} className="transform transition-transform duration-300">
             {slices.map((slice, idx) => {
               const isHovered = hoveredSlice === idx
               const sliceRadius = isHovered ? radius + 8 : radius
@@ -112,33 +112,33 @@ function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
 
           {hoveredSlice !== null && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="bg-white rounded-lg shadow-lg px-4 py-3 text-center">
-                <div className="text-sm font-medium text-gray-700">{slices[hoveredSlice].bucket}</div>
-                <div className="text-2xl font-bold text-black">{slices[hoveredSlice].percentage.toFixed(1)}%</div>
+              <div className="bg-white rounded-lg shadow-lg px-3 py-2 text-center">
+                <div className="text-xs font-medium text-gray-700">{slices[hoveredSlice].bucket}</div>
+                <div className="text-xl font-bold text-black">{slices[hoveredSlice].percentage.toFixed(1)}%</div>
               </div>
             </div>
           )}
         </div>
 
-        <div className="w-full lg:w-auto flex flex-col gap-2 sm:gap-3">
+        <div className="w-full lg:w-auto lg:min-w-[180px] flex flex-col gap-1.5 sm:gap-2">
           {slices.map((slice, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-2 sm:gap-3 cursor-pointer transition-all duration-200 p-2 rounded-lg hover:bg-white"
+              className="flex items-center gap-2 cursor-pointer transition-all duration-200 p-1.5 sm:p-2 rounded-lg hover:bg-white"
               onMouseEnter={() => setHoveredSlice(idx)}
               onMouseLeave={() => setHoveredSlice(null)}
               style={{
                 opacity: hoveredSlice !== null && hoveredSlice !== idx ? 0.5 : 1,
-                transform: hoveredSlice === idx ? 'scale(1.05)' : 'scale(1)'
+                transform: hoveredSlice === idx ? 'scale(1.02)' : 'scale(1)'
               }}
             >
               <div
-                className="w-3 h-3 sm:w-4 sm:h-4 rounded-full flex-shrink-0"
+                className="w-3 h-3 rounded-full flex-shrink-0"
                 style={{ backgroundColor: slice.color }}
               />
-              <div className="flex items-center justify-between flex-1 gap-3">
-                <div className="text-[10px] sm:text-xs text-gray-700 leading-tight">{slice.bucket}</div>
-                <div className="text-xs sm:text-sm font-bold text-black whitespace-nowrap">{slice.percentage.toFixed(1)}%</div>
+              <div className="flex items-center justify-between flex-1 gap-2 min-w-0">
+                <div className="text-[10px] sm:text-xs text-gray-700 leading-tight truncate">{slice.bucket}</div>
+                <div className="text-[10px] sm:text-xs font-bold text-black whitespace-nowrap">{slice.percentage.toFixed(1)}%</div>
               </div>
             </div>
           ))}

@@ -75,9 +75,9 @@ function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
   }
 
   return (
-    <div className="mt-6 sm:mt-8 bg-gray-50 rounded-xl p-6">
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-8">
-        <div className="relative" style={{ width: size, height: size }}>
+    <div className="mt-6 sm:mt-8 bg-gray-50 rounded-xl p-4 sm:p-6">
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-8">
+        <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
           <svg width={size} height={size} className="transform transition-transform duration-300">
             {slices.map((slice, idx) => {
               const isHovered = hoveredSlice === idx
@@ -101,6 +101,13 @@ function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
                 </g>
               )
             })}
+            <circle
+              cx={center}
+              cy={center}
+              r={radius * 0.5}
+              fill="white"
+              className="pointer-events-none"
+            />
           </svg>
 
           {hoveredSlice !== null && (
@@ -113,11 +120,11 @@ function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-3 lg:gap-4">
+        <div className="w-full lg:w-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2 sm:gap-3">
           {slices.map((slice, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-2 cursor-pointer transition-all duration-200"
+              className="flex items-start gap-2 cursor-pointer transition-all duration-200 p-2 rounded-lg hover:bg-white"
               onMouseEnter={() => setHoveredSlice(idx)}
               onMouseLeave={() => setHoveredSlice(null)}
               style={{
@@ -126,12 +133,12 @@ function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
               }}
             >
               <div
-                className="w-4 h-4 rounded-full flex-shrink-0"
+                className="w-3 h-3 sm:w-4 sm:h-4 rounded-full flex-shrink-0 mt-0.5"
                 style={{ backgroundColor: slice.color }}
               />
               <div className="flex-1 min-w-0">
-                <div className="text-xs sm:text-sm text-gray-700 truncate">{slice.bucket}</div>
-                <div className="text-sm sm:text-base font-bold text-black">{slice.percentage.toFixed(1)}%</div>
+                <div className="text-[10px] sm:text-xs text-gray-700 leading-tight break-words">{slice.bucket}</div>
+                <div className="text-xs sm:text-sm font-bold text-black">{slice.percentage.toFixed(1)}%</div>
               </div>
             </div>
           ))}
@@ -152,9 +159,6 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
 
   const genderData = buckets.filter(b => b.dimension === 'gender').sort((a, b) => b.valor_num - a.valor_num)
   const ageData = buckets.filter(b => b.dimension === 'age').sort((a, b) => b.valor_num - a.valor_num)
-
-  const maxGenderValue = Math.max(...genderData.map(d => d.valor_num), 1)
-  const maxAgeValue = Math.max(...ageData.map(d => d.valor_num), 1)
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -186,34 +190,10 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
             })}
           </div>
 
-          <div className="mt-6 sm:mt-8 bg-gray-50 rounded-xl p-6">
-            <div className="flex items-end justify-around gap-8 sm:gap-12" style={{ height: '200px' }}>
-              {genderData.map((item, idx) => {
-                const color = GENDER_COLORS[item.bucket] || '#9CA3AF'
-                const barHeight = Math.max((item.valor_num / maxGenderValue) * 180, 30)
-
-                return (
-                  <div key={idx} className="flex flex-col justify-end items-center flex-1 max-w-[110px]">
-                    <div className="text-sm sm:text-base font-bold text-black mb-2">
-                      {item.valor_num.toFixed(1)}%
-                    </div>
-                    <div
-                      className="w-full rounded-t-xl transition-all duration-700 ease-out shadow-lg relative"
-                      style={{
-                        height: `${barHeight}px`,
-                        backgroundColor: color
-                      }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-t-xl" />
-                    </div>
-                    <div className="text-xs sm:text-sm text-gray-700 font-semibold mt-2 capitalize">
-                      {item.bucket}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
+          <PieChart
+            data={genderData.map(item => ({ ...item, bucket: item.bucket }))}
+            colors={genderData.map(item => GENDER_COLORS[item.bucket] || '#9CA3AF')}
+          />
         </div>
       )}
 

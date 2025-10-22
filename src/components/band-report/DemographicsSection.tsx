@@ -124,7 +124,7 @@ function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
           {slices.map((slice, idx) => (
             <div
               key={idx}
-              className="flex items-start gap-2 cursor-pointer transition-all duration-200 p-2 rounded-lg hover:bg-white"
+              className="flex items-start gap-2 cursor-pointer transition-all duration-200 p-2 rounded-lg hover:bg-white min-w-[120px]"
               onMouseEnter={() => setHoveredSlice(idx)}
               onMouseLeave={() => setHoveredSlice(null)}
               style={{
@@ -136,8 +136,8 @@ function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
                 className="w-3 h-3 sm:w-4 sm:h-4 rounded-full flex-shrink-0 mt-0.5"
                 style={{ backgroundColor: slice.color }}
               />
-              <div className="flex-1 min-w-0">
-                <div className="text-[10px] sm:text-xs text-gray-700 leading-tight whitespace-nowrap">{slice.bucket}</div>
+              <div className="flex-1 min-w-0 overflow-hidden">
+                <div className="text-[10px] sm:text-xs text-gray-700 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">{slice.bucket}</div>
                 <div className="text-xs sm:text-sm font-bold text-black whitespace-nowrap">{slice.percentage.toFixed(1)}%</div>
               </div>
             </div>

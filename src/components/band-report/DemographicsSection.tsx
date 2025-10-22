@@ -137,8 +137,8 @@ function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
                 style={{ backgroundColor: slice.color }}
               />
               <div className="flex-1 min-w-0">
-                <div className="text-[10px] sm:text-xs text-gray-700 leading-tight break-words">{slice.bucket}</div>
-                <div className="text-xs sm:text-sm font-bold text-black">{slice.percentage.toFixed(1)}%</div>
+                <div className="text-[10px] sm:text-xs text-gray-700 leading-tight whitespace-nowrap">{slice.bucket}</div>
+                <div className="text-xs sm:text-sm font-bold text-black whitespace-nowrap">{slice.percentage.toFixed(1)}%</div>
               </div>
             </div>
           ))}

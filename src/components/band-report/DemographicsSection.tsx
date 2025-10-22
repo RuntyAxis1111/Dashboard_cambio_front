@@ -74,7 +74,7 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
             <div className="flex items-end justify-around gap-8 sm:gap-12" style={{ height: '200px' }}>
               {genderData.map((item, idx) => {
                 const color = GENDER_COLORS[item.bucket] || '#9CA3AF'
-                const heightPercent = (item.valor_num / maxGenderValue) * 100
+                const barHeight = Math.max((item.valor_num / maxGenderValue) * 180, 30)
 
                 return (
                   <div key={idx} className="flex flex-col justify-end items-center flex-1 max-w-[110px]">
@@ -84,9 +84,8 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
                     <div
                       className="w-full rounded-t-xl transition-all duration-700 ease-out shadow-lg relative"
                       style={{
-                        height: `${heightPercent}%`,
-                        backgroundColor: color,
-                        minHeight: '30px'
+                        height: `${barHeight}px`,
+                        backgroundColor: color
                       }}
                     >
                       <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-t-xl" />
@@ -134,7 +133,7 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
             <div className="flex items-end justify-center gap-3 sm:gap-4 min-w-max" style={{ height: '200px' }}>
               {ageData.map((item, idx) => {
                 const color = AGE_COLORS[idx % AGE_COLORS.length]
-                const heightPercent = (item.valor_num / maxAgeValue) * 100
+                const barHeight = Math.max((item.valor_num / maxAgeValue) * 180, 20)
 
                 return (
                   <div key={idx} className="flex flex-col justify-end items-center" style={{ width: '65px' }}>
@@ -144,9 +143,8 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
                     <div
                       className="w-full rounded-t-xl transition-all duration-700 ease-out shadow-lg relative"
                       style={{
-                        height: `${heightPercent}%`,
-                        backgroundColor: color,
-                        minHeight: '20px'
+                        height: `${barHeight}px`,
+                        backgroundColor: color
                       }}
                     >
                       <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-t-xl" />

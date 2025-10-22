@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 interface BucketData {
   dimension: string
   bucket: string
@@ -24,6 +26,120 @@ const AGE_COLORS = [
   '#EC4899',
   '#6366F1'
 ]
+
+function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
+  const [hoveredSlice, setHoveredSlice] = useState<number | null>(null)
+
+  const total = data.reduce((sum, item) => sum + item.valor_num, 0)
+  let currentAngle = -90
+
+  const slices = data.map((item, idx) => {
+    const percentage = item.valor_num
+    const angle = (percentage / 100) * 360
+    const startAngle = currentAngle
+    const endAngle = currentAngle + angle
+    currentAngle = endAngle
+
+    return {
+      ...item,
+      color: colors[idx % colors.length],
+      startAngle,
+      endAngle,
+      percentage
+    }
+  })
+
+  const size = 280
+  const center = size / 2
+  const radius = size / 2 - 20
+
+  const polarToCartesian = (angle: number, r: number) => {
+    const rad = (angle * Math.PI) / 180
+    return {
+      x: center + r * Math.cos(rad),
+      y: center + r * Math.sin(rad)
+    }
+  }
+
+  const createArc = (startAngle: number, endAngle: number, outerRadius: number) => {
+    const start = polarToCartesian(startAngle, outerRadius)
+    const end = polarToCartesian(endAngle, outerRadius)
+    const largeArc = endAngle - startAngle > 180 ? 1 : 0
+
+    return [
+      `M ${center} ${center}`,
+      `L ${start.x} ${start.y}`,
+      `A ${outerRadius} ${outerRadius} 0 ${largeArc} 1 ${end.x} ${end.y}`,
+      'Z'
+    ].join(' ')
+  }
+
+  return (
+    <div className="mt-6 sm:mt-8 bg-gray-50 rounded-xl p-6">
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-8">
+        <div className="relative" style={{ width: size, height: size }}>
+          <svg width={size} height={size} className="transform transition-transform duration-300">
+            {slices.map((slice, idx) => {
+              const isHovered = hoveredSlice === idx
+              const sliceRadius = isHovered ? radius + 8 : radius
+
+              return (
+                <g key={idx}>
+                  <path
+                    d={createArc(slice.startAngle, slice.endAngle, sliceRadius)}
+                    fill={slice.color}
+                    stroke="white"
+                    strokeWidth="3"
+                    className="transition-all duration-300 cursor-pointer"
+                    style={{
+                      filter: isHovered ? 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))' : 'none',
+                      opacity: hoveredSlice !== null && !isHovered ? 0.6 : 1
+                    }}
+                    onMouseEnter={() => setHoveredSlice(idx)}
+                    onMouseLeave={() => setHoveredSlice(null)}
+                  />
+                </g>
+              )
+            })}
+          </svg>
+
+          {hoveredSlice !== null && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="bg-white rounded-lg shadow-lg px-4 py-3 text-center">
+                <div className="text-sm font-medium text-gray-700">{slices[hoveredSlice].bucket}</div>
+                <div className="text-2xl font-bold text-black">{slices[hoveredSlice].percentage.toFixed(1)}%</div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 lg:gap-4">
+          {slices.map((slice, idx) => (
+            <div
+              key={idx}
+              className="flex items-center gap-2 cursor-pointer transition-all duration-200"
+              onMouseEnter={() => setHoveredSlice(idx)}
+              onMouseLeave={() => setHoveredSlice(null)}
+              style={{
+                opacity: hoveredSlice !== null && hoveredSlice !== idx ? 0.5 : 1,
+                transform: hoveredSlice === idx ? 'scale(1.05)' : 'scale(1)'
+              }}
+            >
+              <div
+                className="w-4 h-4 rounded-full flex-shrink-0"
+                style={{ backgroundColor: slice.color }}
+              />
+              <div className="flex-1 min-w-0">
+                <div className="text-xs sm:text-sm text-gray-700 truncate">{slice.bucket}</div>
+                <div className="text-sm sm:text-base font-bold text-black">{slice.percentage.toFixed(1)}%</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export function DemographicsSection({ buckets }: DemographicsSectionProps) {
   if (buckets.length === 0) {
@@ -129,34 +245,7 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
             })}
           </div>
 
-          <div className="mt-6 sm:mt-8 bg-gray-50 rounded-xl p-6 overflow-x-auto">
-            <div className="flex items-end justify-center gap-3 sm:gap-4 min-w-max" style={{ height: '200px' }}>
-              {ageData.map((item, idx) => {
-                const color = AGE_COLORS[idx % AGE_COLORS.length]
-                const barHeight = Math.max((item.valor_num / maxAgeValue) * 180, 20)
-
-                return (
-                  <div key={idx} className="flex flex-col justify-end items-center" style={{ width: '65px' }}>
-                    <div className="text-xs sm:text-sm font-bold text-black mb-2">
-                      {item.valor_num.toFixed(1)}%
-                    </div>
-                    <div
-                      className="w-full rounded-t-xl transition-all duration-700 ease-out shadow-lg relative"
-                      style={{
-                        height: `${barHeight}px`,
-                        backgroundColor: color
-                      }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-t-xl" />
-                    </div>
-                    <div className="text-[10px] sm:text-xs text-gray-700 font-semibold mt-2 text-center leading-tight">
-                      {item.bucket}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
+          <PieChart data={ageData} colors={AGE_COLORS} />
         </div>
       )}
     </div>

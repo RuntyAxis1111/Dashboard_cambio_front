@@ -36,6 +36,14 @@ interface HighlightMetric {
   icon: React.ReactNode
 }
 
+interface DSPHighlight {
+  id: string
+  highlight_key: string
+  title: string
+  content: string
+  display_order: number
+}
+
 function formatNumber(num: number): string {
   if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`
   if (num >= 1000) return `${(num / 1000).toFixed(1)}K`
@@ -46,6 +54,7 @@ export function DSPDetail() {
   const { entityId } = useParams<{ entityId: string }>()
   const [entity, setEntity] = useState<EntityInfo | null>(null)
   const [dspMetrics, setDspMetrics] = useState<DSPMetrics[]>([])
+  const [dspHighlights, setDspHighlights] = useState<DSPHighlight[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -126,6 +135,18 @@ export function DSPDetail() {
         )
 
         setDspMetrics(sortedMetrics)
+
+        const { data: highlightsData, error: highlightsError } = await supabase
+          .from('dsp_highlights')
+          .select('*')
+          .eq('entity_id', entityId)
+          .order('display_order', { ascending: true })
+
+        if (highlightsError) {
+          console.error('Error loading highlights:', highlightsError)
+        } else {
+          setDspHighlights(highlightsData || [])
+        }
       } catch (error) {
         console.error('Error loading DSP data:', error)
       } finally {
@@ -254,28 +275,15 @@ export function DSPDetail() {
             <h2 className="text-xl font-bold text-gray-900">Highlights / Overall Summary</h2>
           </div>
           <div className="space-y-2 text-gray-700">
-            <p className="leading-relaxed">
-              <span className="font-semibold">Top DSP this week:</span> {dspMetrics.length > 0 ? (() => {
-                const topDSP = dspMetrics.reduce((prev, current) =>
-                  (prev.followers_delta_7d > current.followers_delta_7d) ? prev : current
-                )
-                const dspNames: Record<string, string> = {
-                  spotify: 'Spotify',
-                  apple_music: 'Apple Music',
-                  amazon_music: 'Amazon Music'
-                }
-                return `${dspNames[topDSP.dsp] || topDSP.dsp} gained ${formatNumber(topDSP.followers_delta_7d)} followers (+${((topDSP.followers_delta_7d / (topDSP.followers_total - topDSP.followers_delta_7d)) * 100).toFixed(1)}%)`
-              })() : 'No data available'}
-            </p>
-            <p className="leading-relaxed">
-              <span className="font-semibold">Streaming momentum:</span> Total streams increased by {formatNumber(totalStreamsDelta7d)} this week across all platforms, showing {totalStreamsDelta7d > 0 ? 'strong' : 'stable'} growth trajectory.
-            </p>
-            <p className="leading-relaxed">
-              <span className="font-semibold">Audience expansion:</span> Monthly listeners grew by {formatNumber(totalListenersDelta7d)} ({((totalListenersDelta7d / (totalListeners - totalListenersDelta7d)) * 100).toFixed(1)}%), indicating {totalListenersDelta7d > totalFollowersDelta7d ? 'strong discovery momentum beyond the core fanbase' : 'steady engagement with existing audience'}.
-            </p>
-            <p className="leading-relaxed">
-              <span className="font-semibold">Platform presence:</span> Active on {dspMetrics.length} major streaming platforms with a combined reach of {formatNumber(totalFollowers)} followers and {formatNumber(totalListeners)} monthly listeners.
-            </p>
+            {dspHighlights.length > 0 ? (
+              dspHighlights.map((highlight) => (
+                <p key={highlight.id} className="leading-relaxed">
+                  <span className="font-semibold">{highlight.title}</span> {highlight.content}
+                </p>
+              ))
+            ) : (
+              <p className="leading-relaxed text-gray-500">No highlights available. Please add highlights from your backend.</p>
+            )}
           </div>
         </div>
 

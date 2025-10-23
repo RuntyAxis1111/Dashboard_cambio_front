@@ -137,106 +137,136 @@ export function TrackPerformanceSection({ entityId }: TrackPerformanceSectionPro
 
   return (
     <div className="space-y-4">
-      {tracks.map((track) => (
-        <div
-          key={track.track_id}
-          className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow"
-        >
-          <div className="flex gap-6">
-            {/* Album Cover */}
-            <div className="flex-shrink-0">
-              {track.cover_art_url ? (
-                <img
-                  src={track.cover_art_url}
-                  alt={track.track_name}
-                  className="w-24 h-24 rounded-lg object-cover"
-                />
-              ) : (
-                <div className="w-24 h-24 rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                  <Music className="w-10 h-10 text-gray-500" />
+      {tracks.map((track) => {
+        const totalStreams = track.total_streams_all_dsp
+        const totalPlaylists = Object.values(track.dsp_breakdown).reduce(
+          (sum, dsp) => sum + (dsp.playlist_count || 0),
+          0
+        )
+        const activePlatforms = Object.keys(track.dsp_breakdown).length
+
+        return (
+          <div key={track.track_id} className="space-y-4">
+            {/* Track Totals Bar */}
+            <div className="bg-white border border-gray-200 rounded-xl p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-sm font-bold text-gray-900">TOTALS</span>
+                <div className="flex items-center gap-1">
+                  <img src="/assets/spotify.png" alt="Spotify" className="w-5 h-5 object-contain" />
+                  <span className="text-gray-400">+</span>
+                  <img src="/assets/applemusicicon.png" alt="Apple Music" className="w-5 h-5 object-contain" />
+                  <span className="text-gray-400">+</span>
+                  <img src="/assets/amazonmusiciconnew.png" alt="Amazon Music" className="w-5 h-5 object-contain" />
                 </div>
-              )}
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="text-xs text-gray-600 mb-1">Total Streams</div>
+                  <div className="text-xl font-bold text-gray-900">{formatNumber(totalStreams)}</div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="text-xs text-gray-600 mb-1">Total Playlists</div>
+                  <div className="text-xl font-bold text-gray-900">{totalPlaylists}</div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="text-xs text-gray-600 mb-1">Active Platforms</div>
+                  <div className="text-xl font-bold text-gray-900">{activePlatforms}</div>
+                </div>
+              </div>
             </div>
 
-            {/* Track Info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">{track.track_name}</h3>
-                  {track.album_name && (
-                    <p className="text-sm text-gray-600 mb-2">{track.album_name}</p>
-                  )}
-                  {track.release_date && (
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <Calendar className="w-3 h-3" />
-                      <span>Released {formatDate(track.release_date)}</span>
+            {/* Track Details */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+              <div className="flex gap-6">
+                {/* Album Cover */}
+                <div className="flex-shrink-0">
+                  {track.cover_art_url ? (
+                    <img
+                      src={track.cover_art_url}
+                      alt={track.track_name}
+                      className="w-24 h-24 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <div className="w-24 h-24 rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                      <Music className="w-10 h-10 text-gray-500" />
                     </div>
                   )}
                 </div>
-                <div className="text-right">
-                  <div className="text-sm text-gray-600 mb-1">Total Streams</div>
-                  <div className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-green-600" />
-                    {formatNumber(track.total_streams_all_dsp)}
+
+                {/* Track Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-1">{track.track_name}</h3>
+                      {track.album_name && (
+                        <p className="text-sm text-gray-600 mb-2">{track.album_name}</p>
+                      )}
+                      {track.release_date && (
+                        <div className="flex items-center gap-2 text-xs text-gray-500">
+                          <Calendar className="w-3 h-3" />
+                          <span>Released {formatDate(track.release_date)}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* DSP Breakdown */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {Object.entries(track.dsp_breakdown).map(([dsp, data]) => {
+                      const logo = getDSPLogo(dsp)
+
+                      return (
+                        <div
+                          key={dsp}
+                          className="border border-gray-200 rounded-lg p-3"
+                        >
+                          <div className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium mb-2 ${getDSPColor(dsp)}`}>
+                            {logo && (
+                              <img
+                                src={logo}
+                                alt={dsp}
+                                className="w-4 h-4 object-contain"
+                              />
+                            )}
+                          </div>
+                          <div className="space-y-1">
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600">Streams:</span>
+                              <span className="font-semibold text-gray-900">
+                                {formatNumber(data.streams_total)}
+                              </span>
+                            </div>
+                            {data.streams_daily !== null && data.streams_daily !== undefined && (
+                              <div className="flex justify-between text-xs">
+                                <span className="text-gray-500">Daily:</span>
+                                <span className="text-gray-700">
+                                  +{formatNumber(data.streams_daily)}
+                                </span>
+                              </div>
+                            )}
+                            {data.rank_country !== null && data.rank_country !== undefined && (
+                              <div className="flex justify-between text-xs">
+                                <span className="text-gray-500">Country Rank:</span>
+                                <span className="text-gray-700">#{data.rank_country}</span>
+                              </div>
+                            )}
+                            {data.playlist_count !== null && data.playlist_count !== undefined && (
+                              <div className="flex justify-between text-xs">
+                                <span className="text-gray-500">Playlists:</span>
+                                <span className="text-gray-700">{data.playlist_count}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
               </div>
-
-              {/* DSP Breakdown */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {Object.entries(track.dsp_breakdown).map(([dsp, data]) => {
-                  const logo = getDSPLogo(dsp)
-
-                  return (
-                    <div
-                      key={dsp}
-                      className="border border-gray-200 rounded-lg p-3"
-                    >
-                      <div className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium mb-2 ${getDSPColor(dsp)}`}>
-                        {logo && (
-                          <img
-                            src={logo}
-                            alt={dsp}
-                            className="w-4 h-4 object-contain"
-                          />
-                        )}
-                      </div>
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Streams:</span>
-                          <span className="font-semibold text-gray-900">
-                            {formatNumber(data.streams_total)}
-                          </span>
-                        </div>
-                        {data.streams_daily !== null && data.streams_daily !== undefined && (
-                          <div className="flex justify-between text-xs">
-                            <span className="text-gray-500">Daily:</span>
-                            <span className="text-gray-700">
-                              +{formatNumber(data.streams_daily)}
-                            </span>
-                          </div>
-                        )}
-                        {data.rank_country !== null && data.rank_country !== undefined && (
-                          <div className="flex justify-between text-xs">
-                            <span className="text-gray-500">Country Rank:</span>
-                            <span className="text-gray-700">#{data.rank_country}</span>
-                          </div>
-                        )}
-                        {data.playlist_count !== null && data.playlist_count !== undefined && (
-                          <div className="flex justify-between text-xs">
-                            <span className="text-gray-500">Playlists:</span>
-                            <span className="text-gray-700">{data.playlist_count}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
             </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }

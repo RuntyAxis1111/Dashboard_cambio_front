@@ -32,10 +32,10 @@ function isSimpleProps(props: DSPCardProps): props is DSPCardPropsSimple {
   return 'followers_total' in props
 }
 
-const dspConfig: Record<string, { name: string; color: string; icon: string }> = {
-  spotify: { name: 'Spotify', color: '#1DB954', icon: '🎵' },
-  apple_music: { name: 'Apple Music', color: '#FA243C', icon: '🍎' },
-  amazon_music: { name: 'Amazon Music', color: '#FF9900', icon: '🎧' }
+const dspConfig: Record<string, { name: string; color: string; iconUrl: string }> = {
+  spotify: { name: 'Spotify', color: '#1DB954', iconUrl: '/assets/spotify.png' },
+  apple_music: { name: 'Apple Music', color: '#FA243C', iconUrl: '/assets/applemusicicon.png' },
+  amazon_music: { name: 'Amazon Music', color: '#FF9900', iconUrl: '/assets/amazonmusicicon.webp' }
 }
 
 function formatNumber(num: number | null | undefined): string {
@@ -122,7 +122,7 @@ export function DSPCard(props: DSPCardProps) {
     onMetricChange
   } = props
 
-  const config = dspConfig[dsp] || { name: dsp, color: '#666', icon: '🎵' }
+  const config = dspConfig[dsp] || { name: dsp, color: '#666', iconUrl: '/assets/spotify.png' }
 
   const currentValue =
     activeMetric === 'followers'
@@ -149,7 +149,7 @@ export function DSPCard(props: DSPCardProps) {
     <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">{config.icon}</span>
+          <img src={config.iconUrl} alt={config.name} className="w-6 h-6 object-contain" />
           <h3 className="font-semibold text-gray-900">{config.name}</h3>
         </div>
         {latest?.dsp_artist_url && (
@@ -232,17 +232,17 @@ function DSPCardSimple({
   listeners_delta_7d,
   streams_delta_7d
 }: DSPCardPropsSimple) {
-  const config = dspConfig[dsp] || { name: dsp, color: '#666', icon: '🎵' }
+  const config = dspConfig[dsp] || { name: dsp, color: '#666', iconUrl: '/assets/spotify.png' }
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+            className="w-12 h-12 rounded-xl flex items-center justify-center p-2"
             style={{ backgroundColor: `${config.color}15` }}
           >
-            {config.icon}
+            <img src={config.iconUrl} alt={config.name} className="w-full h-full object-contain" />
           </div>
           <h3 className="text-xl font-bold text-gray-900">{config.name}</h3>
         </div>

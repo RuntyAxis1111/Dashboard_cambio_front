@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, TrendingUp, Users, Radio, Disc } from 'lucide-react'
+import { ArrowLeft, TrendingUp, Users, Radio, Disc, Sparkles } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { DSPCard } from '../components/dsp/DSPCard'
@@ -245,6 +245,39 @@ export function DSPDetail() {
       </div>
 
       <div className="max-w-7xl mx-auto p-8">
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900">Highlights / Overall Summary</h2>
+          </div>
+          <div className="space-y-2 text-gray-700">
+            <p className="leading-relaxed">
+              <span className="font-semibold">Top DSP this week:</span> {dspMetrics.length > 0 ? (() => {
+                const topDSP = dspMetrics.reduce((prev, current) =>
+                  (prev.followers_delta_7d > current.followers_delta_7d) ? prev : current
+                )
+                const dspNames: Record<string, string> = {
+                  spotify: 'Spotify',
+                  apple_music: 'Apple Music',
+                  amazon_music: 'Amazon Music'
+                }
+                return `${dspNames[topDSP.dsp] || topDSP.dsp} gained ${formatNumber(topDSP.followers_delta_7d)} followers (+${((topDSP.followers_delta_7d / (topDSP.followers_total - topDSP.followers_delta_7d)) * 100).toFixed(1)}%)`
+              })() : 'No data available'}
+            </p>
+            <p className="leading-relaxed">
+              <span className="font-semibold">Streaming momentum:</span> Total streams increased by {formatNumber(totalStreamsDelta7d)} this week across all platforms, showing {totalStreamsDelta7d > 0 ? 'strong' : 'stable'} growth trajectory.
+            </p>
+            <p className="leading-relaxed">
+              <span className="font-semibold">Audience expansion:</span> Monthly listeners grew by {formatNumber(totalListenersDelta7d)} ({((totalListenersDelta7d / (totalListeners - totalListenersDelta7d)) * 100).toFixed(1)}%), indicating {totalListenersDelta7d > totalFollowersDelta7d ? 'strong discovery momentum beyond the core fanbase' : 'steady engagement with existing audience'}.
+            </p>
+            <p className="leading-relaxed">
+              <span className="font-semibold">Platform presence:</span> Active on {dspMetrics.length} major streaming platforms with a combined reach of {formatNumber(totalFollowers)} followers and {formatNumber(totalListeners)} monthly listeners.
+            </p>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {highlights.map((highlight, index) => (
             <div

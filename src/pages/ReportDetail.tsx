@@ -4,6 +4,8 @@ import { Calendar, Database, Download } from 'lucide-react'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { supabase } from '../lib/supabase'
 import { reportKindLabel, isBandReport } from '../lib/report-utils'
+import { CustomizeReportMenu } from '../components/CustomizeReportMenu'
+import { useReportPreferences } from '../hooks/useReportPreferences'
 import { HighlightsSection } from '../components/band-report/HighlightsSection'
 import { FanSentimentSection } from '../components/band-report/FanSentimentSection'
 import { InstagramKPIsSection } from '../components/band-report/InstagramKPIsSection'
@@ -77,6 +79,8 @@ export function ReportDetail() {
   const [bandData, setBandData] = useState<BandReportData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  const { hiddenSections, toggleSection, resetToDefault, isSectionVisible } = useReportPreferences(entity?.id || '')
 
   useEffect(() => {
     async function loadReportDetail() {
@@ -285,13 +289,21 @@ export function ReportDetail() {
               </div>
             </div>
 
-            <button
-              onClick={exportReportPDF}
-              className="export-btn px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 text-sm font-medium"
-            >
-              <Download className="w-4 h-4" />
-              Export PDF
-            </button>
+            <div className="flex items-center gap-3">
+              <CustomizeReportMenu
+                entidadId={entity.id}
+                hiddenSections={hiddenSections}
+                onToggleSection={toggleSection}
+                onResetToDefault={resetToDefault}
+              />
+              <button
+                onClick={exportReportPDF}
+                className="export-btn px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 text-sm font-medium"
+              >
+                <Download className="w-4 h-4" />
+                Export PDF
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -357,8 +369,10 @@ export function ReportDetail() {
                 </div>
               ) : (
                 bandData.sections
+                  .filter(section => isSectionVisible(section.seccion_clave))
                   .map((section, idx) => {
-                    const prevSection = bandData.sections[idx - 1]
+                    const allVisibleSections = bandData.sections.filter(s => isSectionVisible(s.seccion_clave))
+                    const prevSection = allVisibleSections[idx - 1]
                     const isPlatform = section.seccion_clave === 'social_growth' || section.seccion_clave === 'platform_growth'
                     const isMembers = section.seccion_clave === 'members_growth' || section.seccion_clave === 'ig_members'
                     const prevIsPlatform = prevSection?.seccion_clave === 'social_growth' || prevSection?.seccion_clave === 'platform_growth'
@@ -368,7 +382,7 @@ export function ReportDetail() {
                       return null
                     }
 
-                    const nextSection = bandData.sections[idx + 1]
+                    const nextSection = allVisibleSections[idx + 1]
                     const nextIsMembers = nextSection?.seccion_clave === 'members_growth' || nextSection?.seccion_clave === 'ig_members'
 
                     // If this is platform and next is members, render them side by side

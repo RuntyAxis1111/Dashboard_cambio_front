@@ -4,6 +4,9 @@ import { Download, ExternalLink } from 'lucide-react'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { WeeklyReport } from '../types/weekly-report'
 import { getWeeklyReportDetailed } from '../lib/reports-mapper'
+import { CustomizeReportMenu } from '../components/CustomizeReportMenu'
+import { useReportPreferences } from '../hooks/useReportPreferences'
+import { supabase } from '../lib/supabase'
 
 const SAMPLE_KATSEYE: WeeklyReport = {
   artist: 'KATSEYE',
@@ -700,12 +703,27 @@ export function WeeklyDetail() {
 
   const [report, setReport] = useState<WeeklyReport | null>(null)
   const [loading, setLoading] = useState(true)
+  const [entidadId, setEntidadId] = useState<string>('')
+
+  const { hiddenSections, toggleSection, resetToDefault, isSectionVisible } = useReportPreferences(entidadId)
 
   useEffect(() => {
     async function loadReport() {
       const sample = getSampleForArtist(artistId)
       const dbReport = await getWeeklyReportDetailed(artistId || '', weekEnd, sample)
       setReport(dbReport)
+
+      if (artistId) {
+        const { data } = await supabase
+          .from('reportes_entidades')
+          .select('id')
+          .eq('slug', artistId)
+          .maybeSingle()
+        if (data) {
+          setEntidadId(data.id)
+        }
+      }
+
       setLoading(false)
     }
     loadReport()
@@ -764,13 +782,23 @@ export function WeeklyDetail() {
               </p>
             </div>
 
-            <button
-              onClick={exportWeeklyPDF}
-              className="export-btn px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 text-sm font-medium"
-            >
-              <Download className="w-4 h-4" />
-              Export PDF
-            </button>
+            <div className="flex items-center gap-3">
+              {entidadId && (
+                <CustomizeReportMenu
+                  entidadId={entidadId}
+                  hiddenSections={hiddenSections}
+                  onToggleSection={toggleSection}
+                  onResetToDefault={resetToDefault}
+                />
+              )}
+              <button
+                onClick={exportWeeklyPDF}
+                className="export-btn px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 text-sm font-medium"
+              >
+                <Download className="w-4 h-4" />
+                Export PDF
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -792,7 +820,7 @@ export function WeeklyDetail() {
       </div>
 
       <div className="report-content max-w-6xl mx-auto px-6 py-8 space-y-10">
-        {report.highlights && report.highlights.length > 0 && (
+        {report.highlights && report.highlights.length > 0 && isSectionVisible('highlights') && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Highlights / Overall Summary
@@ -821,7 +849,7 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        {report.fan_sentiment && (
+        {report.fan_sentiment && isSectionVisible('fan_sentiment') && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Fan Sentiment
@@ -1345,7 +1373,7 @@ export function WeeklyDetail() {
         )}
 
 
-        {report.playlist_adds && report.playlist_adds.length > 0 && (
+        {report.playlist_adds && report.playlist_adds.length > 0 && isSectionVisible('playlist_adds') && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               DSP Playlist Adds (Spotify)
@@ -1381,7 +1409,7 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        {report.top_countries && report.top_countries.length > 0 && (
+        {report.top_countries && report.top_countries.length > 0 && isSectionVisible('top_countries') && (
           <section className="section page-break page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Top Countries (last 28 days)
@@ -1409,7 +1437,7 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        {report.top_cities && report.top_cities.length > 0 && (
+        {report.top_cities && report.top_cities.length > 0 && isSectionVisible('top_cities') && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Top Cities (last 28 days)
@@ -1437,7 +1465,7 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        {report.spotify_stats && (
+        {report.spotify_stats && isSectionVisible('spotify_stats') && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Spotify for Artists — Stats (last 28 days)
@@ -1467,7 +1495,7 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        {report.audience_segmentation && (
+        {report.audience_segmentation && isSectionVisible('audience_segmentation') && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Audience Segmentation
@@ -1503,7 +1531,7 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        {report.artist !== 'DESTINO' && report.artist !== 'MUSZA' && (
+        {report.artist !== 'DESTINO' && report.artist !== 'MUSZA' && isSectionVisible('streaming_trends') && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Streaming Trends
@@ -1529,7 +1557,7 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        {report.artist !== 'DESTINO' && report.artist !== 'MUSZA' && (
+        {report.artist !== 'DESTINO' && report.artist !== 'MUSZA' && isSectionVisible('tiktok_trends') && (
           <section className="section page-break page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               TikTok Trends
@@ -1558,7 +1586,7 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        {report.artist !== 'DESTINO' && report.artist !== 'MUSZA' && (
+        {report.artist !== 'DESTINO' && report.artist !== 'MUSZA' && isSectionVisible('mv_totales') && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Total MV Views
@@ -1594,7 +1622,7 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        {report.demographics && (
+        {report.demographics && isSectionVisible('demographics') && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
               Demographics (last 28 days)
@@ -1626,10 +1654,11 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        <section className="section page-break page-break-inside-avoid">
-          <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-            Sources
-          </h2>
+        {isSectionVisible('sources') && (
+          <section className="section page-break page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Sources
+            </h2>
           {report.artist === 'SANTOS BRAVOS' ? (
             <ul className="space-y-2 list-disc list-inside text-gray-900">
               <li>
@@ -1733,7 +1762,8 @@ export function WeeklyDetail() {
           ) : (
             <p className="text-gray-600 italic">No sources listed</p>
           )}
-        </section>
+          </section>
+        )}
       </div>
 
       <div className="print-footer">

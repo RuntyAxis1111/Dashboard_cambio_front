@@ -46,7 +46,6 @@ interface Section {
 interface BandReportData {
   sections: Section[]
   highlights: any[]
-  fanSentiment: any[]
   instagramKPIs: any[]
   streamingTrends: any[]
   tiktokTrends: any[]
@@ -131,7 +130,6 @@ export function ReportDetail() {
         const [
           sectionsRes,
           highlightsRes,
-          fanSentimentRes,
           instagramKPIsRes,
           streamingTrendsRes,
           tiktokTrendsRes,
@@ -149,7 +147,6 @@ export function ReportDetail() {
         ] = await Promise.all([
           supabase.from('reportes_secciones').select('*').eq('entidad_id', entidadId).eq('lista', true).order('orden'),
           supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'highlight').order('posicion'),
-          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'fan_sentiment').order('posicion'),
           supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'instagram_kpis').eq('plataforma', 'instagram').order('orden'),
           supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'streaming_trends').order('orden'),
           supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'tiktok_trends').eq('plataforma', 'tiktok').order('orden'),
@@ -174,7 +171,6 @@ export function ReportDetail() {
         setBandData({
           sections: sectionsRes.data || [],
           highlights: highlightsRes.data || [],
-          fanSentiment: fanSentimentRes.data || [],
           instagramKPIs: instagramKPIsRes.data || [],
           streamingTrends: streamingTrendsRes.data || [],
           tiktokTrends: tiktokTrendsRes.data || [],

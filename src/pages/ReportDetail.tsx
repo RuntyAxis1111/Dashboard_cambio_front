@@ -406,10 +406,27 @@ export function ReportDetail() {
                     // Don't show AI icon for Social Platform Weekly Social Growth
                     const showAIIcon = section.seccion_clave !== 'social_growth' && section.seccion_clave !== 'platform_growth'
 
+                    // Determine platform logo
+                    let platformLogo: string | null = null
+                    if (section.seccion_clave === 'demographics') {
+                      platformLogo = '/assets/instagram.png'
+                    } else if (section.seccion_clave === 'spotify_insights') {
+                      platformLogo = '/assets/spotify.png'
+                    } else if (section.seccion_clave === 'mv_totales') {
+                      platformLogo = '/assets/youtube (1).png'
+                    }
+
                     return (
                       <div key={section.seccion_clave}>
                         <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
                           {section.titulo}
+                          {platformLogo && (
+                            <img
+                              src={platformLogo}
+                              alt="Platform"
+                              className="w-5 h-5 object-contain"
+                            />
+                          )}
                           {showAIIcon && (
                             <img
                               src="/assets/artificial-intelligence.png"

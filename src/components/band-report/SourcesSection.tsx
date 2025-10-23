@@ -48,6 +48,7 @@ export function SourcesSection({ sources }: SourcesSectionProps) {
           const displayName = source.fuente_nombre || source.etiqueta
 
           const logo = getPlatformLogo(displayName)
+          const isMetaAPI = displayName.toLowerCase().includes('meta')
 
           return (
             <div key={idx} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
@@ -58,9 +59,14 @@ export function SourcesSection({ sources }: SourcesSectionProps) {
               )}
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  {logo && (
+                  {isMetaAPI ? (
+                    <>
+                      <img src="/assets/facebook (1).png" alt="" className="w-4 h-4 object-contain" />
+                      <img src="/assets/instagram.png" alt="" className="w-4 h-4 object-contain" />
+                    </>
+                  ) : logo ? (
                     <img src={logo} alt="" className="w-4 h-4 object-contain" />
-                  )}
+                  ) : null}
                   <span className="font-medium text-gray-900">{displayName}</span>
                   <span className={`text-xs px-2 py-0.5 rounded ${isOk ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                     {isOk ? 'OK' : 'Failed'}

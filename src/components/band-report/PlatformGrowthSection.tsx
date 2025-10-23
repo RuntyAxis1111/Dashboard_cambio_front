@@ -23,6 +23,13 @@ const PLATFORM_LABELS: Record<string, string> = {
   'total': 'Total',
 }
 
+const PLATFORM_LOGOS: Record<string, string> = {
+  'instagram': '/assets/instagram.png',
+  'tiktok': '/assets/tik-tok (1).png',
+  'youtube': '/assets/youtube (1).png',
+  'spotify': '/assets/spotify.png',
+}
+
 export function PlatformGrowthSection({ metrics }: PlatformGrowthSectionProps) {
   if (metrics.length === 0) {
     return <p className="text-gray-500">No data for this section yet</p>
@@ -69,7 +76,12 @@ export function PlatformGrowthSection({ metrics }: PlatformGrowthSectionProps) {
             {sortedMetrics.map(m => (
               <tr key={m.plataforma} className="border-t border-gray-200">
                 <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black whitespace-nowrap">
-                  {PLATFORM_LABELS[m.plataforma] || m.plataforma}
+                  <div className="flex items-center gap-2">
+                    {PLATFORM_LOGOS[m.plataforma] && (
+                      <img src={PLATFORM_LOGOS[m.plataforma]} alt="" className="w-4 h-4 object-contain" />
+                    )}
+                    <span>{PLATFORM_LABELS[m.plataforma] || m.plataforma}</span>
+                  </div>
                 </td>
                 <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right whitespace-nowrap">
                   {formatNumberCompact(m.valor_prev)}

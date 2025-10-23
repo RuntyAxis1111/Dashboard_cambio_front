@@ -96,7 +96,8 @@ export function Weeklies() {
         setLiveReports(data || [])
 
         if (data && data.length > 0) {
-          setSelectedEntityId(data[0].entidad_id)
+          const santosBravos = data.find(r => r.nombre === 'SANTOS BRAVOS')
+          setSelectedEntityId(santosBravos?.entidad_id || data[0].entidad_id)
         }
       } catch (error) {
         console.error('Error loading live reports:', error)

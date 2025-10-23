@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { DSPCard } from '../components/dsp/DSPCard'
 import { TrackPerformanceSection } from '../components/dsp/TrackPerformanceSection'
+import { SpotifyMetricsCard } from '../components/dsp/SpotifyMetricsCard'
 
 interface EntityInfo {
   id: string
@@ -330,17 +331,19 @@ export function DSPDetail() {
 
         <h2 className="text-xl font-bold text-gray-900 mb-6">Platform Breakdown</h2>
 
-        {dspMetrics.length === 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {entityId && <SpotifyMetricsCard entidadId={entityId} />}
+
+          {dspMetrics.filter(m => m.dsp !== 'spotify').map((metrics) => (
+            <DSPCard key={metrics.dsp} {...metrics} />
+          ))}
+        </div>
+
+        {dspMetrics.length === 0 && (
           <div className="bg-white border border-gray-200 rounded-2xl p-12 text-center">
             <TrendingUp className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No DSP data available</h3>
             <p className="text-gray-600">Data will appear here once n8n starts collecting metrics</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {dspMetrics.map((metrics) => (
-              <DSPCard key={metrics.dsp} {...metrics} />
-            ))}
           </div>
         )}
 

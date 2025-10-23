@@ -3,6 +3,7 @@ import { Calendar, Database } from 'lucide-react'
 import { listWeeklyReports, ArtistSummary } from '../lib/reports-api'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { ReportCard } from '../components/ReportCard'
+import { DSPLiveGrowth } from '../components/dsp/DSPLiveGrowth'
 import { supabase } from '../lib/supabase'
 
 const SAMPLE_ARTISTS: ArtistSummary[] = [
@@ -72,6 +73,7 @@ export function Weeklies() {
   const [loading, setLoading] = useState(true)
   const [liveReports, setLiveReports] = useState<LiveReport[]>([])
   const [loadingLive, setLoadingLive] = useState(true)
+  const [selectedEntityId, setSelectedEntityId] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     async function loadReports() {
@@ -92,6 +94,10 @@ export function Weeklies() {
 
         if (error) throw error
         setLiveReports(data || [])
+
+        if (data && data.length > 0) {
+          setSelectedEntityId(data[0].entidad_id)
+        }
       } catch (error) {
         console.error('Error loading live reports:', error)
         setLiveReports([])
@@ -199,6 +205,8 @@ export function Weeklies() {
             <p className="text-gray-600">Weekly reports will appear here once generated</p>
           </div>
         )}
+
+        <DSPLiveGrowth entityId={selectedEntityId} />
       </div>
     </div>
   )

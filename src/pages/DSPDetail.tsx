@@ -278,32 +278,45 @@ export function DSPDetail() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {highlights.map((highlight, index) => (
-            <div
-              key={index}
-              className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow"
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 bg-gray-100 rounded-lg text-gray-600">
-                  {highlight.icon}
-                </div>
-                <div className="text-sm text-gray-600">{highlight.label}</div>
-              </div>
-              <div className="text-3xl font-bold text-gray-900 mb-1">
-                {highlight.value}
-              </div>
-              {highlight.delta && (
-                <div
-                  className={`text-sm font-medium ${
-                    highlight.deltaType === 'positive' ? 'text-green-600' : 'text-red-600'
-                  }`}
-                >
-                  {highlight.delta} (7d)
-                </div>
-              )}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="text-xl font-bold text-gray-900">TOTALS</h2>
+            <div className="flex items-center gap-2">
+              <img src="/assets/spotify.png" alt="Spotify" className="w-6 h-6 object-contain" />
+              <span className="text-gray-400">+</span>
+              <img src="/assets/applemusicicon.png" alt="Apple Music" className="w-6 h-6 object-contain" />
+              <span className="text-gray-400">+</span>
+              <img src="/assets/amazonmusiciconnew.png" alt="Amazon Music" className="w-6 h-6 object-contain" />
             </div>
-          ))}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {highlights.map((highlight, index) => (
+              <div
+                key={index}
+                className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 bg-gray-100 rounded-lg text-gray-600">
+                    {highlight.icon}
+                  </div>
+                  <div className="text-sm text-gray-600">{highlight.label}</div>
+                </div>
+                <div className="text-3xl font-bold text-gray-900 mb-1">
+                  {highlight.value}
+                </div>
+                {highlight.delta && (
+                  <div
+                    className={`text-sm font-medium ${
+                      highlight.deltaType === 'positive' ? 'text-green-600' : 'text-red-600'
+                    }`}
+                  >
+                    {highlight.delta} (7d)
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         <h2 className="text-xl font-bold text-gray-900 mb-6">Platform Breakdown</h2>

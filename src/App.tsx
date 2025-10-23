@@ -17,6 +17,7 @@ import { Reports } from './pages/Reports'
 import { Weeklies } from './pages/Weeklies'
 import { WeeklyDetail } from './pages/WeeklyDetail'
 import { ReportDetail } from './pages/ReportDetail'
+import { DSPDetail } from './pages/DSPDetail'
 
 export default function App() {
   console.log('🎯 App component rendering...')
@@ -44,6 +45,7 @@ export default function App() {
                   <Route path="/reports/weeklies" element={<Weeklies />} />
                   <Route path="/reports/weeklies/:artistId" element={<WeeklyDetail />} />
                   <Route path="/reports/:slug" element={<ReportDetail />} />
+                  <Route path="/weeklies/dsp/:entityId" element={<DSPDetail />} />
                   <Route path="/about" element={<About />} />
                 </Routes>
               </Layout>

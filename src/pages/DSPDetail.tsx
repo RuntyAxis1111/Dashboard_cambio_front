@@ -4,6 +4,7 @@ import { ArrowLeft, TrendingUp, Users, Radio, Disc, Sparkles } from 'lucide-reac
 import { supabase } from '../lib/supabase'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { DSPCard } from '../components/dsp/DSPCard'
+import { TrackPerformanceSection } from '../components/dsp/TrackPerformanceSection'
 
 interface EntityInfo {
   id: string
@@ -334,6 +335,11 @@ export function DSPDetail() {
             ))}
           </div>
         )}
+
+        <div className="mt-12">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Track Performance</h2>
+          {entityId && <TrackPerformanceSection entityId={entityId} />}
+        </div>
       </div>
     </div>
   )

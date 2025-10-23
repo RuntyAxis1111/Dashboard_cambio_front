@@ -95,6 +95,15 @@ export function TrackPerformanceSection({ entityId }: TrackPerformanceSectionPro
     }
   }
 
+  const getDSPLogo = (dsp: string): string => {
+    switch (dsp) {
+      case 'spotify': return '/assets/spotify.png'
+      case 'apple_music': return '/assets/applemusicicon.png'
+      case 'amazon_music': return '/assets/amazonmusiciconnew.png'
+      default: return ''
+    }
+  }
+
   if (loading) {
     return (
       <div className="bg-white border border-gray-200 rounded-2xl p-12 text-center">
@@ -176,11 +185,7 @@ export function TrackPerformanceSection({ entityId }: TrackPerformanceSectionPro
               {/* DSP Breakdown */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {Object.entries(track.dsp_breakdown).map(([dsp, data]) => {
-                  const dspNames: Record<string, string> = {
-                    spotify: 'Spotify',
-                    apple_music: 'Apple Music',
-                    amazon_music: 'Amazon Music'
-                  }
+                  const logo = getDSPLogo(dsp)
 
                   return (
                     <div
@@ -188,7 +193,13 @@ export function TrackPerformanceSection({ entityId }: TrackPerformanceSectionPro
                       className="border border-gray-200 rounded-lg p-3"
                     >
                       <div className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium mb-2 ${getDSPColor(dsp)}`}>
-                        {dspNames[dsp] || dsp}
+                        {logo && (
+                          <img
+                            src={logo}
+                            alt={dsp}
+                            className="w-4 h-4 object-contain"
+                          />
+                        )}
                       </div>
                       <div className="space-y-1">
                         <div className="flex justify-between text-sm">

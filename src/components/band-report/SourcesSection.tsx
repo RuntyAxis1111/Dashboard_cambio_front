@@ -13,6 +13,24 @@ interface SourcesSectionProps {
   sources: Source[]
 }
 
+const PLATFORM_LOGOS: Record<string, string> = {
+  'instagram': '/assets/instagram.png',
+  'tiktok': '/assets/tik-tok (1).png',
+  'youtube': '/assets/youtube (1).png',
+  'spotify': '/assets/spotify.png',
+  'facebook': '/assets/facebook (1).png'
+}
+
+function getPlatformLogo(sourceName: string): string | null {
+  const lowerName = sourceName.toLowerCase()
+  for (const [key, logo] of Object.entries(PLATFORM_LOGOS)) {
+    if (lowerName.includes(key)) {
+      return logo
+    }
+  }
+  return null
+}
+
 export function SourcesSection({ sources }: SourcesSectionProps) {
   if (sources.length === 0) {
     return (
@@ -29,6 +47,8 @@ export function SourcesSection({ sources }: SourcesSectionProps) {
           const isOk = source.ok ?? (source.status === 'ok' || source.status === 'OK')
           const displayName = source.fuente_nombre || source.etiqueta
 
+          const logo = getPlatformLogo(displayName)
+
           return (
             <div key={idx} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
               {isOk ? (
@@ -38,6 +58,9 @@ export function SourcesSection({ sources }: SourcesSectionProps) {
               )}
               <div className="flex-1">
                 <div className="flex items-center gap-2">
+                  {logo && (
+                    <img src={logo} alt="" className="w-4 h-4 object-contain" />
+                  )}
                   <span className="font-medium text-gray-900">{displayName}</span>
                   <span className={`text-xs px-2 py-0.5 rounded ${isOk ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                     {isOk ? 'OK' : 'Failed'}

@@ -24,6 +24,10 @@ export function MVViewsSection({ items }: MVViewsSectionProps) {
 
   return (
     <div className="bg-gray-50 border border-gray-300 rounded-xl p-6">
+      <div className="flex items-center gap-2 mb-4">
+        <img src="/assets/youtube (1).png" alt="YouTube" className="w-5 h-5 object-contain" />
+        <h4 className="font-semibold text-black">MV/YouTube Views</h4>
+      </div>
       <ul className="space-y-2">
         {sortedItems.map((item, idx) => (
           <li key={idx} className="flex items-start text-sm">

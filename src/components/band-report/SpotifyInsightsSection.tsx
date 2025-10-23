@@ -22,6 +22,10 @@ export function SpotifyInsightsSection({ items }: SpotifyInsightsSectionProps) {
 
   return (
     <div className="bg-gray-50 border border-gray-300 rounded-xl p-6">
+      <div className="flex items-center gap-2 mb-4">
+        <img src="/assets/spotify.png" alt="Spotify" className="w-5 h-5 object-contain" />
+        <h4 className="font-semibold text-black">Spotify Insights</h4>
+      </div>
       <ul className="space-y-2">
         {sortedItems.map((item, idx) => (
           <li key={idx} className="text-sm flex items-start gap-2">

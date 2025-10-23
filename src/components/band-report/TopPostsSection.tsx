@@ -31,7 +31,10 @@ export function TopPostsSection({ posts }: TopPostsSectionProps) {
     <div className="bg-gray-50 border border-gray-300 rounded-xl p-4 sm:p-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
         <div>
-          <h4 className="text-xs sm:text-sm font-semibold text-gray-700 mb-3 sm:mb-4 text-center">IG</h4>
+          <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
+            <img src="/assets/instagram.png" alt="Instagram" className="w-4 h-4 sm:w-5 sm:h-5 object-contain" />
+            <h4 className="text-xs sm:text-sm font-semibold text-gray-700">IG</h4>
+          </div>
           <div className="space-y-2 sm:space-y-3">
             {igPosts.map((post, idx) => (
               <PostCard key={idx} post={post} />
@@ -40,7 +43,10 @@ export function TopPostsSection({ posts }: TopPostsSectionProps) {
         </div>
 
         <div>
-          <h4 className="text-xs sm:text-sm font-semibold text-gray-700 mb-3 sm:mb-4 text-center">TikTok</h4>
+          <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
+            <img src="/assets/tik-tok (1).png" alt="TikTok" className="w-4 h-4 sm:w-5 sm:h-5 object-contain" />
+            <h4 className="text-xs sm:text-sm font-semibold text-gray-700">TikTok</h4>
+          </div>
           <div className="space-y-2 sm:space-y-3">
             {ttPosts.map((post, idx) => (
               <PostCard key={idx} post={post} />
@@ -49,7 +55,10 @@ export function TopPostsSection({ posts }: TopPostsSectionProps) {
         </div>
 
         <div>
-          <h4 className="text-xs sm:text-sm font-semibold text-gray-700 mb-3 sm:mb-4 text-center">YTS</h4>
+          <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
+            <img src="/assets/youtube (1).png" alt="YouTube" className="w-4 h-4 sm:w-5 sm:h-5 object-contain" />
+            <h4 className="text-xs sm:text-sm font-semibold text-gray-700">YTS</h4>
+          </div>
           <div className="space-y-2 sm:space-y-3">
             {ytPosts.map((post, idx) => (
               <PostCard key={idx} post={post} />

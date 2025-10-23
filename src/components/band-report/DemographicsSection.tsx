@@ -138,7 +138,10 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {genderData.length > 0 && (
         <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6">
-          <h4 className="font-semibold text-black mb-4 sm:mb-6">Gender Distribution</h4>
+          <div className="flex items-center gap-2 mb-4 sm:mb-6">
+            <img src="/assets/instagram.png" alt="Instagram" className="w-5 h-5 object-contain" />
+            <h4 className="font-semibold text-black">Gender Distribution</h4>
+          </div>
 
           <div className="space-y-3 sm:space-y-4">
             {genderData.map((item, idx) => {
@@ -173,7 +176,10 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
 
       {ageData.length > 0 && (
         <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6">
-          <h4 className="font-semibold text-black mb-4 sm:mb-6">Age Distribution</h4>
+          <div className="flex items-center gap-2 mb-4 sm:mb-6">
+            <img src="/assets/instagram.png" alt="Instagram" className="w-5 h-5 object-contain" />
+            <h4 className="font-semibold text-black">Age Distribution</h4>
+          </div>
 
           <div className="space-y-2.5 sm:space-y-3">
             {ageData.map((item, idx) => {

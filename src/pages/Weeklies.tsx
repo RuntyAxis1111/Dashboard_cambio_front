@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Calendar, Database } from 'lucide-react'
+import { Calendar, Database, TrendingUp } from 'lucide-react'
 import { listWeeklyReports, ArtistSummary } from '../lib/reports-api'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { ReportCard } from '../components/ReportCard'
-import { DSPLiveGrowth } from '../components/dsp/DSPLiveGrowth'
+import { DSPReportCard } from '../components/dsp/DSPReportCard'
 import { supabase } from '../lib/supabase'
 
 const SAMPLE_ARTISTS: ArtistSummary[] = [
@@ -68,12 +68,25 @@ interface LiveReport {
   status: string | null
 }
 
+interface DSPEntitySummary {
+  entity_id: string
+  entity_name: string
+  entity_slug: string
+  imagen_url: string | null
+  total_followers: number
+  total_listeners: number
+  followers_delta_7d: number
+  listeners_delta_7d: number
+  last_update: string
+}
+
 export function Weeklies() {
   const [artists, setArtists] = useState<ArtistSummary[]>([])
   const [loading, setLoading] = useState(true)
   const [liveReports, setLiveReports] = useState<LiveReport[]>([])
   const [loadingLive, setLoadingLive] = useState(true)
-  const [selectedEntityId, setSelectedEntityId] = useState<string | undefined>(undefined)
+  const [dspEntities, setDspEntities] = useState<DSPEntitySummary[]>([])
+  const [loadingDsp, setLoadingDsp] = useState(true)
 
   useEffect(() => {
     async function loadReports() {
@@ -94,11 +107,6 @@ export function Weeklies() {
 
         if (error) throw error
         setLiveReports(data || [])
-
-        if (data && data.length > 0) {
-          const santosBravos = data.find(r => r.nombre === 'SANTOS BRAVOS')
-          setSelectedEntityId(santosBravos?.entidad_id || data[0].entidad_id)
-        }
       } catch (error) {
         console.error('Error loading live reports:', error)
         setLiveReports([])
@@ -107,6 +115,82 @@ export function Weeklies() {
       }
     }
     loadLiveReports()
+  }, [])
+
+  useEffect(() => {
+    async function loadDspEntities() {
+      try {
+        const { data: latestData, error: latestError } = await supabase
+          .from('v_dsp_latest')
+          .select('entity_id, dsp, snapshot_ts, followers_total, monthly_listeners')
+
+        if (latestError) throw latestError
+
+        const { data: delta7dData, error: delta7dError } = await supabase
+          .from('v_dsp_delta_7d')
+          .select('entity_id, dsp, followers_delta_7d, listeners_delta_7d')
+
+        if (delta7dError) throw delta7dError
+
+        const { data: entitiesData, error: entitiesError } = await supabase
+          .from('reportes_entidades')
+          .select('id, nombre, slug, imagen_url')
+          .eq('activo', true)
+
+        if (entitiesError) throw entitiesError
+
+        const entityMap = new Map<string, DSPEntitySummary>()
+
+        latestData?.forEach((item) => {
+          const existing = entityMap.get(item.entity_id)
+          if (!existing) {
+            const entity = entitiesData?.find((e) => e.id === item.entity_id)
+            if (entity) {
+              entityMap.set(item.entity_id, {
+                entity_id: item.entity_id,
+                entity_name: entity.nombre,
+                entity_slug: entity.slug,
+                imagen_url: entity.imagen_url,
+                total_followers: 0,
+                total_listeners: 0,
+                followers_delta_7d: 0,
+                listeners_delta_7d: 0,
+                last_update: item.snapshot_ts
+              })
+            }
+          }
+
+          const summary = entityMap.get(item.entity_id)
+          if (summary) {
+            summary.total_followers += item.followers_total || 0
+            summary.total_listeners += item.monthly_listeners || 0
+            if (item.snapshot_ts > summary.last_update) {
+              summary.last_update = item.snapshot_ts
+            }
+          }
+        })
+
+        delta7dData?.forEach((delta) => {
+          const summary = entityMap.get(delta.entity_id)
+          if (summary) {
+            summary.followers_delta_7d += delta.followers_delta_7d || 0
+            summary.listeners_delta_7d += delta.listeners_delta_7d || 0
+          }
+        })
+
+        const dspSummaries = Array.from(entityMap.values()).sort((a, b) =>
+          a.entity_name.localeCompare(b.entity_name)
+        )
+
+        setDspEntities(dspSummaries)
+      } catch (error) {
+        console.error('Error loading DSP entities:', error)
+        setDspEntities([])
+      } finally {
+        setLoadingDsp(false)
+      }
+    }
+    loadDspEntities()
   }, [])
 
   const breadcrumbItems = [
@@ -207,7 +291,51 @@ export function Weeklies() {
           </div>
         )}
 
-        <DSPLiveGrowth entityId={selectedEntityId} />
+        <div className="relative my-8 border-t border-gray-200">
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white px-3 flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-gray-500" />
+            <span className="text-xs text-gray-500">DSP Live Growth</span>
+          </div>
+        </div>
+
+        {loadingDsp ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-gray-100 border border-gray-300 rounded-2xl p-6 animate-pulse" style={{ minHeight: '180px' }}>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-gray-300 rounded-full"></div>
+                  <div className="flex-1">
+                    <div className="h-5 bg-gray-300 rounded mb-2 w-3/4"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : dspEntities.length === 0 ? (
+          <div className="bg-gray-100 border border-gray-300 rounded-2xl p-8 text-center" style={{ minHeight: '180px' }}>
+            <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <TrendingUp className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-lg font-medium text-black mb-2">No DSP data yet</h3>
+            <p className="text-gray-600">DSP metrics will appear here once n8n starts collecting data</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {dspEntities.map((entity) => (
+              <DSPReportCard
+                key={entity.entity_id}
+                entityId={entity.entity_id}
+                entityName={entity.entity_name}
+                imageUrl={entity.imagen_url}
+                totalFollowers={entity.total_followers}
+                totalListeners={entity.total_listeners}
+                followersDelta7d={entity.followers_delta_7d}
+                listenersDelta7d={entity.listeners_delta_7d}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

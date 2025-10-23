@@ -416,6 +416,9 @@ export function ReportDetail() {
                       platformLogo = '/assets/youtube (1).png'
                     }
 
+                    // Sources section should show AI icon
+                    const forceShowAI = section.seccion_clave === 'sources'
+
                     return (
                       <div key={section.seccion_clave}>
                         <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
@@ -427,7 +430,7 @@ export function ReportDetail() {
                               className="w-5 h-5 object-contain"
                             />
                           )}
-                          {showAIIcon && (
+                          {(showAIIcon || forceShowAI) && (
                             <img
                               src="/assets/artificial-intelligence.png"
                               alt="AI"

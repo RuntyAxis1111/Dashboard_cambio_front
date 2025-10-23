@@ -80,9 +80,16 @@ export function SourcesSection({ sources }: SourcesSectionProps) {
           )
         })}
       </div>
-      <p className="text-xs text-gray-500 mt-4">
-        <strong>Note:</strong> IA
-      </p>
+      <div className="flex items-center gap-2 mt-4">
+        <img
+          src="/assets/artificial-intelligence.png"
+          alt="AI"
+          className="w-4 h-4 object-contain"
+        />
+        <p className="text-xs text-gray-500">
+          <strong>Note:</strong> AI Processing
+        </p>
+      </div>
     </div>
   )
 }

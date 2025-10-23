@@ -248,8 +248,8 @@ export function DSPDetail() {
       <div className="max-w-7xl mx-auto p-8">
         <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg">
-              <Sparkles className="w-5 h-5 text-white" />
+            <div className="p-2 bg-gray-900 rounded-lg">
+              <img src="/assets/artificial-intelligence.png" alt="AI" className="w-5 h-5" />
             </div>
             <h2 className="text-xl font-bold text-gray-900">Highlights / Overall Summary</h2>
           </div>

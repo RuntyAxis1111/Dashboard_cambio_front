@@ -35,7 +35,7 @@ function isSimpleProps(props: DSPCardProps): props is DSPCardPropsSimple {
 const dspConfig: Record<string, { name: string; color: string; iconUrl: string }> = {
   spotify: { name: 'Spotify', color: '#1DB954', iconUrl: '/assets/spotify.png' },
   apple_music: { name: 'Apple Music', color: '#FA243C', iconUrl: '/assets/applemusicicon.png' },
-  amazon_music: { name: 'Amazon Music', color: '#FF9900', iconUrl: '/assets/amazonmusicicon.webp' }
+  amazon_music: { name: 'Amazon Music', color: '#00D9FF', iconUrl: '/assets/amazonmusiciconnew.png' }
 }
 
 function formatNumber(num: number | null | undefined): string {

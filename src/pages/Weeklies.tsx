@@ -120,18 +120,6 @@ export function Weeklies() {
   useEffect(() => {
     async function loadDspEntities() {
       try {
-        const { data: latestData, error: latestError } = await supabase
-          .from('v_dsp_latest')
-          .select('entity_id, dsp, snapshot_ts, followers_total, monthly_listeners')
-
-        if (latestError) throw latestError
-
-        const { data: delta7dData, error: delta7dError } = await supabase
-          .from('v_dsp_delta_7d')
-          .select('entity_id, dsp, followers_delta_7d, listeners_delta_7d')
-
-        if (delta7dError) throw delta7dError
-
         const { data: entitiesData, error: entitiesError } = await supabase
           .from('reportes_entidades')
           .select('id, nombre, slug, imagen_url')
@@ -139,42 +127,34 @@ export function Weeklies() {
 
         if (entitiesError) throw entitiesError
 
+        const { data: latestData, error: latestError } = await supabase
+          .from('v_dsp_latest')
+          .select('entidad_id, platform, metric, value, week_diff')
+
+        if (latestError) throw latestError
+
         const entityMap = new Map<string, DSPEntitySummary>()
 
-        latestData?.forEach((item) => {
-          const existing = entityMap.get(item.entity_id)
-          if (!existing) {
-            const entity = entitiesData?.find((e) => e.id === item.entity_id)
-            if (entity) {
-              entityMap.set(item.entity_id, {
-                entity_id: item.entity_id,
-                entity_name: entity.nombre,
-                entity_slug: entity.slug,
-                imagen_url: entity.imagen_url,
-                total_followers: 0,
-                total_listeners: 0,
-                followers_delta_7d: 0,
-                listeners_delta_7d: 0,
-                last_update: item.snapshot_ts
-              })
-            }
-          }
+        entitiesData?.forEach((entity) => {
+          const followers = latestData?.find(
+            (d) => d.entidad_id === entity.id && d.platform === 'spotify' && d.metric === 'followers'
+          )
+          const listeners = latestData?.find(
+            (d) => d.entidad_id === entity.id && d.platform === 'spotify' && d.metric === 'listeners'
+          )
 
-          const summary = entityMap.get(item.entity_id)
-          if (summary) {
-            summary.total_followers += item.followers_total || 0
-            summary.total_listeners += item.monthly_listeners || 0
-            if (item.snapshot_ts > summary.last_update) {
-              summary.last_update = item.snapshot_ts
-            }
-          }
-        })
-
-        delta7dData?.forEach((delta) => {
-          const summary = entityMap.get(delta.entity_id)
-          if (summary) {
-            summary.followers_delta_7d += delta.followers_delta_7d || 0
-            summary.listeners_delta_7d += delta.listeners_delta_7d || 0
+          if (followers || listeners) {
+            entityMap.set(entity.id, {
+              entity_id: entity.id,
+              entity_name: entity.nombre,
+              entity_slug: entity.slug,
+              imagen_url: entity.imagen_url,
+              total_followers: followers?.value || 0,
+              total_listeners: listeners?.value || 0,
+              followers_delta_7d: followers?.week_diff || 0,
+              listeners_delta_7d: listeners?.week_diff || 0,
+              last_update: new Date().toISOString()
+            })
           }
         })
 

@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, TrendingUp, Users, Radio, Disc, Sparkles } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { Breadcrumb } from '../components/Breadcrumb'
-import { DSPCard } from '../components/dsp/DSPCard'
-import { TrackPerformanceSection } from '../components/dsp/TrackPerformanceSection'
 import { SpotifyMetricsCard } from '../components/dsp/SpotifyMetricsCard'
 
 interface EntityInfo {
@@ -12,29 +10,6 @@ interface EntityInfo {
   nombre: string
   slug: string
   imagen_url: string | null
-}
-
-interface DSPMetrics {
-  dsp: string
-  followers_total: number
-  monthly_listeners: number
-  streams_total: number
-  rank_country: string | null
-  dsp_artist_url: string | null
-  followers_delta_24h: number
-  listeners_delta_24h: number
-  streams_delta_24h: number
-  followers_delta_7d: number
-  listeners_delta_7d: number
-  streams_delta_7d: number
-}
-
-interface HighlightMetric {
-  label: string
-  value: string
-  delta?: string
-  deltaType?: 'positive' | 'negative'
-  icon: React.ReactNode
 }
 
 interface DSPHighlight {
@@ -45,16 +20,9 @@ interface DSPHighlight {
   display_order: number
 }
 
-function formatNumber(num: number): string {
-  if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`
-  if (num >= 1000) return `${(num / 1000).toFixed(1)}K`
-  return num.toString()
-}
-
 export function DSPDetail() {
   const { entityId } = useParams<{ entityId: string }>()
   const [entity, setEntity] = useState<EntityInfo | null>(null)
-  const [dspMetrics, setDspMetrics] = useState<DSPMetrics[]>([])
   const [dspHighlights, setDspHighlights] = useState<DSPHighlight[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -71,71 +39,6 @@ export function DSPDetail() {
 
         if (entityError) throw entityError
         setEntity(entityData)
-
-        const { data: latestData, error: latestError } = await supabase
-          .from('v_dsp_latest')
-          .select('*')
-          .eq('entity_id', entityId)
-
-        if (latestError) throw latestError
-
-        const { data: delta24hData, error: delta24hError } = await supabase
-          .from('v_dsp_delta_24h')
-          .select('*')
-          .eq('entity_id', entityId)
-
-        if (delta24hError) throw delta24hError
-
-        const { data: delta7dData, error: delta7dError } = await supabase
-          .from('v_dsp_delta_7d')
-          .select('*')
-          .eq('entity_id', entityId)
-
-        if (delta7dError) throw delta7dError
-
-        const metricsMap = new Map<string, DSPMetrics>()
-
-        latestData?.forEach((item) => {
-          metricsMap.set(item.dsp, {
-            dsp: item.dsp,
-            followers_total: item.followers_total || 0,
-            monthly_listeners: item.monthly_listeners || 0,
-            streams_total: item.streams_total || 0,
-            rank_country: item.rank_country,
-            dsp_artist_url: item.dsp_artist_url,
-            followers_delta_24h: 0,
-            listeners_delta_24h: 0,
-            streams_delta_24h: 0,
-            followers_delta_7d: 0,
-            listeners_delta_7d: 0,
-            streams_delta_7d: 0
-          })
-        })
-
-        delta24hData?.forEach((delta) => {
-          const metric = metricsMap.get(delta.dsp)
-          if (metric) {
-            metric.followers_delta_24h = delta.followers_delta_24h || 0
-            metric.listeners_delta_24h = delta.listeners_delta_24h || 0
-            metric.streams_delta_24h = delta.streams_delta_24h || 0
-          }
-        })
-
-        delta7dData?.forEach((delta) => {
-          const metric = metricsMap.get(delta.dsp)
-          if (metric) {
-            metric.followers_delta_7d = delta.followers_delta_7d || 0
-            metric.listeners_delta_7d = delta.listeners_delta_7d || 0
-            metric.streams_delta_7d = delta.streams_delta_7d || 0
-          }
-        })
-
-        const dspOrder = ['spotify', 'apple_music', 'amazon_music']
-        const sortedMetrics = Array.from(metricsMap.values()).sort(
-          (a, b) => dspOrder.indexOf(a.dsp) - dspOrder.indexOf(b.dsp)
-        )
-
-        setDspMetrics(sortedMetrics)
 
         const { data: highlightsData, error: highlightsError } = await supabase
           .from('dsp_highlights')
@@ -158,42 +61,6 @@ export function DSPDetail() {
     loadDSPData()
   }, [entityId])
 
-  const totalFollowers = dspMetrics.reduce((sum, m) => sum + m.followers_total, 0)
-  const totalListeners = dspMetrics.reduce((sum, m) => sum + m.monthly_listeners, 0)
-  const totalStreams = dspMetrics.reduce((sum, m) => sum + m.streams_total, 0)
-  const totalFollowersDelta7d = dspMetrics.reduce((sum, m) => sum + m.followers_delta_7d, 0)
-  const totalListenersDelta7d = dspMetrics.reduce((sum, m) => sum + m.listeners_delta_7d, 0)
-  const totalStreamsDelta7d = dspMetrics.reduce((sum, m) => sum + m.streams_delta_7d, 0)
-
-  const highlights: HighlightMetric[] = [
-    {
-      label: 'Total Followers',
-      value: formatNumber(totalFollowers),
-      delta: totalFollowersDelta7d > 0 ? `+${formatNumber(totalFollowersDelta7d)}` : formatNumber(totalFollowersDelta7d),
-      deltaType: totalFollowersDelta7d >= 0 ? 'positive' : 'negative',
-      icon: <Users className="w-5 h-5" />
-    },
-    {
-      label: 'Monthly Listeners',
-      value: formatNumber(totalListeners),
-      delta: totalListenersDelta7d > 0 ? `+${formatNumber(totalListenersDelta7d)}` : formatNumber(totalListenersDelta7d),
-      deltaType: totalListenersDelta7d >= 0 ? 'positive' : 'negative',
-      icon: <Radio className="w-5 h-5" />
-    },
-    {
-      label: 'Total Streams',
-      value: formatNumber(totalStreams),
-      delta: totalStreamsDelta7d > 0 ? `+${formatNumber(totalStreamsDelta7d)}` : formatNumber(totalStreamsDelta7d),
-      deltaType: totalStreamsDelta7d >= 0 ? 'positive' : 'negative',
-      icon: <Disc className="w-5 h-5" />
-    },
-    {
-      label: 'Active Platforms',
-      value: dspMetrics.length.toString(),
-      icon: <TrendingUp className="w-5 h-5" />
-    }
-  ]
-
   const breadcrumbItems = [
     { label: 'Reports', href: '/reports' },
     { label: 'Weekly Reports', href: '/reports/weeklies' },
@@ -206,16 +73,8 @@ export function DSPDetail() {
         <div className="max-w-7xl mx-auto">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
-            <div className="grid grid-cols-4 gap-6 mb-8">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="bg-white p-6 rounded-2xl h-32"></div>
-              ))}
-            </div>
-            <div className="grid grid-cols-3 gap-6">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-white p-6 rounded-2xl h-96"></div>
-              ))}
-            </div>
+            <div className="bg-white p-6 rounded-2xl h-32 mb-6"></div>
+            <div className="bg-white p-6 rounded-2xl h-96"></div>
           </div>
         </div>
       </div>
@@ -279,7 +138,7 @@ export function DSPDetail() {
             {dspHighlights.length > 0 ? (
               dspHighlights.map((highlight) => (
                 <p key={highlight.id} className="leading-relaxed">
-                  <span className="font-semibold">{highlight.title}</span> {highlight.content}
+                  <span className="font-semibold">{highlight.title}:</span> {highlight.content}
                 </p>
               ))
             ) : (
@@ -288,68 +147,74 @@ export function DSPDetail() {
           </div>
         </div>
 
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <h2 className="text-xl font-bold text-gray-900">TOTALS</h2>
-            <div className="flex items-center gap-2">
-              <img src="/assets/spotify.png" alt="Spotify" className="w-6 h-6 object-contain" />
-              <span className="text-gray-400">+</span>
-              <img src="/assets/applemusicicon.png" alt="Apple Music" className="w-6 h-6 object-contain" />
-              <span className="text-gray-400">+</span>
-              <img src="/assets/amazonmusiciconnew.png" alt="Amazon Music" className="w-6 h-6 object-contain" />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {highlights.map((highlight, index) => (
-              <div
-                key={index}
-                className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow"
-              >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 bg-gray-100 rounded-lg text-gray-600">
-                    {highlight.icon}
-                  </div>
-                  <div className="text-sm text-gray-600">{highlight.label}</div>
-                </div>
-                <div className="text-3xl font-bold text-gray-900 mb-1">
-                  {highlight.value}
-                </div>
-                {highlight.delta && (
-                  <div
-                    className={`text-sm font-medium ${
-                      highlight.deltaType === 'positive' ? 'text-green-600' : 'text-red-600'
-                    }`}
-                  >
-                    {highlight.delta} (7d)
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
         <h2 className="text-xl font-bold text-gray-900 mb-6">Platform Breakdown</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="mb-8">
           {entityId && <SpotifyMetricsCard entidadId={entityId} />}
-
-          {dspMetrics.filter(m => m.dsp !== 'spotify').map((metrics) => (
-            <DSPCard key={metrics.dsp} {...metrics} />
-          ))}
         </div>
 
-        {dspMetrics.length === 0 && (
-          <div className="bg-white border border-gray-200 rounded-2xl p-12 text-center">
-            <TrendingUp className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No DSP data available</h3>
-            <p className="text-gray-600">Data will appear here once n8n starts collecting metrics</p>
-          </div>
-        )}
+        <h2 className="text-xl font-bold text-gray-900 mb-6">Latest Release</h2>
+        <div className="bg-white border border-gray-200 rounded-2xl p-6">
+          <div className="flex gap-6">
+            <img
+              src="https://i.scdn.co/image/ab67616d0000b273ef0d089353c2d4f000822fb7"
+              alt="Gabriela"
+              className="w-48 h-48 rounded-lg object-cover"
+            />
+            <div className="flex-1">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Gabriela</h3>
+              <p className="text-gray-600 mb-4">Released Sep 30, 2025</p>
 
-        <div className="mt-12">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Track Performance</h2>
-          {entityId && <TrackPerformanceSection entityId={entityId} />}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <img src="/assets/spotify.png" alt="Spotify" className="w-5 h-5 object-contain" />
+                    <span className="text-sm font-medium text-gray-600">Spotify</span>
+                  </div>
+                  <div className="text-2xl font-bold text-gray-900 mb-1">1.5M</div>
+                  <div className="text-sm text-green-600 font-medium">+50.0K daily</div>
+                  <div className="text-xs text-gray-500 mt-2">45 playlists · #15 country rank</div>
+                </div>
+
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <img src="/assets/applemusicicon.png" alt="Apple Music" className="w-5 h-5 object-contain" />
+                    <span className="text-sm font-medium text-gray-600">Apple Music</span>
+                  </div>
+                  <div className="text-2xl font-bold text-gray-900 mb-1">800.0K</div>
+                  <div className="text-sm text-green-600 font-medium">+25.0K daily</div>
+                  <div className="text-xs text-gray-500 mt-2">30 playlists · #20 country rank</div>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <img src="/assets/amazonmusiciconnew.png" alt="Amazon Music" className="w-5 h-5 object-contain" />
+                    <span className="text-sm font-medium text-gray-600">Amazon Music</span>
+                  </div>
+                  <div className="text-2xl font-bold text-gray-900 mb-1">400.0K</div>
+                  <div className="text-sm text-green-600 font-medium">+15.0K daily</div>
+                  <div className="text-xs text-gray-500 mt-2">20 playlists · #25 country rank</div>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-sm font-medium text-gray-600">Total Streams:</span>
+                    <span className="ml-2 text-xl font-bold text-gray-900">2.7M</span>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-600">Total Playlists:</span>
+                    <span className="ml-2 text-xl font-bold text-gray-900">95</span>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-600">Active Platforms:</span>
+                    <span className="ml-2 text-xl font-bold text-gray-900">3</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

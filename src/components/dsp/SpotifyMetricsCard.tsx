@@ -43,7 +43,7 @@ function SimpleSparkline({ data, className = '' }: { data: { ts: string; value: 
 function DeltaChip({ value, pct, label }: { value?: number | null; pct?: number | null; label: string }) {
   if ((value === null || value === undefined) && (pct === null || pct === undefined)) {
     return (
-      <div className="inline-flex items-center gap-1 px-2.5 py-1 bg-gray-100 text-gray-500 rounded-lg text-xs" title="A la espera de datos en Supabase">
+      <div className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded text-[10px]" title="A la espera de datos en Supabase">
         {label}: —
       </div>
     )
@@ -53,7 +53,7 @@ function DeltaChip({ value, pct, label }: { value?: number | null; pct?: number 
   const formatted = formatDeltaWithAbs(value, pct)
 
   return (
-    <div className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium ${colorClass} bg-opacity-10`}>
+    <div className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium ${colorClass} bg-opacity-10`}>
       {label}: {formatted}
     </div>
   )
@@ -116,13 +116,13 @@ export function SpotifyMetricsCard({ entidadId }: SpotifyMetricsCardProps) {
   const totalPlatforms = 3
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <img src="/assets/spotify.png" alt="Spotify" className="w-8 h-8 object-contain" />
+    <div className="bg-white border border-gray-200 rounded-2xl p-4 hover:shadow-lg transition-shadow">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <img src="/assets/spotify.png" alt="Spotify" className="w-6 h-6 object-contain" />
           <div>
-            <h3 className="text-xl font-bold text-gray-900">Spotify</h3>
-            <p className="text-xs text-gray-500">Cobertura: Spotify ({coveragePlatforms}/{totalPlatforms})</p>
+            <h3 className="text-base font-bold text-gray-900">Spotify</h3>
+            <p className="text-[10px] text-gray-500">Cobertura: Spotify ({coveragePlatforms}/{totalPlatforms})</p>
           </div>
         </div>
         {followers?.value && (
@@ -130,52 +130,52 @@ export function SpotifyMetricsCard({ entidadId }: SpotifyMetricsCardProps) {
             href={`https://open.spotify.com/artist/${entidadId}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
             title="Abrir en Spotify"
           >
-            <ExternalLink className="w-4 h-4 text-gray-600" />
+            <ExternalLink className="w-3.5 h-3.5 text-gray-600" />
           </a>
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
-        <div className="space-y-3">
-          <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
-            <span className="text-xs font-medium text-gray-600 block mb-1">Followers</span>
-            <span className="text-2xl font-bold text-gray-900 block mb-2">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-2">
+            <span className="text-[10px] font-medium text-gray-600 block mb-0.5">Followers</span>
+            <span className="text-xl font-bold text-gray-900 block mb-1.5">
               {followers?.value !== null && followers?.value !== undefined ? formatNumber(followers.value) : '—'}
             </span>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1">
               <DeltaChip value={followers?.week_diff} pct={followers?.week_pct} label="7d" />
               <DeltaChip value={followers?.month_diff} pct={followers?.month_pct} label="30d" />
             </div>
           </div>
 
-          <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
-            <span className="text-xs font-medium text-gray-600 block mb-1">Monthly Listeners</span>
-            <span className="text-2xl font-bold text-gray-900 block mb-2">
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-2">
+            <span className="text-[10px] font-medium text-gray-600 block mb-0.5">Monthly Listeners</span>
+            <span className="text-xl font-bold text-gray-900 block mb-1.5">
               {listeners?.value !== null && listeners?.value !== undefined ? formatNumber(listeners.value) : '—'}
             </span>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1">
               <DeltaChip value={listeners?.week_diff} pct={listeners?.week_pct} label="7d" />
               <DeltaChip value={listeners?.month_diff} pct={listeners?.month_pct} label="30d" />
             </div>
           </div>
 
-          <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
-            <span className="text-xs font-medium text-gray-600 block mb-1">Popularity</span>
-            <span className="text-2xl font-bold text-gray-900 block mb-2">
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-2">
+            <span className="text-[10px] font-medium text-gray-600 block mb-0.5">Popularity</span>
+            <span className="text-xl font-bold text-gray-900 block mb-1.5">
               {popularity?.value !== null && popularity?.value !== undefined ? popularity.value.toFixed(0) : '—'}
             </span>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1">
               <DeltaChip value={popularity?.week_diff} pct={popularity?.week_pct} label="7d" />
               <DeltaChip value={popularity?.month_diff} pct={popularity?.month_pct} label="30d" />
             </div>
           </div>
         </div>
 
-        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-          <p className="text-sm text-gray-500 text-center">Espacio para contenido adicional</p>
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+          <p className="text-xs text-gray-500 text-center">Espacio para contenido adicional</p>
         </div>
       </div>
 

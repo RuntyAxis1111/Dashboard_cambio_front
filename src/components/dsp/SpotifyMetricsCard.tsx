@@ -164,18 +164,12 @@ export function SpotifyMetricsCard({ entidadId }: SpotifyMetricsCardProps) {
     )
   }
 
-  const coveragePlatforms = 1
-  const totalPlatforms = 3
-
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-4 hover:shadow-lg transition-shadow">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <img src="/assets/spotify.png" alt="Spotify" className="w-6 h-6 object-contain" />
-          <div>
-            <h3 className="text-base font-bold text-gray-900">Spotify</h3>
-            <p className="text-[10px] text-gray-500">Cobertura: Spotify ({coveragePlatforms}/{totalPlatforms})</p>
-          </div>
+          <h3 className="text-base font-bold text-gray-900">Spotify</h3>
         </div>
         {followers?.value && (
           <a

@@ -337,7 +337,7 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
     },
     {
       platform: 'Melon',
-      logo: '/assets/image copy copy copy copy copy copy copy.png',
+      logo: '/assets/melonicon.png',
       metrics: [
         {
           label: 'Likes',
@@ -351,7 +351,7 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
     },
     {
       platform: 'AirPlay',
-      logo: '/assets/image copy copy copy copy copy copy.png',
+      logo: '/assets/airplaylogo.png',
       metrics: [
         {
           label: 'Streams',

@@ -11,7 +11,8 @@ interface DSPReportCardProps {
   listenersDelta7d: number
 }
 
-function formatNumber(num: number): string {
+function formatNumber(num: number | null | undefined): string {
+  if (num === null || num === undefined) return '0'
   if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`
   if (num >= 1000) return `${(num / 1000).toFixed(1)}K`
   return num.toString()
@@ -88,14 +89,6 @@ export function DSPReportCard({
         <div className="flex items-center gap-1 text-xs text-gray-500">
           <span className="inline-block w-2 h-2 rounded-full bg-green-500"></span>
           Spotify
-        </div>
-        <div className="flex items-center gap-1 text-xs text-gray-500">
-          <span className="inline-block w-2 h-2 rounded-full bg-red-500"></span>
-          Apple
-        </div>
-        <div className="flex items-center gap-1 text-xs text-gray-500">
-          <span className="inline-block w-2 h-2 rounded-full bg-orange-500"></span>
-          Amazon
         </div>
       </div>
     </Link>

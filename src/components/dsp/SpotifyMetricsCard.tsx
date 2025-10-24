@@ -153,60 +153,62 @@ export function SpotifyMetricsCard({ entidadId }: SpotifyMetricsCardProps) {
         )}
       </div>
 
-      <div className="grid grid-cols-4 gap-2">
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-2">
-          <span className="text-[10px] font-medium text-gray-600 block mb-0.5">Followers</span>
-          <span className="text-xl font-bold text-gray-900 block mb-1">
-            {followers?.value !== null && followers?.value !== undefined ? formatNumber(followers.value) : '—'}
-          </span>
-          <div className="space-y-0.5">
-            <div className="flex items-center gap-1">
-              <span className="text-[10px] text-gray-500">7d:</span>
-              <DeltaChipStacked value={followers?.week_diff} pct={followers?.week_pct} />
+      <div className="grid grid-cols-[auto_1fr] gap-4">
+        <div className="space-y-2 w-48">
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-2">
+            <span className="text-[10px] font-medium text-gray-600 block mb-0.5">Followers</span>
+            <span className="text-xl font-bold text-gray-900 block mb-1">
+              {followers?.value !== null && followers?.value !== undefined ? formatNumber(followers.value) : '—'}
+            </span>
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-1">
+                <span className="text-[10px] text-gray-500">7d:</span>
+                <DeltaChipStacked value={followers?.week_diff} pct={followers?.week_pct} />
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-[10px] text-gray-500">30d:</span>
+                <DeltaChipStacked value={followers?.month_diff} pct={followers?.month_pct} />
+              </div>
             </div>
-            <div className="flex items-center gap-1">
-              <span className="text-[10px] text-gray-500">30d:</span>
-              <DeltaChipStacked value={followers?.month_diff} pct={followers?.month_pct} />
+          </div>
+
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-2">
+            <span className="text-[10px] font-medium text-gray-600 block mb-0.5">Monthly Listeners</span>
+            <span className="text-xl font-bold text-gray-900 block mb-1">
+              {listeners?.value !== null && listeners?.value !== undefined ? formatNumber(listeners.value) : '—'}
+            </span>
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-1">
+                <span className="text-[10px] text-gray-500">7d:</span>
+                <DeltaChipStacked value={listeners?.week_diff} pct={listeners?.week_pct} />
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-[10px] text-gray-500">30d:</span>
+                <DeltaChipStacked value={listeners?.month_diff} pct={listeners?.month_pct} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-2">
+            <span className="text-[10px] font-medium text-gray-600 block mb-0.5">Popularity</span>
+            <span className="text-xl font-bold text-gray-900 block mb-1">
+              {popularity?.value !== null && popularity?.value !== undefined ? popularity.value.toFixed(0) : '—'}
+            </span>
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-1">
+                <span className="text-[10px] text-gray-500">7d:</span>
+                <DeltaChipStacked value={popularity?.week_diff} pct={popularity?.week_pct} />
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-[10px] text-gray-500">30d:</span>
+                <DeltaChipStacked value={popularity?.month_diff} pct={popularity?.month_pct} />
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-2">
-          <span className="text-[10px] font-medium text-gray-600 block mb-0.5">Monthly Listeners</span>
-          <span className="text-xl font-bold text-gray-900 block mb-1">
-            {listeners?.value !== null && listeners?.value !== undefined ? formatNumber(listeners.value) : '—'}
-          </span>
-          <div className="space-y-0.5">
-            <div className="flex items-center gap-1">
-              <span className="text-[10px] text-gray-500">7d:</span>
-              <DeltaChipStacked value={listeners?.week_diff} pct={listeners?.week_pct} />
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="text-[10px] text-gray-500">30d:</span>
-              <DeltaChipStacked value={listeners?.month_diff} pct={listeners?.month_pct} />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-2">
-          <span className="text-[10px] font-medium text-gray-600 block mb-0.5">Popularity</span>
-          <span className="text-xl font-bold text-gray-900 block mb-1">
-            {popularity?.value !== null && popularity?.value !== undefined ? popularity.value.toFixed(0) : '—'}
-          </span>
-          <div className="space-y-0.5">
-            <div className="flex items-center gap-1">
-              <span className="text-[10px] text-gray-500">7d:</span>
-              <DeltaChipStacked value={popularity?.week_diff} pct={popularity?.week_pct} />
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="text-[10px] text-gray-500">30d:</span>
-              <DeltaChipStacked value={popularity?.month_diff} pct={popularity?.month_pct} />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-2 flex flex-col justify-center items-center">
-          <span className="text-[10px] font-medium text-gray-600 text-center">Espacio adicional</span>
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 flex flex-col justify-center items-center">
+          <span className="text-sm font-medium text-gray-600 text-center">Espacio disponible para contenido adicional</span>
         </div>
       </div>
 

@@ -55,17 +55,14 @@ export function DSPDetail() {
         if (entityError) throw entityError
         setEntity(entityData)
 
-        const { data: latestMetric, error: metricsError } = await supabase
-          .from('dsp_latest_metrics')
-          .select('metric_date')
+        const { data: statusData, error: statusError } = await supabase
+          .from('dsp_status')
+          .select('ultima_actualizacion')
           .eq('entidad_id', entityId)
-          .eq('dsp', 'spotify')
-          .order('metric_date', { ascending: false })
-          .limit(1)
           .maybeSingle()
 
-        if (!metricsError && latestMetric) {
-          setLastUpdated(latestMetric.metric_date)
+        if (!statusError && statusData) {
+          setLastUpdated(statusData.ultima_actualizacion)
         }
 
       } catch (error) {

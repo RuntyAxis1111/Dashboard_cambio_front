@@ -93,7 +93,7 @@ export function useDSPMetrics(
       setLoading(true)
       setError(null)
 
-      const metrics = ['followers', 'listeners', 'popularity', 'fl_ratio']
+      const metrics = ['followers', 'listeners', 'popularity']
 
       const { data: latestData, error: latestError } = await supabase
         .from('dsp_series')

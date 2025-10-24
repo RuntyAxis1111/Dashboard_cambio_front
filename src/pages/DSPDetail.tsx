@@ -4,6 +4,7 @@ import { ArrowLeft, Clock } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { SpotifyMetricsCard } from '../components/dsp/SpotifyMetricsCard'
+import { LastSongTracking } from '../components/dsp/LastSongTracking'
 
 interface EntityInfo {
   id: string
@@ -153,8 +154,9 @@ export function DSPDetail() {
       <div className="max-w-7xl mx-auto p-8">
         <h2 className="text-xl font-bold text-gray-900 mb-6">Platform Breakdown</h2>
 
-        <div>
+        <div className="space-y-6">
           {entityId && <SpotifyMetricsCard entidadId={entityId} />}
+          {entityId && <LastSongTracking entidadId={entityId} />}
         </div>
       </div>
     </div>

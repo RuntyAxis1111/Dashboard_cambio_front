@@ -433,13 +433,6 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
                 </div>
               )}
             </div>
-
-            {data.cm_timestamp && (
-              <div className="pt-3 border-t border-gray-300">
-                <div className="text-xs text-gray-600 mb-1">Last Update</div>
-                <div className="text-xs text-gray-900 font-medium">{formatTimestamp(data.cm_timestamp)}</div>
-              </div>
-            )}
           </div>
         </div>
 

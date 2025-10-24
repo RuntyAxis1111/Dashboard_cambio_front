@@ -323,7 +323,7 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
     },
     {
       platform: 'Genius',
-      logo: '/assets/image copy copy copy copy copy copy copy copy.png',
+      logo: '/assets/geniusicon.png',
       metrics: [
         {
           label: 'Page Views',
@@ -369,7 +369,7 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
     <div className="bg-white border border-gray-200 rounded-2xl p-6">
       <div className="flex items-center gap-3 mb-6">
         <Music className="w-6 h-6 text-gray-700" />
-        <h3 className="text-xl font-bold text-gray-900">Last Song Tracking</h3>
+        <h3 className="text-xl font-bold text-gray-900">Latest Song Release</h3>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">

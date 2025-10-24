@@ -255,7 +255,7 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
     },
     {
       platform: 'Shazam',
-      logo: '/assets/image copy copy copy copy copy copy copy copy copy copy copy copy.png',
+      logo: '/shazam.png',
       metrics: [
         {
           label: 'Count',
@@ -268,17 +268,8 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
       ]
     },
     {
-      platform: 'Apple Music',
-      logo: '/assets/applemusicicon.png',
-      metrics: [],
-      additionalInfo: [
-        { label: 'Playlists', value: data.num_am_playlists },
-        { label: 'Editorial', value: data.num_am_editorial_playlists }
-      ]
-    },
-    {
       platform: 'Deezer',
-      logo: '/assets/image copy copy copy copy copy copy copy copy copy copy copy.png',
+      logo: '/deezer.png',
       metrics: [
         {
           label: 'Playlist Reach',
@@ -296,7 +287,7 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
     },
     {
       platform: 'Pandora',
-      logo: '/assets/image copy copy copy copy copy copy copy copy copy copy.png',
+      logo: '/pandora.png',
       metrics: [
         {
           label: 'Streams',
@@ -318,7 +309,7 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
     },
     {
       platform: 'SoundCloud',
-      logo: '/assets/image copy copy copy copy copy copy copy copy copy.png',
+      logo: '/soundcloud-logo.png',
       metrics: [
         {
           label: 'Plays',

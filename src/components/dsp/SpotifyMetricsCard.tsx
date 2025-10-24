@@ -1,6 +1,6 @@
 import { ExternalLink, AlertTriangle } from 'lucide-react'
 import { useDSPMetrics } from '../../hooks/useDSPMetrics'
-import { formatNumber, formatDeltaWithAbs, formatRatio, getDeltaColor } from '../../lib/format-utils'
+import { formatNumber, formatDeltaWithAbs, getDeltaColor } from '../../lib/format-utils'
 
 interface SpotifyMetricsCardProps {
   entidadId: string
@@ -90,14 +90,12 @@ export function SpotifyMetricsCard({ entidadId }: SpotifyMetricsCardProps) {
   const followers = latest.followers
   const listeners = latest.listeners
   const popularity = latest.popularity
-  const flRatio = latest.fl_ratio
 
   const followersSeries = series.followers || []
   const listenersSeries = series.listeners || []
   const popularitySeries = series.popularity || []
-  const flRatioSeries = series.fl_ratio || []
 
-  const hasAnyData = followers || listeners || popularity || flRatio
+  const hasAnyData = followers || listeners || popularity
 
   if (!hasAnyData) {
     return (
@@ -177,37 +175,22 @@ export function SpotifyMetricsCard({ entidadId }: SpotifyMetricsCardProps) {
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <div className="flex items-baseline justify-between mb-2">
-              <span className="text-xs font-medium text-gray-600">Popularity</span>
-              <span className="text-xl font-bold text-gray-900">
-                {popularity?.value !== null && popularity?.value !== undefined ? popularity.value.toFixed(0) : '—'}
-              </span>
-            </div>
-
-            <div className="flex flex-wrap gap-2 mb-2">
-              <DeltaChip value={popularity?.week_diff} pct={popularity?.week_pct} label="7d" />
-              <DeltaChip value={popularity?.month_diff} pct={popularity?.month_pct} label="30d" />
-            </div>
-
-            {popularitySeries.length >= 2 && (
-              <SimpleSparkline data={popularitySeries} className="text-purple-600 mt-2" />
-            )}
+        <div>
+          <div className="flex items-baseline justify-between mb-2">
+            <span className="text-sm font-medium text-gray-600">Popularity</span>
+            <span className="text-3xl font-bold text-gray-900">
+              {popularity?.value !== null && popularity?.value !== undefined ? popularity.value.toFixed(0) : '—'}
+            </span>
           </div>
 
-          <div>
-            <div className="flex items-baseline justify-between mb-2">
-              <span className="text-xs font-medium text-gray-600">F/L Ratio</span>
-              <span className="text-xl font-bold text-gray-900">
-                {flRatio?.value !== null && flRatio?.value !== undefined ? formatRatio(flRatio.value) : '—'}
-              </span>
-            </div>
-
-            {flRatioSeries.length >= 2 && (
-              <SimpleSparkline data={flRatioSeries} className="text-orange-600 mt-2" />
-            )}
+          <div className="flex flex-wrap gap-2 mb-2">
+            <DeltaChip value={popularity?.week_diff} pct={popularity?.week_pct} label="7d" />
+            <DeltaChip value={popularity?.month_diff} pct={popularity?.month_pct} label="30d" />
           </div>
+
+          {popularitySeries.length >= 2 && (
+            <SimpleSparkline data={popularitySeries} className="text-purple-600" />
+          )}
         </div>
       </div>
 

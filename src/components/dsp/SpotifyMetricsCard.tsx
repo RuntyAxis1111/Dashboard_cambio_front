@@ -138,59 +138,65 @@ export function SpotifyMetricsCard({ entidadId }: SpotifyMetricsCardProps) {
         )}
       </div>
 
-      <div className="space-y-6">
-        <div>
-          <div className="flex items-baseline justify-between mb-2">
-            <span className="text-sm font-medium text-gray-600">Followers</span>
-            <span className="text-3xl font-bold text-gray-900">
-              {followers?.value !== null && followers?.value !== undefined ? formatNumber(followers.value) : '—'}
-            </span>
+      <div className="grid grid-cols-2 gap-6">
+        <div className="space-y-4">
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+            <div className="flex items-baseline justify-between mb-2">
+              <span className="text-sm font-medium text-gray-600">Followers</span>
+              <span className="text-3xl font-bold text-gray-900">
+                {followers?.value !== null && followers?.value !== undefined ? formatNumber(followers.value) : '—'}
+              </span>
+            </div>
+
+            <div className="flex flex-wrap gap-2 mb-2">
+              <DeltaChip value={followers?.week_diff} pct={followers?.week_pct} label="7d" />
+              <DeltaChip value={followers?.month_diff} pct={followers?.month_pct} label="30d" />
+            </div>
+
+            {followersSeries.length >= 2 && (
+              <SimpleSparkline data={followersSeries} className="text-green-600" />
+            )}
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-2">
-            <DeltaChip value={followers?.week_diff} pct={followers?.week_pct} label="7d" />
-            <DeltaChip value={followers?.month_diff} pct={followers?.month_pct} label="30d" />
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+            <div className="flex items-baseline justify-between mb-2">
+              <span className="text-sm font-medium text-gray-600">Monthly Listeners</span>
+              <span className="text-3xl font-bold text-gray-900">
+                {listeners?.value !== null && listeners?.value !== undefined ? formatNumber(listeners.value) : '—'}
+              </span>
+            </div>
+
+            <div className="flex flex-wrap gap-2 mb-2">
+              <DeltaChip value={listeners?.week_diff} pct={listeners?.week_pct} label="7d" />
+              <DeltaChip value={listeners?.month_diff} pct={listeners?.month_pct} label="30d" />
+            </div>
+
+            {listenersSeries.length >= 2 && (
+              <SimpleSparkline data={listenersSeries} className="text-blue-600" />
+            )}
           </div>
 
-          {followersSeries.length >= 2 && (
-            <SimpleSparkline data={followersSeries} className="text-green-600" />
-          )}
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+            <div className="flex items-baseline justify-between mb-2">
+              <span className="text-sm font-medium text-gray-600">Popularity</span>
+              <span className="text-3xl font-bold text-gray-900">
+                {popularity?.value !== null && popularity?.value !== undefined ? popularity.value.toFixed(0) : '—'}
+              </span>
+            </div>
+
+            <div className="flex flex-wrap gap-2 mb-2">
+              <DeltaChip value={popularity?.week_diff} pct={popularity?.week_pct} label="7d" />
+              <DeltaChip value={popularity?.month_diff} pct={popularity?.month_pct} label="30d" />
+            </div>
+
+            {popularitySeries.length >= 2 && (
+              <SimpleSparkline data={popularitySeries} className="text-purple-600" />
+            )}
+          </div>
         </div>
 
-        <div>
-          <div className="flex items-baseline justify-between mb-2">
-            <span className="text-sm font-medium text-gray-600">Monthly Listeners</span>
-            <span className="text-3xl font-bold text-gray-900">
-              {listeners?.value !== null && listeners?.value !== undefined ? formatNumber(listeners.value) : '—'}
-            </span>
-          </div>
-
-          <div className="flex flex-wrap gap-2 mb-2">
-            <DeltaChip value={listeners?.week_diff} pct={listeners?.week_pct} label="7d" />
-            <DeltaChip value={listeners?.month_diff} pct={listeners?.month_pct} label="30d" />
-          </div>
-
-          {listenersSeries.length >= 2 && (
-            <SimpleSparkline data={listenersSeries} className="text-blue-600" />
-          )}
-        </div>
-
-        <div>
-          <div className="flex items-baseline justify-between mb-2">
-            <span className="text-sm font-medium text-gray-600">Popularity</span>
-            <span className="text-3xl font-bold text-gray-900">
-              {popularity?.value !== null && popularity?.value !== undefined ? popularity.value.toFixed(0) : '—'}
-            </span>
-          </div>
-
-          <div className="flex flex-wrap gap-2 mb-2">
-            <DeltaChip value={popularity?.week_diff} pct={popularity?.week_pct} label="7d" />
-            <DeltaChip value={popularity?.month_diff} pct={popularity?.month_pct} label="30d" />
-          </div>
-
-          {popularitySeries.length >= 2 && (
-            <SimpleSparkline data={popularitySeries} className="text-purple-600" />
-          )}
+        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+          <p className="text-sm text-gray-500 text-center">Espacio para contenido adicional</p>
         </div>
       </div>
 

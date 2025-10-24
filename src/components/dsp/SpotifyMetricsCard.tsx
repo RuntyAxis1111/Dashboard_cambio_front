@@ -1,6 +1,6 @@
-import { ExternalLink, TrendingUp, Flame, Target, Zap, AlertTriangle } from 'lucide-react'
+import { ExternalLink, AlertTriangle } from 'lucide-react'
 import { useDSPMetrics } from '../../hooks/useDSPMetrics'
-import { formatNumber, formatDeltaWithAbs, formatRatio, formatDateShort, getDeltaColor } from '../../lib/format-utils'
+import { formatNumber, formatDeltaWithAbs, formatRatio, getDeltaColor } from '../../lib/format-utils'
 
 interface SpotifyMetricsCardProps {
   entidadId: string
@@ -40,17 +40,6 @@ function SimpleSparkline({ data, className = '' }: { data: { ts: string; value: 
   )
 }
 
-function MetricChip({ label, tooltip }: { label: string; tooltip?: string }) {
-  return (
-    <div
-      className="inline-flex items-center gap-1 px-2.5 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium"
-      title={tooltip}
-    >
-      {label}
-    </div>
-  )
-}
-
 function DeltaChip({ value, pct, label }: { value?: number | null; pct?: number | null; label: string }) {
   if ((value === null || value === undefined) && (pct === null || pct === undefined)) {
     return (
@@ -71,7 +60,7 @@ function DeltaChip({ value, pct, label }: { value?: number | null; pct?: number 
 }
 
 export function SpotifyMetricsCard({ entidadId }: SpotifyMetricsCardProps) {
-  const { latest, series, insights, loading, error } = useDSPMetrics(entidadId, 'spotify', 30)
+  const { latest, series, loading, error } = useDSPMetrics(entidadId, 'spotify', 30)
 
   if (loading) {
     return (
@@ -161,7 +150,6 @@ export function SpotifyMetricsCard({ entidadId }: SpotifyMetricsCardProps) {
           </div>
 
           <div className="flex flex-wrap gap-2 mb-2">
-            <DeltaChip value={followers?.day_diff} pct={null} label="24h" />
             <DeltaChip value={followers?.week_diff} pct={followers?.week_pct} label="7d" />
             <DeltaChip value={followers?.month_diff} pct={followers?.month_pct} label="30d" />
           </div>
@@ -180,7 +168,6 @@ export function SpotifyMetricsCard({ entidadId }: SpotifyMetricsCardProps) {
           </div>
 
           <div className="flex flex-wrap gap-2 mb-2">
-            <DeltaChip value={listeners?.day_diff} pct={null} label="24h" />
             <DeltaChip value={listeners?.week_diff} pct={listeners?.week_pct} label="7d" />
             <DeltaChip value={listeners?.month_diff} pct={listeners?.month_pct} label="30d" />
           </div>
@@ -199,11 +186,10 @@ export function SpotifyMetricsCard({ entidadId }: SpotifyMetricsCardProps) {
               </span>
             </div>
 
-            {popularity?.week_diff !== null && popularity?.week_diff !== undefined && (
-              <div className={`text-xs font-medium ${getDeltaColor(popularity.week_diff)}`}>
-                {popularity.week_diff > 0 ? '+' : ''}{popularity.week_diff.toFixed(1)} (7d)
-              </div>
-            )}
+            <div className="flex flex-wrap gap-2 mb-2">
+              <DeltaChip value={popularity?.week_diff} pct={popularity?.week_pct} label="7d" />
+              <DeltaChip value={popularity?.month_diff} pct={popularity?.month_pct} label="30d" />
+            </div>
 
             {popularitySeries.length >= 2 && (
               <SimpleSparkline data={popularitySeries} className="text-purple-600 mt-2" />
@@ -225,64 +211,6 @@ export function SpotifyMetricsCard({ entidadId }: SpotifyMetricsCardProps) {
         </div>
       </div>
 
-      {insights && (
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4" />
-            Highlights
-          </h4>
-          <div className="flex flex-wrap gap-2">
-            {insights.streak_days !== null && insights.streak_days > 0 && (
-              <MetricChip
-                label={`${insights.streak_days}d streak`}
-                tooltip={`${insights.streak_days} días consecutivos con crecimiento positivo`}
-              />
-            )}
-
-            {insights.best_day_value !== null && insights.best_day_date && (
-              <MetricChip
-                label={`Best: ${formatNumber(insights.best_day_value)} (${formatDateShort(insights.best_day_date)})`}
-                tooltip={`Mejor día: ${formatNumber(insights.best_day_value)} followers el ${formatDateShort(insights.best_day_date)}`}
-              />
-            )}
-
-            {insights.velocity_3d !== null && (
-              <MetricChip
-                label={`3d: ${formatNumber(insights.velocity_3d)}/day`}
-                tooltip={`Velocidad promedio últimos 3 días: ${formatNumber(insights.velocity_3d)} followers/día`}
-              />
-            )}
-
-            {insights.velocity_7d !== null && (
-              <MetricChip
-                label={`7d: ${formatNumber(insights.velocity_7d)}/day`}
-                tooltip={`Velocidad promedio últimos 7 días: ${formatNumber(insights.velocity_7d)} followers/día`}
-              />
-            )}
-
-            {insights.eta_days !== null && insights.eta_target_label && (
-              <MetricChip
-                label={`ETA ${insights.eta_target_label}: ${insights.eta_days.toFixed(0)}d`}
-                tooltip={`Días estimados para llegar a ${insights.eta_target_label}`}
-              />
-            )}
-
-            {insights.anomaly === true && (
-              <div className="inline-flex items-center gap-1 px-2.5 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-xs font-medium">
-                <Zap className="w-3 h-3" />
-                Anomalía
-              </div>
-            )}
-
-            {insights.capture_rate_per_1k !== null && (
-              <MetricChip
-                label={`Capture: ${insights.capture_rate_per_1k.toFixed(2)}/1K`}
-                tooltip={`${insights.capture_rate_per_1k.toFixed(2)} nuevos followers por cada 1,000 listeners`}
-              />
-            )}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

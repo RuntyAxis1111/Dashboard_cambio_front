@@ -12,18 +12,10 @@ interface EntityInfo {
   imagen_url: string | null
 }
 
-interface DSPHighlight {
-  id: string
-  highlight_key: string
-  title: string
-  content: string
-  display_order: number
-}
 
 export function DSPDetail() {
   const { entityId } = useParams<{ entityId: string }>()
   const [entity, setEntity] = useState<EntityInfo | null>(null)
-  const [dspHighlights, setDspHighlights] = useState<DSPHighlight[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -40,17 +32,6 @@ export function DSPDetail() {
         if (entityError) throw entityError
         setEntity(entityData)
 
-        const { data: highlightsData, error: highlightsError } = await supabase
-          .from('dsp_highlights')
-          .select('*')
-          .eq('entity_id', entityId)
-          .order('display_order', { ascending: true })
-
-        if (highlightsError) {
-          console.error('Error loading highlights:', highlightsError)
-        } else {
-          setDspHighlights(highlightsData || [])
-        }
       } catch (error) {
         console.error('Error loading DSP data:', error)
       } finally {
@@ -127,26 +108,6 @@ export function DSPDetail() {
       </div>
 
       <div className="max-w-7xl mx-auto p-8">
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-gray-900 rounded-lg">
-              <img src="/assets/artificial-intelligence.png" alt="AI" className="w-5 h-5" />
-            </div>
-            <h2 className="text-xl font-bold text-gray-900">Highlights / Overall Summary</h2>
-          </div>
-          <div className="space-y-2 text-gray-700">
-            {dspHighlights.length > 0 ? (
-              dspHighlights.map((highlight) => (
-                <p key={highlight.id} className="leading-relaxed">
-                  <span className="font-semibold">{highlight.title}:</span> {highlight.content}
-                </p>
-              ))
-            ) : (
-              <p className="leading-relaxed text-gray-500">No highlights available. Please add highlights from your backend.</p>
-            )}
-          </div>
-        </div>
-
         <h2 className="text-xl font-bold text-gray-900 mb-6">Platform Breakdown</h2>
 
         <div className="mb-8">

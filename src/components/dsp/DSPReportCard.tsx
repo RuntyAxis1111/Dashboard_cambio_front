@@ -13,8 +13,12 @@ interface DSPReportCardProps {
 
 function formatNumber(num: number | null | undefined): string {
   if (num === null || num === undefined) return '0'
-  if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`
-  if (num >= 1000) return `${(num / 1000).toFixed(1)}K`
+
+  const absNum = Math.abs(num)
+  const sign = num < 0 ? '-' : ''
+
+  if (absNum >= 1000000) return `${sign}${(absNum / 1000000).toFixed(1)}M`
+  if (absNum >= 1000) return `${sign}${(absNum / 1000).toFixed(1)}K`
   return num.toString()
 }
 

@@ -129,30 +129,36 @@ export function Weeklies() {
 
         const { data: latestData, error: latestError } = await supabase
           .from('v_dsp_latest')
-          .select('entidad_id, platform, metric, value, week_diff')
+          .select('entity_id, dsp, followers_total, monthly_listeners')
 
         if (latestError) throw latestError
+
+        const { data: delta7dData, error: delta7dError } = await supabase
+          .from('v_dsp_delta_7d')
+          .select('entity_id, dsp, followers_delta_7d, listeners_delta_7d')
+
+        if (delta7dError) throw delta7dError
 
         const entityMap = new Map<string, DSPEntitySummary>()
 
         entitiesData?.forEach((entity) => {
-          const followers = latestData?.find(
-            (d) => d.entidad_id === entity.id && d.platform === 'spotify' && d.metric === 'followers'
+          const spotifyLatest = latestData?.find(
+            (d) => d.entity_id === entity.id && d.dsp === 'spotify'
           )
-          const listeners = latestData?.find(
-            (d) => d.entidad_id === entity.id && d.platform === 'spotify' && d.metric === 'listeners'
+          const spotifyDelta = delta7dData?.find(
+            (d) => d.entity_id === entity.id && d.dsp === 'spotify'
           )
 
-          if (followers || listeners) {
+          if (spotifyLatest) {
             entityMap.set(entity.id, {
               entity_id: entity.id,
               entity_name: entity.nombre,
               entity_slug: entity.slug,
               imagen_url: entity.imagen_url,
-              total_followers: followers?.value || 0,
-              total_listeners: listeners?.value || 0,
-              followers_delta_7d: followers?.week_diff || 0,
-              listeners_delta_7d: listeners?.week_diff || 0,
+              total_followers: spotifyLatest.followers_total || 0,
+              total_listeners: spotifyLatest.monthly_listeners || 0,
+              followers_delta_7d: spotifyDelta?.followers_delta_7d || 0,
+              listeners_delta_7d: spotifyDelta?.listeners_delta_7d || 0,
               last_update: new Date().toISOString()
             })
           }

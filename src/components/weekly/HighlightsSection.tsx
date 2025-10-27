@@ -9,6 +9,24 @@ interface HighlightsSectionProps {
   items: Highlight[]
 }
 
+function formatTextWithColoredPercentages(text: string) {
+  const percentageRegex = /([+\-][\d,]+;?\s*[+\-]?\d+(?:\.\d+)?%)/g
+  const parts = text.split(percentageRegex)
+
+  return parts.map((part, idx) => {
+    if (percentageRegex.test(part)) {
+      const isPositive = part.includes('+')
+      const colorClass = isPositive ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'
+      return (
+        <span key={idx} className={colorClass}>
+          {part}
+        </span>
+      )
+    }
+    return <span key={idx}>{part}</span>
+  })
+}
+
 export function HighlightsSection({ items }: HighlightsSectionProps) {
   if (!items || items.length === 0) {
     return (
@@ -24,7 +42,9 @@ export function HighlightsSection({ items }: HighlightsSectionProps) {
         <div key={index} className="flex items-start gap-3">
           <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
           <div className="flex-1">
-            <span className="text-gray-900">{item.text}</span>
+            <span className="text-gray-900">
+              {formatTextWithColoredPercentages(item.text)}
+            </span>
             {item.link && (
               <a
                 href={item.link}

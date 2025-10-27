@@ -331,22 +331,6 @@ export function ReportDetail() {
               <div>
                 <h2 className="text-lg font-semibold text-black mb-3 flex items-center gap-2">
                   <Calendar className="w-5 h-5" />
-                  Past Week
-                </h2>
-                <div className="space-y-1">
-                  {reportStatus?.semana_pasada_inicio && reportStatus?.semana_pasada_fin ? (
-                    <p className="text-gray-700">
-                      {formatDateShort(reportStatus.semana_pasada_inicio)} → {formatDateShort(reportStatus.semana_pasada_fin)}
-                    </p>
-                  ) : (
-                    <p className="text-gray-500 text-sm">No data available</p>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <h2 className="text-lg font-semibold text-black mb-3 flex items-center gap-2">
-                  <Calendar className="w-5 h-5" />
                   Current Week
                 </h2>
                 <div className="space-y-1">
@@ -366,6 +350,22 @@ export function ReportDetail() {
                         </span>
                       </p>
                     </>
+                  ) : (
+                    <p className="text-gray-500 text-sm">No data available</p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold text-black mb-3 flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  Past Week
+                </h2>
+                <div className="space-y-1">
+                  {reportStatus?.semana_pasada_inicio && reportStatus?.semana_pasada_fin ? (
+                    <p className="text-gray-700">
+                      {formatDateShort(reportStatus.semana_pasada_inicio)} → {formatDateShort(reportStatus.semana_pasada_fin)}
+                    </p>
                   ) : (
                     <p className="text-gray-500 text-sm">No data available</p>
                   )}

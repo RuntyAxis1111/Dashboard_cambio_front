@@ -43,7 +43,14 @@ export function Weeklies() {
           .order('nombre', { ascending: true })
 
         if (error) throw error
-        setLiveReports(data || [])
+
+        const sortedData = (data || []).sort((a, b) => {
+          if (a.status === 'ready' && b.status !== 'ready') return -1
+          if (a.status !== 'ready' && b.status === 'ready') return 1
+          return a.nombre.localeCompare(b.nombre)
+        })
+
+        setLiveReports(sortedData)
       } catch (error) {
         console.error('Error loading live reports:', error)
         setLiveReports([])
@@ -161,6 +168,7 @@ export function Weeklies() {
                 artistName={report.nombre}
                 weekEnd={report.semana_fin}
                 imageUrl={report.imagen_url}
+                status={report.status}
               />
             ))}
           </div>

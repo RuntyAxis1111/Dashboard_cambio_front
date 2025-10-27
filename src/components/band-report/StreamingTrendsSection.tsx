@@ -34,8 +34,8 @@ export function StreamingTrendsSection({ metrics }: StreamingTrendsSectionProps)
               <thead>
                 <tr className="border-b border-gray-300">
                   <th className="text-left py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Metric</th>
-                  <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">This Week</th>
-                  <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Previous</th>
+                  <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Current</th>
+                  <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Past Week</th>
                   <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Δ%</th>
                 </tr>
               </thead>
@@ -64,8 +64,8 @@ export function StreamingTrendsSection({ metrics }: StreamingTrendsSectionProps)
               <thead>
                 <tr className="border-b border-gray-300">
                   <th className="text-left py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Metric</th>
-                  <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">This Week</th>
-                  <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Previous</th>
+                  <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Current</th>
+                  <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Past Week</th>
                   <th className="text-right py-2 px-2 sm:px-3 lg:px-4 text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">Δ%</th>
                 </tr>
               </thead>

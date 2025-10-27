@@ -50,8 +50,8 @@ export function PlatformGrowthSection({ metrics }: PlatformGrowthSectionProps) {
           <thead className="bg-gray-200">
             <tr>
               <th className="text-left px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Platform</th>
-              <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Previous</th>
               <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Current</th>
+              <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Previous</th>
               <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Growth</th>
             </tr>
           </thead>
@@ -66,11 +66,11 @@ export function PlatformGrowthSection({ metrics }: PlatformGrowthSectionProps) {
                     <span>{PLATFORM_LABELS[m.plataforma] || m.plataforma}</span>
                   </div>
                 </td>
-                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right whitespace-nowrap">
-                  {formatNumberCompact(m.valor_prev)}
-                </td>
                 <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black text-right font-medium whitespace-nowrap">
                   {formatNumberCompact(m.valor)}
+                </td>
+                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right whitespace-nowrap">
+                  {formatNumberCompact(m.valor_prev)}
                 </td>
                 <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-right whitespace-nowrap">
                   <span className={getDeltaColor(m.delta_pct)}>

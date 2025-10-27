@@ -39,8 +39,8 @@ export function MembersGrowthSection({ members }: MembersGrowthSectionProps) {
           <thead className="bg-gray-200">
             <tr>
               <th className="text-left px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Member</th>
-              <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Previous</th>
               <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Current</th>
+              <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Past Week</th>
               <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Growth</th>
             </tr>
           </thead>
@@ -50,11 +50,11 @@ export function MembersGrowthSection({ members }: MembersGrowthSectionProps) {
                 <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black font-medium whitespace-nowrap">
                   {member.participante_nombre}
                 </td>
-                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right whitespace-nowrap">
-                  {formatNumberCompact(member.valor_prev)}
-                </td>
                 <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black text-right font-medium whitespace-nowrap">
                   {formatNumberCompact(member.valor)}
+                </td>
+                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right whitespace-nowrap">
+                  {formatNumberCompact(member.valor_prev)}
                 </td>
                 <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-right whitespace-nowrap">
                   <span className={getDeltaColor(member.delta_pct)}>
@@ -67,11 +67,11 @@ export function MembersGrowthSection({ members }: MembersGrowthSectionProps) {
               <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black font-bold whitespace-nowrap">
                 Total
               </td>
-              <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right font-medium whitespace-nowrap">
-                {formatNumberCompact(totalPrev)}
-              </td>
               <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black text-right font-bold whitespace-nowrap">
                 {formatNumberCompact(totalCurrent)}
+              </td>
+              <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right font-medium whitespace-nowrap">
+                {formatNumberCompact(totalPrev)}
               </td>
               <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-right font-medium whitespace-nowrap">
                 <span className={getDeltaColor(totalDeltaPct)}>

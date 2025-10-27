@@ -35,7 +35,6 @@ export function PlatformGrowthSection({ metrics }: PlatformGrowthSectionProps) {
     return <p className="text-gray-500">No data for this section yet</p>
   }
 
-  let totalMetric = metrics.find(m => m.plataforma === 'total')
   const regularMetrics = metrics.filter(m => m.plataforma !== 'total')
 
   const sortedMetrics = [...regularMetrics].sort((a, b) => {
@@ -43,22 +42,6 @@ export function PlatformGrowthSection({ metrics }: PlatformGrowthSectionProps) {
     const deltaB = b.delta_num || 0
     return deltaB - deltaA
   })
-
-  if (!totalMetric && sortedMetrics.length > 0) {
-    const totalPrev = sortedMetrics.reduce((sum, m) => sum + (m.valor_prev || 0), 0)
-    const totalCurrent = sortedMetrics.reduce((sum, m) => sum + m.valor, 0)
-    const totalDeltaNum = totalCurrent - totalPrev
-    const totalDeltaPct = totalPrev > 0 ? (totalDeltaNum / totalPrev) * 100 : 0
-
-    totalMetric = {
-      plataforma: 'total',
-      valor: totalCurrent,
-      valor_prev: totalPrev,
-      delta_num: totalDeltaNum,
-      delta_pct: totalDeltaPct,
-      orden: 999
-    }
-  }
 
   return (
     <div className="bg-gray-50 border border-gray-300 rounded-xl overflow-hidden">
@@ -96,24 +79,6 @@ export function PlatformGrowthSection({ metrics }: PlatformGrowthSectionProps) {
                 </td>
               </tr>
             ))}
-            {totalMetric && (
-              <tr className="border-t-2 border-gray-300 bg-gray-100">
-                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black font-bold whitespace-nowrap">
-                  {PLATFORM_LABELS[totalMetric.plataforma] || totalMetric.plataforma}
-                </td>
-                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right font-medium whitespace-nowrap">
-                  {formatNumberCompact(totalMetric.valor_prev)}
-                </td>
-                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black text-right font-bold whitespace-nowrap">
-                  {formatNumberCompact(totalMetric.valor)}
-                </td>
-                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-right font-medium whitespace-nowrap">
-                  <span className={getDeltaColor(totalMetric.delta_pct)}>
-                    {formatDeltaNum(totalMetric.delta_num)} ({formatDeltaPct(totalMetric.delta_pct)})
-                  </span>
-                </td>
-              </tr>
-            )}
           </tbody>
         </table>
       </div>

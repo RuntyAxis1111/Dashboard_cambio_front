@@ -10,12 +10,13 @@ interface HighlightsSectionProps {
 }
 
 function formatTextWithColoredPercentages(text: string) {
-  const percentageRegex = /([+\-][\d,]+;?\s*[+\-]?\d+(?:\.\d+)?%)/g
+  const percentageRegex = /(\([+\-][\d,]+;\s*[+\-][\d.]+%\))/g
   const parts = text.split(percentageRegex)
 
   return parts.map((part, idx) => {
-    if (percentageRegex.test(part)) {
-      const isPositive = part.includes('+')
+    const match = part.match(/^\(([+\-])/)
+    if (match) {
+      const isPositive = match[1] === '+'
       const colorClass = isPositive ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'
       return (
         <span key={idx} className={colorClass}>

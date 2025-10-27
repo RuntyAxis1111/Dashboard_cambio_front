@@ -162,7 +162,7 @@ export function Weeklies() {
         })
 
         const dspSummaries = Array.from(entityMap.values()).sort((a, b) =>
-          a.entity_name.localeCompare(b.entity_name)
+          b.total_listeners - a.total_listeners
         )
 
         setDspEntities(dspSummaries)

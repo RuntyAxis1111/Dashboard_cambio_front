@@ -4,6 +4,7 @@ import { Calendar, Database, Download } from 'lucide-react'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { supabase } from '../lib/supabase'
 import { reportKindLabel, isBandReport } from '../lib/report-utils'
+import { formatDateShort } from '../lib/format-utils'
 import { CustomizeReportMenu } from '../components/CustomizeReportMenu'
 import { useReportPreferences } from '../hooks/useReportPreferences'
 import { HighlightsSection } from '../components/band-report/HighlightsSection'
@@ -332,7 +333,7 @@ export function ReportDetail() {
               {reportStatus?.semana_inicio && reportStatus?.semana_fin ? (
                 <>
                   <p className="text-gray-700">
-                    <span className="font-medium">Week:</span> {reportStatus.semana_inicio} → {reportStatus.semana_fin}
+                    <span className="font-medium">Week:</span> {formatDateShort(reportStatus.semana_inicio)} → {formatDateShort(reportStatus.semana_fin)}
                   </p>
                   <p className="text-gray-700">
                     <span className="font-medium">Status:</span>{' '}

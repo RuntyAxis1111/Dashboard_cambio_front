@@ -10,14 +10,15 @@ interface HighlightsSectionProps {
 }
 
 function formatTextWithColoredPercentages(text: string) {
+  // Match patterns like (+6,527,823; +318.3%) or (-1,234; -5.6%)
   const percentageRegex = /(\([+\-][\d,]+;\s*[+\-][\d.]+%\))/g
   const parts = text.split(percentageRegex)
 
   return parts.map((part, idx) => {
-    const match = part.match(/^\(([+\-])/)
-    if (match) {
-      const isPositive = match[1] === '+'
-      const colorClass = isPositive ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'
+    // Check if this part matches our percentage pattern by testing if it starts with (+ or (-
+    if (part.startsWith('(+') || part.startsWith('(-')) {
+      const isPositive = part.startsWith('(+')
+      const colorClass = isPositive ? 'text-green-600 font-bold' : 'text-red-600 font-bold'
       return (
         <span key={idx} className={colorClass}>
           {part}
@@ -37,13 +38,9 @@ export function HighlightsSection({ items }: HighlightsSectionProps) {
     )
   }
 
-  console.log('Highlights items:', items)
-
   return (
     <div className="space-y-3">
-      {items.map((item, index) => {
-        console.log('Item text:', item.text)
-        return (
+      {items.map((item, index) => (
           <div key={index} className="flex items-start gap-3">
             <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
@@ -63,8 +60,7 @@ export function HighlightsSection({ items }: HighlightsSectionProps) {
               )}
             </div>
           </div>
-        )
-      })}
+      ))}
     </div>
   )
 }

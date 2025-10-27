@@ -35,6 +35,8 @@ interface EntityDetail {
 interface ReportStatus {
   semana_inicio: string | null
   semana_fin: string | null
+  semana_pasada_inicio: string | null
+  semana_pasada_fin: string | null
   status: string | null
 }
 
@@ -108,12 +110,12 @@ export function ReportDetail() {
 
         const { data: statusData, error: statusError } = await supabase
           .from('reportes_estado')
-          .select('semana_inicio, semana_fin, status')
+          .select('semana_inicio, semana_fin, semana_pasada_inicio, semana_pasada_fin, status')
           .eq('entidad_id', entityData.id)
           .maybeSingle()
 
         if (statusError) throw statusError
-        setReportStatus(statusData || { semana_inicio: null, semana_fin: null, status: null })
+        setReportStatus(statusData || { semana_inicio: null, semana_fin: null, semana_pasada_inicio: null, semana_pasada_fin: null, status: null })
 
         if (isBandReport(entityData.tipo, entityData.subtipo)) {
           await loadBandReportData(entityData.id)
@@ -325,30 +327,50 @@ export function ReportDetail() {
 
       <div className="report-content max-w-7xl mx-auto px-8 py-8">
           <div className="bg-gray-100 border border-gray-300 rounded-2xl p-6 mb-6 print:hidden">
-            <h2 className="text-lg font-semibold text-black mb-4 flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
-              Current Week
-            </h2>
-            <div className="space-y-2">
-              {reportStatus?.semana_inicio && reportStatus?.semana_fin ? (
-                <>
-                  <p className="text-gray-700">
-                    <span className="font-medium">Week:</span> {formatDateShort(reportStatus.semana_inicio)} → {formatDateShort(reportStatus.semana_fin)}
-                  </p>
-                  <p className="text-gray-700">
-                    <span className="font-medium">Status:</span>{' '}
-                    <span className={`inline-block px-2 py-1 rounded text-sm ${
-                      reportStatus.status === 'ready'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-200 text-gray-700'
-                    }`}>
-                      {reportStatus.status || 'N/A'}
-                    </span>
-                  </p>
-                </>
-              ) : (
-                <p className="text-gray-500">No week data available</p>
-              )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h2 className="text-lg font-semibold text-black mb-3 flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  Past Week
+                </h2>
+                <div className="space-y-1">
+                  {reportStatus?.semana_pasada_inicio && reportStatus?.semana_pasada_fin ? (
+                    <p className="text-gray-700">
+                      {formatDateShort(reportStatus.semana_pasada_inicio)} → {formatDateShort(reportStatus.semana_pasada_fin)}
+                    </p>
+                  ) : (
+                    <p className="text-gray-500 text-sm">No data available</p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold text-black mb-3 flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  Current Week
+                </h2>
+                <div className="space-y-1">
+                  {reportStatus?.semana_inicio && reportStatus?.semana_fin ? (
+                    <>
+                      <p className="text-gray-700">
+                        {formatDateShort(reportStatus.semana_inicio)} → {formatDateShort(reportStatus.semana_fin)}
+                      </p>
+                      <p className="text-gray-700">
+                        <span className="font-medium">Status:</span>{' '}
+                        <span className={`inline-block px-2 py-1 rounded text-sm ${
+                          reportStatus.status === 'ready'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-200 text-gray-700'
+                        }`}>
+                          {reportStatus.status || 'N/A'}
+                        </span>
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-gray-500 text-sm">No data available</p>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 

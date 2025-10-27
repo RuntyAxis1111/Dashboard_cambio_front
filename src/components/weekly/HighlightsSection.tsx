@@ -10,15 +10,18 @@ interface HighlightsSectionProps {
 }
 
 function formatTextWithColoredPercentages(text: string) {
+  console.log('Original text:', text)
   // Match patterns like (+6,527,823; +318.3%) or (-1,234; -5.6%)
   const percentageRegex = /(\([+\-][\d,]+;\s*[+\-][\d.]+%\))/g
   const parts = text.split(percentageRegex)
+  console.log('Split parts:', parts)
 
   return parts.map((part, idx) => {
     // Check if this part matches our percentage pattern by testing if it starts with (+ or (-
     if (part.startsWith('(+') || part.startsWith('(-')) {
       const isPositive = part.startsWith('(+')
       const colorClass = isPositive ? 'text-green-600 font-bold' : 'text-red-600 font-bold'
+      console.log('Matched part:', part, 'isPositive:', isPositive, 'class:', colorClass)
       return (
         <span key={idx} className={colorClass}>
           {part}

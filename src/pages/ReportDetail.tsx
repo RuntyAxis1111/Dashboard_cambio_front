@@ -256,7 +256,6 @@ export function ReportDetail() {
     'top_countries': { component: bandData ? <TopCountriesSection buckets={bandData.topCountries} /> : null },
     'ig_members': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} /> : null },
     'members_growth': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} /> : null },
-    'platform_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
     'social_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
     'sources': { component: bandData ? <SourcesSection sources={bandData.sources} /> : null },
     'spotify_insights': { component: bandData ? <SpotifyInsightsSection items={bandData.spotifyInsights} /> : null },

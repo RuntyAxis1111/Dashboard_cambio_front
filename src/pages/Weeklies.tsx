@@ -1,20 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Database, TrendingUp } from 'lucide-react'
+import { Database } from 'lucide-react'
 import { Breadcrumb } from '../components/Breadcrumb'
-import { ReportCard } from '../components/ReportCard'
 import { DSPReportCard } from '../components/dsp/DSPReportCard'
 import { supabase } from '../lib/supabase'
-
-interface LiveReport {
-  entidad_id: string
-  nombre: string
-  slug: string
-  tipo: string
-  imagen_url: string | null
-  semana_inicio: string | null
-  semana_fin: string | null
-  status: string | null
-}
 
 interface DSPEntitySummary {
   entity_id: string
@@ -29,94 +17,62 @@ interface DSPEntitySummary {
 }
 
 export function Weeklies() {
-  const [liveReports, setLiveReports] = useState<LiveReport[]>([])
-  const [loadingLive, setLoadingLive] = useState(true)
   const [dspEntities, setDspEntities] = useState<DSPEntitySummary[]>([])
-  const [loadingDsp, setLoadingDsp] = useState(true)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function loadLiveReports() {
       try {
-        const { data, error } = await supabase
+        // Get entities with weekly reports
+        const { data: reportsData, error: reportsError } = await supabase
           .from('v_weekly_reports_summary')
           .select('entidad_id, nombre, slug, tipo, imagen_url, semana_inicio, semana_fin, status')
 
-        if (error) throw error
+        if (reportsError) throw reportsError
 
-        const sortedData = (data || []).sort((a, b) => {
-          if (a.status === 'ready' && b.status !== 'ready') return -1
-          if (a.status !== 'ready' && b.status === 'ready') return 1
-          return a.nombre.localeCompare(b.nombre)
+        // Get DSP metrics for these entities
+        const { data: dspData, error: dspError } = await supabase
+          .from('v_dsp_latest')
+          .select('entidad_id, entidad_nombre, platform, metric, valor, week_diff')
+          .eq('platform', 'spotify')
+          .in('metric', ['followers', 'listeners'])
+
+        if (dspError) throw dspError
+
+        // Combine both datasets
+        const entityMap = new Map<string, DSPEntitySummary>()
+
+        reportsData?.forEach((report) => {
+          const followers = dspData?.find(
+            (d) => d.entidad_id === report.entidad_id && d.metric === 'followers'
+          )
+          const listeners = dspData?.find(
+            (d) => d.entidad_id === report.entidad_id && d.metric === 'listeners'
+          )
+
+          entityMap.set(report.entidad_id, {
+            entity_id: report.entidad_id,
+            entity_name: report.nombre,
+            entity_slug: report.slug,
+            imagen_url: report.imagen_url,
+            total_followers: followers?.valor || 0,
+            total_listeners: listeners?.valor || 0,
+            followers_delta_7d: followers?.week_diff || 0,
+            listeners_delta_7d: listeners?.week_diff || 0,
+            last_update: new Date().toISOString()
+          })
         })
 
-        setLiveReports(sortedData)
+        const entities = Array.from(entityMap.values())
+        setDspEntities(entities)
       } catch (error) {
         console.error('Error loading live reports:', error)
-        setLiveReports([])
+        setDspEntities([])
       } finally {
-        setLoadingLive(false)
+        setLoading(false)
       }
     }
     loadLiveReports()
-  }, [])
-
-  useEffect(() => {
-    async function loadDspEntities() {
-      try {
-        const { data: entitiesData, error: entitiesError } = await supabase
-          .from('reportes_entidades')
-          .select('id, nombre, slug, imagen_url')
-          .eq('activo', true)
-
-        if (entitiesError) throw entitiesError
-
-        const { data: seriesData, error: seriesError } = await supabase
-          .from('dsp_series')
-          .select('entidad_id, platform, metric, value, week_diff')
-          .eq('platform', 'spotify')
-          .in('metric', ['followers', 'listeners'])
-          .order('ts', { ascending: false })
-
-        if (seriesError) throw seriesError
-
-        const entityMap = new Map<string, DSPEntitySummary>()
-
-        entitiesData?.forEach((entity) => {
-          const followers = seriesData?.find(
-            (d) => d.entidad_id === entity.id && d.metric === 'followers'
-          )
-          const listeners = seriesData?.find(
-            (d) => d.entidad_id === entity.id && d.metric === 'listeners'
-          )
-
-          if (followers || listeners) {
-            entityMap.set(entity.id, {
-              entity_id: entity.id,
-              entity_name: entity.nombre,
-              entity_slug: entity.slug,
-              imagen_url: entity.imagen_url,
-              total_followers: followers?.value ? parseFloat(followers.value) : 0,
-              total_listeners: listeners?.value ? parseFloat(listeners.value) : 0,
-              followers_delta_7d: followers?.week_diff ? parseFloat(followers.week_diff) : 0,
-              listeners_delta_7d: listeners?.week_diff ? parseFloat(listeners.week_diff) : 0,
-              last_update: new Date().toISOString()
-            })
-          }
-        })
-
-        const dspSummaries = Array.from(entityMap.values()).sort((a, b) =>
-          b.total_listeners - a.total_listeners
-        )
-
-        setDspEntities(dspSummaries)
-      } catch (error) {
-        console.error('Error loading DSP entities:', error)
-        setDspEntities([])
-      } finally {
-        setLoadingDsp(false)
-      }
-    }
-    loadDspEntities()
   }, [])
 
   const breadcrumbItems = [
@@ -136,51 +92,7 @@ export function Weeklies() {
           </p>
         </div>
 
-        {loadingLive ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-gray-100 border border-gray-300 rounded-2xl p-6 animate-pulse" style={{ minHeight: '140px' }}>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 bg-gray-300 rounded-full"></div>
-                  <div className="flex-1">
-                    <div className="h-5 bg-gray-300 rounded mb-2 w-3/4"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : liveReports.length === 0 ? (
-          <div className="bg-gray-100 border border-gray-300 rounded-2xl p-8 text-center" style={{ minHeight: '140px' }}>
-            <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <Database className="w-8 h-8 text-gray-400" />
-            </div>
-            <h3 className="text-lg font-medium text-black mb-2">No reports yet</h3>
-            <p className="text-gray-600">Reports will appear here once created in the database</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {liveReports.map((report) => (
-              <ReportCard
-                key={report.entidad_id}
-                artistId={report.slug}
-                artistName={report.nombre}
-                weekEnd={report.semana_fin}
-                imageUrl={report.imagen_url}
-                status={report.status}
-              />
-            ))}
-          </div>
-        )}
-
-        <div className="relative my-8 border-t border-gray-200">
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white px-3 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-gray-500" />
-            <span className="text-xs text-gray-500">DSP Live Growth</span>
-          </div>
-        </div>
-
-        {loadingDsp ? (
+        {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
               <div key={i} className="bg-gray-100 border border-gray-300 rounded-2xl p-6 animate-pulse" style={{ minHeight: '180px' }}>
@@ -197,10 +109,10 @@ export function Weeklies() {
         ) : dspEntities.length === 0 ? (
           <div className="bg-gray-100 border border-gray-300 rounded-2xl p-8 text-center" style={{ minHeight: '180px' }}>
             <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <TrendingUp className="w-8 h-8 text-gray-400" />
+              <Database className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-medium text-black mb-2">No DSP data yet</h3>
-            <p className="text-gray-600">DSP metrics will appear here once n8n starts collecting data</p>
+            <h3 className="text-lg font-medium text-black mb-2">No reports yet</h3>
+            <p className="text-gray-600">Reports will appear here once created in the database</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

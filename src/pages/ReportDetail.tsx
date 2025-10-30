@@ -248,7 +248,7 @@ export function ReportDetail() {
     'instagram_kpis': { component: bandData ? <InstagramKPIsSection metrics={bandData.instagramKPIs} /> : null },
     'streaming_trends': { component: bandData ? <StreamingTrendsSection metrics={bandData.streamingTrends} /> : null },
     'tiktok_trends': { component: bandData ? <TikTokTrendsSection metrics={bandData.tiktokTrends} /> : null },
-    'mv_totales': { component: bandData ? <MVViewsSection items={bandData.mvItems} /> : null },
+    'mv_totales': { component: bandData ? <MVViewsSection items={bandData.mvItems} entidadId={entity.id} /> : null },
     'demographics': { component: bandData ? <DemographicsSection buckets={bandData.demographics} /> : null },
     'top_countries': { component: bandData ? <TopCountriesSection buckets={bandData.topCountries} /> : null },
     'ig_members': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} /> : null },

@@ -178,50 +178,55 @@ export function Weeklies() {
           </div>
         )}
 
-        <div className="relative my-8 border-t border-gray-200">
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white px-3 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-gray-500" />
-            <span className="text-xs text-gray-500">DSP Live Growth</span>
-          </div>
-        </div>
-
-        {loadingDsp ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-gray-100 border border-gray-300 rounded-2xl p-6 animate-pulse" style={{ minHeight: '180px' }}>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 bg-gray-300 rounded-full"></div>
-                  <div className="flex-1">
-                    <div className="h-5 bg-gray-300 rounded mb-2 w-3/4"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                  </div>
-                </div>
+        {/* DSP Live Growth section - Hidden but code preserved for internal use */}
+        {false && (
+          <>
+            <div className="relative my-8 border-t border-gray-200">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white px-3 flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-gray-500" />
+                <span className="text-xs text-gray-500">DSP Live Growth</span>
               </div>
-            ))}
-          </div>
-        ) : dspEntities.length === 0 ? (
-          <div className="bg-gray-100 border border-gray-300 rounded-2xl p-8 text-center" style={{ minHeight: '180px' }}>
-            <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <TrendingUp className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-medium text-black mb-2">No DSP data yet</h3>
-            <p className="text-gray-600">DSP metrics will appear here once n8n starts collecting data</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {dspEntities.map((entity) => (
-              <DSPReportCard
-                key={entity.entity_id}
-                entityId={entity.entity_id}
-                entityName={entity.entity_name}
-                imageUrl={entity.imagen_url}
-                totalFollowers={entity.total_followers}
-                totalListeners={entity.total_listeners}
-                followersDelta7d={entity.followers_delta_7d}
-                listenersDelta7d={entity.listeners_delta_7d}
-              />
-            ))}
-          </div>
+
+            {loadingDsp ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="bg-gray-100 border border-gray-300 rounded-2xl p-6 animate-pulse" style={{ minHeight: '180px' }}>
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="w-16 h-16 bg-gray-300 rounded-full"></div>
+                      <div className="flex-1">
+                        <div className="h-5 bg-gray-300 rounded mb-2 w-3/4"></div>
+                        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : dspEntities.length === 0 ? (
+              <div className="bg-gray-100 border border-gray-300 rounded-2xl p-8 text-center" style={{ minHeight: '180px' }}>
+                <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <TrendingUp className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 className="text-lg font-medium text-black mb-2">No DSP data yet</h3>
+                <p className="text-gray-600">DSP metrics will appear here once n8n starts collecting data</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {dspEntities.map((entity) => (
+                  <DSPReportCard
+                    key={entity.entity_id}
+                    entityId={entity.entity_id}
+                    entityName={entity.entity_name}
+                    imageUrl={entity.imagen_url}
+                    totalFollowers={entity.total_followers}
+                    totalListeners={entity.total_listeners}
+                    followersDelta7d={entity.followers_delta_7d}
+                    listenersDelta7d={entity.listeners_delta_7d}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

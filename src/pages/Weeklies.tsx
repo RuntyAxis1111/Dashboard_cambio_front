@@ -38,9 +38,8 @@ export function Weeklies() {
     async function loadLiveReports() {
       try {
         const { data, error } = await supabase
-          .from('reportes_v_ultimos')
+          .from('v_weekly_reports_summary')
           .select('entidad_id, nombre, slug, tipo, imagen_url, semana_inicio, semana_fin, status')
-          .order('nombre', { ascending: true })
 
         if (error) throw error
 

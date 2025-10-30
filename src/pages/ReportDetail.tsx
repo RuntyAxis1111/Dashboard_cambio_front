@@ -240,10 +240,14 @@ export function ReportDetail() {
     )
   }
 
+  const handleReportUpdate = () => {
+    window.location.reload()
+  }
+
   const showBandReport = isBandReport(entity.tipo, entity.subtipo)
   const sectionMap: Record<string, { component: JSX.Element | null }> = {
-    'highlights': { component: bandData ? <HighlightsSection items={bandData.highlights} /> : null },
-    'fan_sentiment': { component: bandData ? <FanSentimentSection items={bandData.sentiment} /> : null },
+    'highlights': { component: bandData ? <HighlightsSection items={bandData.highlights} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
+    'fan_sentiment': { component: bandData ? <FanSentimentSection items={bandData.sentiment} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
     'instagram_kpis': { component: bandData ? <InstagramKPIsSection metrics={bandData.instagramKPIs} /> : null },
     'streaming_trends': { component: bandData ? <StreamingTrendsSection metrics={bandData.streamingTrends} /> : null },
     'tiktok_trends': { component: bandData ? <TikTokTrendsSection metrics={bandData.tiktokTrends} /> : null },
@@ -252,12 +256,12 @@ export function ReportDetail() {
     'top_countries': { component: bandData ? <TopCountriesSection buckets={bandData.topCountries} /> : null },
     'ig_members': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} /> : null },
     'members_growth': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} /> : null },
-    'platform_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} /> : null },
-    'social_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} /> : null },
+    'platform_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
+    'social_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
     'sources': { component: bandData ? <SourcesSection sources={bandData.sources} /> : null },
     'spotify_insights': { component: bandData ? <SpotifyInsightsSection items={bandData.spotifyInsights} /> : null },
     'pr_press': { component: bandData ? <PRPressSection items={bandData.prPress} /> : null },
-    'weekly_content': { component: bandData ? <WeeklyContentSection items={bandData.weeklyContent} /> : null },
+    'weekly_content': { component: bandData ? <WeeklyContentSection items={bandData.weeklyContent} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
     'top_posts': { component: bandData ? <TopPostsSection posts={bandData.topPosts} /> : null }
   }
 

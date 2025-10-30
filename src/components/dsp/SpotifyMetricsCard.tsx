@@ -103,7 +103,9 @@ export function SpotifyMetricsCard({ entidadId }: SpotifyMetricsCardProps) {
           .order('id', { ascending: true })
 
         if (error) throw error
-        setPlaylists(data || [])
+        // Filter only playlists with images
+        const playlistsWithImages = (data || []).filter(p => p.imagen_url)
+        setPlaylists(playlistsWithImages)
       } catch (err) {
         console.error('Error loading playlists:', err)
       } finally {

@@ -71,26 +71,49 @@ export function PlatformGrowthSection({ metrics, entidadId, onUpdate }: Platform
 
     setIsSaving(true)
     try {
-      for (const metric of editedMetrics) {
-        if (metric.valor > 0 || metric.valor_prev || 0 > 0) {
-          const { error } = await supabase
-            .from('reportes_metricas')
-            .upsert({
-              entidad_id: entidadId,
-              seccion_clave: 'social_growth',
-              metrica_clave: 'seguidores',
-              plataforma: metric.plataforma,
-              unidad: 'count',
-              valor: metric.valor,
-              valor_prev: metric.valor_prev,
-              delta_num: metric.delta_num,
-              delta_pct: metric.delta_pct,
-              orden: metric.orden
-            }, {
-              onConflict: 'entidad_id,seccion_clave,metrica_clave,plataforma'
-            })
+      const { data: existingMetrics } = await supabase
+        .from('reportes_metricas')
+        .select('id, plataforma')
+        .eq('entidad_id', entidadId)
+        .eq('seccion_clave', 'social_growth')
+        .eq('metrica_clave', 'seguidores')
 
-          if (error) throw error
+      for (const metric of editedMetrics) {
+        if (metric.valor > 0 || (metric.valor_prev && metric.valor_prev > 0)) {
+          const existingMetric = existingMetrics?.find(m => m.plataforma === metric.plataforma)
+
+          if (existingMetric) {
+            const { error } = await supabase
+              .from('reportes_metricas')
+              .update({
+                valor: metric.valor,
+                valor_prev: metric.valor_prev,
+                delta_num: metric.delta_num,
+                delta_pct: metric.delta_pct,
+                orden: metric.orden,
+                updated_at: new Date().toISOString()
+              })
+              .eq('id', existingMetric.id)
+
+            if (error) throw error
+          } else {
+            const { error } = await supabase
+              .from('reportes_metricas')
+              .insert({
+                entidad_id: entidadId,
+                seccion_clave: 'social_growth',
+                metrica_clave: 'seguidores',
+                plataforma: metric.plataforma,
+                unidad: 'count',
+                valor: metric.valor,
+                valor_prev: metric.valor_prev,
+                delta_num: metric.delta_num,
+                delta_pct: metric.delta_pct,
+                orden: metric.orden
+              })
+
+            if (error) throw error
+          }
         }
       }
 

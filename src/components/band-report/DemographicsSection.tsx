@@ -122,6 +122,12 @@ function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
   )
 }
 
+function getAgeRangeStart(bucket: string): number {
+  if (bucket === '65+') return 65
+  const match = bucket.match(/^(\d+)/)
+  return match ? parseInt(match[1]) : 0
+}
+
 export function DemographicsSection({ buckets }: DemographicsSectionProps) {
   if (buckets.length === 0) {
     return (
@@ -132,7 +138,7 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
   }
 
   const genderData = buckets.filter(b => b.dimension === 'gender').sort((a, b) => b.valor_num - a.valor_num)
-  const ageData = buckets.filter(b => b.dimension === 'age').sort((a, b) => b.valor_num - a.valor_num)
+  const ageData = buckets.filter(b => b.dimension === 'age').sort((a, b) => getAgeRangeStart(a.bucket) - getAgeRangeStart(b.bucket))
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -18,7 +18,6 @@ import { TopCountriesSection } from '../components/band-report/TopCountriesSecti
 import { MembersGrowthSection } from '../components/band-report/MembersGrowthSection'
 import { PlatformGrowthSection } from '../components/band-report/PlatformGrowthSection'
 import { SourcesSection } from '../components/band-report/SourcesSection'
-import { SpotifyInsightsSection } from '../components/band-report/SpotifyInsightsSection'
 import { PRPressSection } from '../components/band-report/PRPressSection'
 import { WeeklyContentSection } from '../components/band-report/WeeklyContentSection'
 import { TopPostsSection } from '../components/band-report/TopPostsSection'
@@ -60,7 +59,6 @@ interface BandReportData {
   membersGrowth: any[]
   platformGrowth: any[]
   sources: any[]
-  spotifyInsights: any[]
   prPress: any[]
   weeklyContent: any[]
   topPosts: any[]
@@ -144,7 +142,6 @@ export function ReportDetail() {
           membersRes,
           platformGrowthRes,
           sourcesRes,
-          spotifyInsightsRes,
           prPressRes,
           weeklyContentRes,
           topPostsRes,
@@ -161,7 +158,6 @@ export function ReportDetail() {
           supabase.from('reportes_metricas').select('*, participante:reportes_participantes!inner(nombre, orden)').eq('entidad_id', entidadId).eq('seccion_clave', 'members_growth').eq('metrica_clave', 'ig_followers').eq('plataforma', 'instagram').order('participante(orden)'),
           supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'social_growth').is('participante_id', null).order('orden'),
           supabase.from('reportes_fuentes').select('*').eq('entidad_id', entidadId),
-          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'spotify_insights').order('posicion'),
           supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'pr').order('posicion'),
           supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'weekly_recap').order('posicion'),
           supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'top_posts').order('posicion'),
@@ -185,7 +181,6 @@ export function ReportDetail() {
           membersGrowth: membersData,
           platformGrowth: platformGrowthRes.data || [],
           sources: sourcesRes.data || [],
-          spotifyInsights: spotifyInsightsRes.data || [],
           prPress: prPressRes.data || [],
           weeklyContent: weeklyContentRes.data || [],
           topPosts: topPostsRes.data || [],
@@ -260,7 +255,6 @@ export function ReportDetail() {
     'members_growth': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} /> : null },
     'social_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
     'sources': { component: bandData ? <SourcesSection sources={bandData.sources} /> : null },
-    'spotify_insights': { component: bandData ? <SpotifyInsightsSection items={bandData.spotifyInsights} /> : null },
     'dsp_platform_breakdown': { component: <SpotifyMetricsCard entidadId={entity.id} /> },
     'dsp_last_song_tracking': { component: <LastSongTracking entidadId={entity.id} /> },
     'pr_press': { component: bandData ? <PRPressSection items={bandData.prPress} /> : null },

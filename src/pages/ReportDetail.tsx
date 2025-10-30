@@ -22,6 +22,8 @@ import { SpotifyInsightsSection } from '../components/band-report/SpotifyInsight
 import { PRPressSection } from '../components/band-report/PRPressSection'
 import { WeeklyContentSection } from '../components/band-report/WeeklyContentSection'
 import { TopPostsSection } from '../components/band-report/TopPostsSection'
+import { SpotifyMetricsCard } from '../components/dsp/SpotifyMetricsCard'
+import { LastSongTracking } from '../components/dsp/LastSongTracking'
 
 interface EntityDetail {
   id: string
@@ -259,6 +261,8 @@ export function ReportDetail() {
     'social_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
     'sources': { component: bandData ? <SourcesSection sources={bandData.sources} /> : null },
     'spotify_insights': { component: bandData ? <SpotifyInsightsSection items={bandData.spotifyInsights} /> : null },
+    'dsp_platform_breakdown': { component: <SpotifyMetricsCard entidadId={entity.id} /> },
+    'dsp_last_song_tracking': { component: <LastSongTracking entidadId={entity.id} /> },
     'pr_press': { component: bandData ? <PRPressSection items={bandData.prPress} /> : null },
     'weekly_content': { component: bandData ? <WeeklyContentSection items={bandData.weeklyContent} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
     'top_posts': { component: bandData ? <TopPostsSection posts={bandData.topPosts} /> : null }

@@ -40,10 +40,8 @@ export function Weeklies() {
 
         if (dspError) throw dspError
 
-        // Combine both datasets
-        const entityMap = new Map<string, DSPEntitySummary>()
-
-        reportsData?.forEach((report) => {
+        // Combine both datasets - ALWAYS include all reports, even without DSP data
+        const entities: DSPEntitySummary[] = (reportsData || []).map((report) => {
           const followers = dspData?.find(
             (d) => d.entidad_id === report.entidad_id && d.metric === 'followers'
           )
@@ -51,7 +49,7 @@ export function Weeklies() {
             (d) => d.entidad_id === report.entidad_id && d.metric === 'listeners'
           )
 
-          entityMap.set(report.entidad_id, {
+          return {
             entity_id: report.entidad_id,
             entity_name: report.nombre,
             entity_slug: report.slug,
@@ -61,10 +59,9 @@ export function Weeklies() {
             followers_delta_7d: followers?.week_diff ? parseFloat(followers.week_diff) : 0,
             listeners_delta_7d: listeners?.week_diff ? parseFloat(listeners.week_diff) : 0,
             last_update: new Date().toISOString()
-          })
+          }
         })
 
-        const entities = Array.from(entityMap.values())
         setDspEntities(entities)
       } catch (error) {
         console.error('Error loading live reports:', error)

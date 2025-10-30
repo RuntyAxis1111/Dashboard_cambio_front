@@ -30,12 +30,13 @@ export function Weeklies() {
 
         if (reportsError) throw reportsError
 
-        // Get DSP metrics for these entities
+        // Get DSP metrics from dsp_series
         const { data: dspData, error: dspError } = await supabase
-          .from('v_dsp_latest')
-          .select('entidad_id, entidad_nombre, platform, metric, valor, week_diff')
+          .from('dsp_series')
+          .select('entidad_id, platform, metric, value, week_diff')
           .eq('platform', 'spotify')
           .in('metric', ['followers', 'listeners'])
+          .order('ts', { ascending: false })
 
         if (dspError) throw dspError
 
@@ -55,10 +56,10 @@ export function Weeklies() {
             entity_name: report.nombre,
             entity_slug: report.slug,
             imagen_url: report.imagen_url,
-            total_followers: followers?.valor || 0,
-            total_listeners: listeners?.valor || 0,
-            followers_delta_7d: followers?.week_diff || 0,
-            listeners_delta_7d: listeners?.week_diff || 0,
+            total_followers: followers?.value ? parseFloat(followers.value) : 0,
+            total_listeners: listeners?.value ? parseFloat(listeners.value) : 0,
+            followers_delta_7d: followers?.week_diff ? parseFloat(followers.week_diff) : 0,
+            listeners_delta_7d: listeners?.week_diff ? parseFloat(listeners.week_diff) : 0,
             last_update: new Date().toISOString()
           })
         })

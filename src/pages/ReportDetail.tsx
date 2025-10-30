@@ -377,17 +377,7 @@ export function ReportDetail() {
 
           {showBandReport && bandData ? (
             <div className="space-y-8">
-              {bandData.sections.length === 0 ? (
-                <div className="bg-gray-50 border border-gray-300 rounded-2xl p-8 text-center">
-                  <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <Database className="w-8 h-8 text-gray-400" />
-                  </div>
-                  <h3 className="text-lg font-medium text-black mb-2">No Sections Configured</h3>
-                  <p className="text-gray-600">
-                    This report has no sections configured in the database yet
-                  </p>
-                </div>
-              ) : (
+              {bandData.sections.length > 0 && (
                 bandData.sections
                   .filter(section => isSectionVisible(section.seccion_clave))
                   .map((section, idx) => {
@@ -478,6 +468,31 @@ export function ReportDetail() {
                   })
                   .filter(Boolean)
               )}
+
+              {/* DSP Sections - Always show these regardless of sections configuration */}
+              <div>
+                <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
+                  DSP Platform Breakdown
+                  <img
+                    src="/assets/spotify.png"
+                    alt="Platform"
+                    className="w-5 h-5 object-contain"
+                  />
+                </h3>
+                <SpotifyMetricsCard entidadId={entity.id} />
+              </div>
+
+              <div>
+                <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
+                  DSP Last Song Tracking
+                  <img
+                    src="/assets/spotify.png"
+                    alt="Platform"
+                    className="w-5 h-5 object-contain"
+                  />
+                </h3>
+                <LastSongTracking entidadId={entity.id} />
+              </div>
             </div>
           ) : (
             <div className="bg-gray-50 border border-gray-300 rounded-2xl p-8 text-center">

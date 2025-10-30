@@ -24,6 +24,7 @@ export function MVViewsSection({ items }: MVViewsSectionProps) {
 
   return (
     <div className="bg-gray-50 border border-gray-300 rounded-xl p-6">
+      <h4 className="text-base font-semibold text-black mb-4">Top 5 Videos In Youtube Of Last Week</h4>
       <ul className="space-y-2">
         {sortedItems.map((item, idx) => (
           <li key={idx} className="flex items-start text-sm">

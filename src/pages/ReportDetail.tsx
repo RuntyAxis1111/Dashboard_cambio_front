@@ -440,13 +440,16 @@ export function ReportDetail() {
                       platformLogo = '/assets/youtube (1).png'
                     }
 
+                    // Override title for mv_totales
+                    const displayTitle = section.seccion_clave === 'mv_totales' ? 'Youtube Performance' : section.titulo
+
                     // Sources section should show AI icon
                     const forceShowAI = section.seccion_clave === 'sources'
 
                     return (
                       <div key={section.seccion_clave}>
                         <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
-                          {section.titulo}
+                          {displayTitle}
                           {platformLogo && (
                             <img
                               src={platformLogo}

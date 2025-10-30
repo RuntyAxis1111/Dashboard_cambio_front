@@ -7,9 +7,11 @@ interface ReportCardProps {
   weekEnd: string | null
   imageUrl?: string | null
   status?: string | null
+  followers?: number | null
+  monthlyListeners?: number | null
 }
 
-export function ReportCard({ artistId, artistName, weekEnd, imageUrl, status }: ReportCardProps) {
+export function ReportCard({ artistId, artistName, weekEnd, imageUrl, status, followers, monthlyListeners }: ReportCardProps) {
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -76,10 +78,37 @@ export function ReportCard({ artistId, artistName, weekEnd, imageUrl, status }: 
         </div>
       </div>
 
-      <div className="flex items-center justify-between pt-4 border-t border-gray-300">
-        <span className="text-sm font-medium text-gray-700">View Report</span>
-        <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-black transition-colors" />
-      </div>
+      {(followers !== null && followers !== undefined) || (monthlyListeners !== null && monthlyListeners !== undefined) ? (
+        <div className="space-y-3 pt-4 border-t border-gray-300">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="inline-block w-2 h-2 rounded-full bg-green-500"></span>
+            <span className="text-xs font-medium text-gray-500">Spotify</span>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <div className="text-xs text-gray-500 mb-1">Followers</div>
+              <div className="text-lg font-bold text-gray-900">
+                {followers ? new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(followers) : '—'}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs text-gray-500 mb-1">Monthly Listeners</div>
+              <div className="text-lg font-bold text-gray-900">
+                {monthlyListeners ? new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(monthlyListeners) : '—'}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center justify-between pt-2 border-t border-gray-300 mt-3">
+            <span className="text-sm font-medium text-gray-700">View Report</span>
+            <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-black transition-colors" />
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center justify-between pt-4 border-t border-gray-300">
+          <span className="text-sm font-medium text-gray-700">View Report</span>
+          <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-black transition-colors" />
+        </div>
+      )}
     </Link>
   )
 }

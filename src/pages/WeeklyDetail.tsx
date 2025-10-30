@@ -696,13 +696,6 @@ function getSampleForArtist(artistId?: string): WeeklyReport | null {
   }
 }
 
-interface DSPMetrics {
-  followers: number
-  followers_delta: number
-  listeners: number
-  listeners_delta: number
-}
-
 export function WeeklyDetail() {
   const { artistId } = useParams<{ artistId: string }>()
   const [searchParams] = useSearchParams()
@@ -711,7 +704,6 @@ export function WeeklyDetail() {
   const [report, setReport] = useState<WeeklyReport | null>(null)
   const [loading, setLoading] = useState(true)
   const [entidadId, setEntidadId] = useState<string>('')
-  const [dspMetrics, setDspMetrics] = useState<DSPMetrics | null>(null)
 
   const { hiddenSections, toggleSection, resetToDefault, isSectionVisible } = useReportPreferences(entidadId)
 
@@ -729,28 +721,6 @@ export function WeeklyDetail() {
           .maybeSingle()
         if (data) {
           setEntidadId(data.id)
-
-          // Fetch DSP metrics
-          const { data: dspData } = await supabase
-            .from('dsp_series')
-            .select('metric, value, week_diff')
-            .eq('entidad_id', data.id)
-            .eq('platform', 'spotify')
-            .in('metric', ['followers', 'listeners'])
-            .order('ts', { ascending: false })
-            .limit(2)
-
-          if (dspData && dspData.length > 0) {
-            const followers = dspData.find(d => d.metric === 'followers')
-            const listeners = dspData.find(d => d.metric === 'listeners')
-
-            setDspMetrics({
-              followers: followers?.value ? parseFloat(followers.value) : 0,
-              followers_delta: followers?.week_diff ? parseFloat(followers.week_diff) : 0,
-              listeners: listeners?.value ? parseFloat(listeners.value) : 0,
-              listeners_delta: listeners?.week_diff ? parseFloat(listeners.week_diff) : 0
-            })
-          }
         }
       }
 
@@ -805,48 +775,11 @@ export function WeeklyDetail() {
           <Breadcrumb items={breadcrumbItems} />
 
           <div className="flex items-center justify-between mt-4">
-            <div className="flex-1">
+            <div>
               <h1 className="text-2xl font-bold text-black">{report.artist} Weekly</h1>
               <p className="text-sm text-gray-600 mt-1">
                 {report.week_start} — {report.week_end}
               </p>
-
-              {dspMetrics && (
-                <div className="flex items-center gap-6 mt-3 pt-3 border-t border-gray-200">
-                  <div className="flex items-center gap-2">
-                    <span className="inline-block w-2 h-2 rounded-full bg-green-500"></span>
-                    <span className="text-xs font-medium text-gray-500">Spotify</span>
-                  </div>
-                  <div>
-                    <div className="text-xs text-gray-500">Followers</div>
-                    <div className="text-lg font-bold text-gray-900">
-                      {new Intl.NumberFormat('en-US').format(dspMetrics.followers)}
-                      {dspMetrics.followers_delta !== 0 && (
-                        <span className={`ml-2 text-xs font-medium ${
-                          dspMetrics.followers_delta > 0 ? 'text-green-600' : 'text-red-600'
-                        }`}>
-                          {dspMetrics.followers_delta > 0 ? '+' : ''}
-                          {new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(dspMetrics.followers_delta)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-gray-500">Monthly Listeners</div>
-                    <div className="text-lg font-bold text-gray-900">
-                      {new Intl.NumberFormat('en-US').format(dspMetrics.listeners)}
-                      {dspMetrics.listeners_delta !== 0 && (
-                        <span className={`ml-2 text-xs font-medium ${
-                          dspMetrics.listeners_delta > 0 ? 'text-green-600' : 'text-red-600'
-                        }`}>
-                          {dspMetrics.listeners_delta > 0 ? '+' : ''}
-                          {new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(dspMetrics.listeners_delta)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
 
             <div className="flex items-center gap-3">

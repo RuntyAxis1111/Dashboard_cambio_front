@@ -160,16 +160,21 @@ export function Weeklies() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {liveReports.map((report) => (
-              <ReportCard
-                key={report.entidad_id}
-                artistId={report.slug}
-                artistName={report.nombre}
-                weekEnd={report.semana_fin}
-                imageUrl={report.imagen_url}
-                status={report.status}
-              />
-            ))}
+            {liveReports.map((report) => {
+              const dspData = dspEntities.find(d => d.entity_id === report.entidad_id)
+              return (
+                <ReportCard
+                  key={report.entidad_id}
+                  artistId={report.slug}
+                  artistName={report.nombre}
+                  weekEnd={report.semana_fin}
+                  imageUrl={report.imagen_url}
+                  status={report.status}
+                  followers={dspData?.total_followers}
+                  monthlyListeners={dspData?.total_listeners}
+                />
+              )
+            })}
           </div>
         )}
 

@@ -42,7 +42,22 @@ export function PlatformGrowthSection({ metrics, entidadId, onUpdate }: Platform
   const [isSaving, setIsSaving] = useState(false)
 
   const handleEdit = () => {
-    setEditedMetrics(JSON.parse(JSON.stringify(metrics)))
+    const metricsWithWeverse = JSON.parse(JSON.stringify(metrics))
+
+    const hasWeverse = metricsWithWeverse.some((m: PlatformMetric) => m.plataforma === 'weverse')
+    if (!hasWeverse) {
+      const maxOrden = Math.max(...metricsWithWeverse.map((m: PlatformMetric) => m.orden), 0)
+      metricsWithWeverse.push({
+        plataforma: 'weverse',
+        valor: 0,
+        valor_prev: 0,
+        delta_num: 0,
+        delta_pct: 0,
+        orden: maxOrden + 1
+      })
+    }
+
+    setEditedMetrics(metricsWithWeverse)
     setIsEditing(true)
   }
 
@@ -57,24 +72,26 @@ export function PlatformGrowthSection({ metrics, entidadId, onUpdate }: Platform
     setIsSaving(true)
     try {
       for (const metric of editedMetrics) {
-        const { error } = await supabase
-          .from('reportes_metricas')
-          .upsert({
-            entidad_id: entidadId,
-            seccion_clave: 'social_growth',
-            metrica_clave: 'seguidores',
-            plataforma: metric.plataforma,
-            unidad: 'count',
-            valor: metric.valor,
-            valor_prev: metric.valor_prev,
-            delta_num: metric.delta_num,
-            delta_pct: metric.delta_pct,
-            orden: metric.orden
-          }, {
-            onConflict: 'entidad_id,seccion_clave,metrica_clave,plataforma'
-          })
+        if (metric.valor > 0 || metric.valor_prev || 0 > 0) {
+          const { error } = await supabase
+            .from('reportes_metricas')
+            .upsert({
+              entidad_id: entidadId,
+              seccion_clave: 'social_growth',
+              metrica_clave: 'seguidores',
+              plataforma: metric.plataforma,
+              unidad: 'count',
+              valor: metric.valor,
+              valor_prev: metric.valor_prev,
+              delta_num: metric.delta_num,
+              delta_pct: metric.delta_pct,
+              orden: metric.orden
+            }, {
+              onConflict: 'entidad_id,seccion_clave,metrica_clave,plataforma'
+            })
 
-        if (error) throw error
+          if (error) throw error
+        }
       }
 
       setIsEditing(false)

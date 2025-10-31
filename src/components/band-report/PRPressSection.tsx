@@ -73,6 +73,7 @@ export function PRPressSection({ items, entidadId }: PRPressSectionProps) {
   const [meltwaterData, setMeltwaterData] = useState<MeltwaterData | null>(null)
   const [loading, setLoading] = useState(true)
   const [showAllCountries, setShowAllCountries] = useState(false)
+  const [showAllCities, setShowAllCities] = useState(false)
 
   useEffect(() => {
     async function fetchMeltwaterData() {
@@ -116,7 +117,16 @@ export function PRPressSection({ items, entidadId }: PRPressSectionProps) {
     meltwaterData.pais_top5,
   ].filter(Boolean) as string[] : []
 
+  const allCities = meltwaterData ? [
+    meltwaterData.ciudad_top1,
+    meltwaterData.ciudad_top2,
+    meltwaterData.ciudad_top3,
+    meltwaterData.ciudad_top4,
+    meltwaterData.ciudad_top5,
+  ].filter(Boolean) as string[] : []
+
   const displayedCountries = showAllCountries ? allCountries : allCountries.slice(0, 2)
+  const displayedCities = showAllCities ? allCities : allCities.slice(0, 2)
 
   return (
     <div className="bg-gray-50 border border-gray-300 rounded-xl p-6 space-y-6">
@@ -164,23 +174,47 @@ export function PRPressSection({ items, entidadId }: PRPressSectionProps) {
             </div>
           </div>
 
-          {allCountries.length > 0 && (
-            <div className="bg-white border border-gray-200 rounded-lg p-3">
-              <div
-                className="flex items-center justify-between cursor-pointer"
-                onClick={() => setShowAllCountries(!showAllCountries)}
-              >
-                <span className="text-sm font-semibold text-black">Top Countries</span>
-                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showAllCountries ? 'rotate-180' : ''}`} />
-              </div>
-              <div className="mt-3 space-y-2">
-                {displayedCountries.map((country, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <span className="text-lg">{countryEmojis[country] || '🌍'}</span>
-                    <span className="text-sm text-gray-700">{country}</span>
+          {(allCountries.length > 0 || allCities.length > 0) && (
+            <div className="grid grid-cols-2 gap-3">
+              {allCountries.length > 0 && (
+                <div className="bg-white border border-gray-200 rounded-lg p-3">
+                  <div
+                    className="flex items-center justify-between cursor-pointer"
+                    onClick={() => setShowAllCountries(!showAllCountries)}
+                  >
+                    <span className="text-sm font-semibold text-black">Top Countries</span>
+                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showAllCountries ? 'rotate-180' : ''}`} />
                   </div>
-                ))}
-              </div>
+                  <div className="mt-3 space-y-2">
+                    {displayedCountries.map((country, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="text-lg">{countryEmojis[country] || '🌍'}</span>
+                        <span className="text-sm text-gray-700">{country}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {allCities.length > 0 && (
+                <div className="bg-white border border-gray-200 rounded-lg p-3">
+                  <div
+                    className="flex items-center justify-between cursor-pointer"
+                    onClick={() => setShowAllCities(!showAllCities)}
+                  >
+                    <span className="text-sm font-semibold text-black">Top Cities</span>
+                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showAllCities ? 'rotate-180' : ''}`} />
+                  </div>
+                  <div className="mt-3 space-y-2">
+                    {displayedCities.map((city, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="text-lg">🏙️</span>
+                        <span className="text-sm text-gray-700">{city}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </>

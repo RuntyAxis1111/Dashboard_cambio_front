@@ -257,7 +257,7 @@ export function ReportDetail() {
     'sources': { component: bandData ? <SourcesSection sources={bandData.sources} /> : null },
     'dsp_platform_breakdown': { component: <SpotifyMetricsCard entidadId={entity.id} /> },
     'dsp_last_song_tracking': { component: <LastSongTracking entidadId={entity.id} /> },
-    'pr_press': { component: bandData ? <PRPressSection items={bandData.prPress} /> : null },
+    'pr_press': { component: bandData ? <PRPressSection items={bandData.prPress} entidadId={entity.id} /> : null },
     'weekly_content': { component: bandData ? <WeeklyContentSection items={bandData.weeklyContent} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
     'top_posts': { component: bandData ? <TopPostsSection posts={bandData.topPosts} /> : null }
   }

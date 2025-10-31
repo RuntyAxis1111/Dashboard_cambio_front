@@ -438,6 +438,8 @@ export function ReportDetail() {
                       platformLogo = '/assets/spotify.png'
                     } else if (section.seccion_clave === 'mv_totales') {
                       platformLogo = '/assets/youtube (1).png'
+                    } else if (section.seccion_clave === 'dsp_platform_breakdown' || section.seccion_clave === 'dsp_last_song_tracking') {
+                      platformLogo = '/assets/spotify.png'
                     }
 
                     // Override title for mv_totales
@@ -471,31 +473,6 @@ export function ReportDetail() {
                   })
                   .filter(Boolean)
               )}
-
-              {/* DSP Sections - Always show these regardless of sections configuration */}
-              <div>
-                <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
-                  DSP Platform Breakdown
-                  <img
-                    src="/assets/spotify.png"
-                    alt="Platform"
-                    className="w-5 h-5 object-contain"
-                  />
-                </h3>
-                <SpotifyMetricsCard entidadId={entity.id} />
-              </div>
-
-              <div>
-                <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
-                  DSP Last Song Tracking
-                  <img
-                    src="/assets/spotify.png"
-                    alt="Platform"
-                    className="w-5 h-5 object-contain"
-                  />
-                </h3>
-                <LastSongTracking entidadId={entity.id} />
-              </div>
             </div>
           ) : (
             <div className="bg-gray-50 border border-gray-300 rounded-2xl p-8 text-center">

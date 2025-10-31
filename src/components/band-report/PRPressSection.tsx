@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
-import { TrendingUp, Eye, Radio, FileText } from 'lucide-react'
+import { TrendingUp, Eye, Radio, FileText, ChevronDown } from 'lucide-react'
 
 interface PRItem {
   posicion: number
@@ -72,6 +72,7 @@ function formatNumber(num: number): string {
 export function PRPressSection({ items, entidadId }: PRPressSectionProps) {
   const [meltwaterData, setMeltwaterData] = useState<MeltwaterData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showAllCountries, setShowAllCountries] = useState(false)
 
   useEffect(() => {
     async function fetchMeltwaterData() {
@@ -107,71 +108,87 @@ export function PRPressSection({ items, entidadId }: PRPressSectionProps) {
   const krPress = sortedItems.filter(item => item.categoria === 'pr_kr')
   const generalPress = sortedItems.filter(item => !item.categoria || (item.categoria !== 'pr_us' && item.categoria !== 'pr_kr'))
 
-  const topCountries = meltwaterData ? [
+  const allCountries = meltwaterData ? [
     meltwaterData.pais_top1,
     meltwaterData.pais_top2,
     meltwaterData.pais_top3,
     meltwaterData.pais_top4,
     meltwaterData.pais_top5,
-  ].filter(Boolean) : []
+  ].filter(Boolean) as string[] : []
 
-  const topCities = meltwaterData ? [
-    meltwaterData.ciudad_top1,
-    meltwaterData.ciudad_top2,
-    meltwaterData.ciudad_top3,
-    meltwaterData.ciudad_top4,
-    meltwaterData.ciudad_top5,
-  ].filter(Boolean) : []
+  const displayedCountries = showAllCountries ? allCountries : allCountries.slice(0, 2)
 
   return (
-    <div className="space-y-6">
+    <div className="bg-gray-50 border border-gray-300 rounded-xl p-6 space-y-6">
       {meltwaterData && !loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white border border-gray-300 rounded-xl p-5">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-600">Reach</span>
-              <Radio className="w-4 h-4 text-gray-400" />
+        <>
+          <div className="grid grid-cols-4 gap-3">
+            <div className="bg-white border border-gray-200 rounded-lg p-3">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-medium text-gray-600">Reach</span>
+                <Radio className="w-3 h-3 text-gray-400" />
+              </div>
+              <div className="text-xl font-bold text-black">
+                {formatNumber(meltwaterData.reach)}
+              </div>
             </div>
-            <div className="text-2xl font-bold text-black">
-              {formatNumber(meltwaterData.reach)}
+
+            <div className="bg-white border border-gray-200 rounded-lg p-3">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-medium text-gray-600">Avg. Engagement</span>
+                <TrendingUp className="w-3 h-3 text-gray-400" />
+              </div>
+              <div className="text-xl font-bold text-black">
+                {formatNumber(meltwaterData.avarage)}
+              </div>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg p-3">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-medium text-gray-600">Views</span>
+                <Eye className="w-3 h-3 text-gray-400" />
+              </div>
+              <div className="text-xl font-bold text-black">
+                {formatNumber(meltwaterData.views)}
+              </div>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg p-3">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-medium text-gray-600">Mentions</span>
+                <FileText className="w-3 h-3 text-gray-400" />
+              </div>
+              <div className="text-xl font-bold text-black">
+                {meltwaterData.total_menciones}
+              </div>
             </div>
           </div>
 
-          <div className="bg-white border border-gray-300 rounded-xl p-5">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-600">Avg. Engagement</span>
-              <TrendingUp className="w-4 h-4 text-gray-400" />
+          {allCountries.length > 0 && (
+            <div className="bg-white border border-gray-200 rounded-lg p-3">
+              <div
+                className="flex items-center justify-between cursor-pointer"
+                onClick={() => setShowAllCountries(!showAllCountries)}
+              >
+                <span className="text-sm font-semibold text-black">Top Countries</span>
+                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showAllCountries ? 'rotate-180' : ''}`} />
+              </div>
+              <div className="mt-3 space-y-2">
+                {displayedCountries.map((country, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <span className="text-lg">{countryEmojis[country] || '🌍'}</span>
+                    <span className="text-sm text-gray-700">{country}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="text-2xl font-bold text-black">
-              {formatNumber(meltwaterData.avarage)}
-            </div>
-          </div>
-
-          <div className="bg-white border border-gray-300 rounded-xl p-5">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-600">Views</span>
-              <Eye className="w-4 h-4 text-gray-400" />
-            </div>
-            <div className="text-2xl font-bold text-black">
-              {formatNumber(meltwaterData.views)}
-            </div>
-          </div>
-
-          <div className="bg-white border border-gray-300 rounded-xl p-5">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-600">Mentions</span>
-              <FileText className="w-4 h-4 text-gray-400" />
-            </div>
-            <div className="text-2xl font-bold text-black">
-              {meltwaterData.total_menciones}
-            </div>
-          </div>
-        </div>
+          )}
+        </>
       )}
 
-      <h4 className="text-lg font-semibold text-black">Most Relevant News</h4>
+      <h4 className="text-base font-semibold text-black">Most Relevant News</h4>
 
-      <div className="bg-gray-50 border border-gray-300 rounded-xl p-6 space-y-6">
+      <div className="space-y-6">
         {generalPress.length > 0 && (
           <ul className="space-y-3">
             {generalPress.map((item, idx) => (
@@ -265,38 +282,6 @@ export function PRPressSection({ items, entidadId }: PRPressSectionProps) {
           </div>
         )}
       </div>
-
-      {meltwaterData && !loading && (topCountries.length > 0 || topCities.length > 0) && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {topCountries.length > 0 && (
-            <div className="bg-white border border-gray-300 rounded-xl p-6">
-              <h4 className="text-base font-semibold text-black mb-4">Top Countries</h4>
-              <div className="space-y-3">
-                {topCountries.map((country, idx) => (
-                  <div key={idx} className="flex items-center gap-3">
-                    <span className="text-2xl">{countryEmojis[country as string] || '🌍'}</span>
-                    <span className="text-sm text-gray-700">{country}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {topCities.length > 0 && (
-            <div className="bg-white border border-gray-300 rounded-xl p-6">
-              <h4 className="text-base font-semibold text-black mb-4">Top Cities</h4>
-              <div className="space-y-3">
-                {topCities.map((city, idx) => (
-                  <div key={idx} className="flex items-center gap-3">
-                    <span className="text-2xl">🏙️</span>
-                    <span className="text-sm text-gray-700">{city}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   )
 }

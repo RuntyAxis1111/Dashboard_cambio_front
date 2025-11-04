@@ -3,6 +3,7 @@ import { Database, TrendingUp } from 'lucide-react'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { ReportCard } from '../components/ReportCard'
 import { DSPReportCard } from '../components/dsp/DSPReportCard'
+import { MaintenanceModal } from '../components/MaintenanceModal'
 import { supabase } from '../lib/supabase'
 
 interface LiveReport {
@@ -33,6 +34,7 @@ export function Weeklies() {
   const [loadingLive, setLoadingLive] = useState(true)
   const [dspEntities, setDspEntities] = useState<DSPEntitySummary[]>([])
   const [loadingDsp, setLoadingDsp] = useState(true)
+  const [showMaintenanceModal, setShowMaintenanceModal] = useState(true)
 
   useEffect(() => {
     async function loadLiveReports() {
@@ -126,6 +128,11 @@ export function Weeklies() {
 
   return (
     <div className="p-8 bg-white">
+      <MaintenanceModal
+        isOpen={showMaintenanceModal}
+        onClose={() => setShowMaintenanceModal(false)}
+      />
+
       <div className="max-w-7xl mx-auto">
         <Breadcrumb items={breadcrumbItems} />
 

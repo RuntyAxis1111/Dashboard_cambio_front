@@ -155,8 +155,8 @@ export function DSPDetail() {
         <div className="flex items-center gap-3 mb-6">
           <h2 className="text-xl font-bold text-gray-900">DSP Platform Breakdown</h2>
           {lastUpdated && (
-            <span className="text-xs text-gray-500">
-              Updated {formatLastUpdated(lastUpdated)}
+            <span className="text-[11px] text-gray-400 font-normal">
+              • Updated {formatLastUpdated(lastUpdated)}
             </span>
           )}
         </div>

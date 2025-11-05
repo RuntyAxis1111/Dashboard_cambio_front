@@ -53,12 +53,15 @@ function GroupedBarChart({ data }: { data: DemographicsData[] }) {
   }
 
   const maxPercentage = Math.max(
-    ...ageRanges.map(age => {
+    ...ageRanges.flatMap(age => {
       const female = femaleData.find(d => d.age_range === age)?.followers_count || 0
       const male = maleData.find(d => d.age_range === age)?.followers_count || 0
-      return Math.max(getPercentage(female), getPercentage(male))
+      return [getPercentage(female), getPercentage(male)]
     })
   )
+
+  const chartHeight = 300
+  const barWidth = 40
 
   return (
     <div className="bg-white border border-gray-300 rounded-2xl p-6">
@@ -66,110 +69,88 @@ function GroupedBarChart({ data }: { data: DemographicsData[] }) {
         <h4 className="font-semibold text-black text-lg">Age & Gender Distribution</h4>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-[#EC4899]"></div>
+            <div className="w-4 h-4 rounded bg-[#93C5FD]"></div>
             <span className="text-sm text-gray-600">Female</span>
+            <span className="text-sm font-semibold text-gray-900">
+              {((femaleData.reduce((sum, d) => sum + d.followers_count, 0) / totalFollowers) * 100).toFixed(0)}%
+            </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-[#3B82F6]"></div>
+            <div className="w-4 h-4 rounded bg-[#1E40AF]"></div>
             <span className="text-sm text-gray-600">Male</span>
+            <span className="text-sm font-semibold text-gray-900">
+              {((maleData.reduce((sum, d) => sum + d.followers_count, 0) / totalFollowers) * 100).toFixed(0)}%
+            </span>
           </div>
         </div>
       </div>
 
-      <div className="space-y-6">
-        {ageRanges.map((age) => {
-          const femaleItem = femaleData.find(d => d.age_range === age)
-          const maleItem = maleData.find(d => d.age_range === age)
+      <div className="relative" style={{ height: `${chartHeight + 60}px` }}>
+        <div className="absolute left-0 right-0 flex items-end justify-around" style={{ height: `${chartHeight}px` }}>
+          {ageRanges.map((age) => {
+            const femaleItem = femaleData.find(d => d.age_range === age)
+            const maleItem = maleData.find(d => d.age_range === age)
 
-          const femaleCount = femaleItem?.followers_count || 0
-          const maleCount = maleItem?.followers_count || 0
+            const femaleCount = femaleItem?.followers_count || 0
+            const maleCount = maleItem?.followers_count || 0
 
-          const femalePercentage = getPercentage(femaleCount)
-          const malePercentage = getPercentage(maleCount)
+            const femalePercentage = getPercentage(femaleCount)
+            const malePercentage = getPercentage(maleCount)
 
-          const femaleWidth = maxPercentage > 0 ? (femalePercentage / maxPercentage) * 100 : 0
-          const maleWidth = maxPercentage > 0 ? (malePercentage / maxPercentage) * 100 : 0
+            const femaleHeight = maxPercentage > 0 ? (femalePercentage / maxPercentage) * chartHeight : 0
+            const maleHeight = maxPercentage > 0 ? (malePercentage / maxPercentage) * chartHeight : 0
 
-          return (
-            <div key={age} className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700 w-20">{age}</span>
-                <div className="flex-1 ml-4">
-                  <div className="space-y-1.5">
-                    <div
-                      className="relative group"
-                      onMouseEnter={() => setHoveredBar(`${age}-female`)}
-                      onMouseLeave={() => setHoveredBar(null)}
-                    >
-                      <div
-                        className="h-7 rounded-md transition-all duration-500 ease-out relative"
-                        style={{
-                          width: `${femaleWidth}%`,
-                          backgroundColor: '#EC4899',
-                          opacity: hoveredBar && hoveredBar !== `${age}-female` ? 0.4 : 1
-                        }}
-                      >
-                        {hoveredBar === `${age}-female` && femalePercentage > 0 && (
-                          <div className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-xs font-semibold">
-                            {femalePercentage.toFixed(1)}%
-                          </div>
-                        )}
+            return (
+              <div key={age} className="flex flex-col items-center gap-2">
+                <div className="flex items-end gap-1.5" style={{ height: `${chartHeight}px` }}>
+                  <div
+                    className="relative group cursor-pointer transition-all duration-300"
+                    style={{
+                      width: `${barWidth}px`,
+                      height: `${femaleHeight}px`,
+                      backgroundColor: '#93C5FD',
+                      borderRadius: '4px 4px 0 0',
+                      opacity: hoveredBar && hoveredBar !== `${age}-female` ? 0.3 : 1,
+                      transform: hoveredBar === `${age}-female` ? 'translateY(-4px)' : 'translateY(0)'
+                    }}
+                    onMouseEnter={() => setHoveredBar(`${age}-female`)}
+                    onMouseLeave={() => setHoveredBar(null)}
+                  >
+                    {hoveredBar === `${age}-female` && femalePercentage > 0 && (
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-2 py-1 rounded text-xs whitespace-nowrap">
+                        {femalePercentage.toFixed(1)}%
                       </div>
-                      {!hoveredBar && femalePercentage >= 5 && (
-                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-xs font-medium">
-                          {femalePercentage.toFixed(1)}%
-                        </div>
-                      )}
-                    </div>
+                    )}
+                  </div>
 
-                    <div
-                      className="relative group"
-                      onMouseEnter={() => setHoveredBar(`${age}-male`)}
-                      onMouseLeave={() => setHoveredBar(null)}
-                    >
-                      <div
-                        className="h-7 rounded-md transition-all duration-500 ease-out relative"
-                        style={{
-                          width: `${maleWidth}%`,
-                          backgroundColor: '#3B82F6',
-                          opacity: hoveredBar && hoveredBar !== `${age}-male` ? 0.4 : 1
-                        }}
-                      >
-                        {hoveredBar === `${age}-male` && malePercentage > 0 && (
-                          <div className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-xs font-semibold">
-                            {malePercentage.toFixed(1)}%
-                          </div>
-                        )}
+                  <div
+                    className="relative group cursor-pointer transition-all duration-300"
+                    style={{
+                      width: `${barWidth}px`,
+                      height: `${maleHeight}px`,
+                      backgroundColor: '#1E40AF',
+                      borderRadius: '4px 4px 0 0',
+                      opacity: hoveredBar && hoveredBar !== `${age}-male` ? 0.3 : 1,
+                      transform: hoveredBar === `${age}-male` ? 'translateY(-4px)' : 'translateY(0)'
+                    }}
+                    onMouseEnter={() => setHoveredBar(`${age}-male`)}
+                    onMouseLeave={() => setHoveredBar(null)}
+                  >
+                    {hoveredBar === `${age}-male` && malePercentage > 0 && (
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-2 py-1 rounded text-xs whitespace-nowrap">
+                        {malePercentage.toFixed(1)}%
                       </div>
-                      {!hoveredBar && malePercentage >= 5 && (
-                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-xs font-medium">
-                          {malePercentage.toFixed(1)}%
-                        </div>
-                      )}
-                    </div>
+                    )}
                   </div>
                 </div>
-              </div>
-            </div>
-          )
-        })}
-      </div>
 
-      <div className="mt-6 pt-6 border-t border-gray-200">
-        <div className="grid grid-cols-2 gap-4 text-center">
-          <div>
-            <div className="text-2xl font-bold text-[#EC4899]">
-              {((femaleData.reduce((sum, d) => sum + d.followers_count, 0) / totalFollowers) * 100).toFixed(1)}%
-            </div>
-            <div className="text-sm text-gray-600 mt-1">Female Audience</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-[#3B82F6]">
-              {((maleData.reduce((sum, d) => sum + d.followers_count, 0) / totalFollowers) * 100).toFixed(1)}%
-            </div>
-            <div className="text-sm text-gray-600 mt-1">Male Audience</div>
-          </div>
+                <div className="text-sm font-medium text-gray-700 mt-2">{age}</div>
+              </div>
+            )
+          })}
         </div>
+
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-300" style={{ bottom: '40px' }}></div>
       </div>
     </div>
   )

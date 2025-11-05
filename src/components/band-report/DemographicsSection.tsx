@@ -141,12 +141,12 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
   const ageData = buckets.filter(b => b.dimension === 'age').sort((a, b) => getAgeRangeStart(a.bucket) - getAgeRangeStart(b.bucket))
 
   return (
-    <div className="space-y-4">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {genderData.length > 0 && (
         <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6">
           <h4 className="font-semibold text-black mb-4">Gender Distribution</h4>
 
-          <div className="flex flex-col lg:flex-row gap-6 items-center">
+          <div className="flex flex-col xl:flex-row gap-4 items-center">
             <div className="flex-1 w-full space-y-3">
               {genderData.map((item, idx) => {
                 const color = GENDER_COLORS[item.bucket] || '#9CA3AF'
@@ -185,7 +185,7 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
         <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6">
           <h4 className="font-semibold text-black mb-4">Age Distribution</h4>
 
-          <div className="flex flex-col lg:flex-row gap-6 items-center">
+          <div className="flex flex-col xl:flex-row gap-4 items-center">
             <div className="flex-1 w-full space-y-2.5">
               {ageData.map((item, idx) => {
                 const color = AGE_COLORS[idx % AGE_COLORS.length]

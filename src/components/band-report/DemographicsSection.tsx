@@ -69,7 +69,7 @@ function GroupedBarChart({ data }: { data: DemographicsData[] }) {
         <h4 className="font-semibold text-black text-lg">Age & Gender Distribution</h4>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-[#93C5FD]"></div>
+            <div className="w-4 h-4 rounded bg-[#EC4899]"></div>
             <span className="text-sm text-gray-600">Female</span>
             <span className="text-sm font-semibold text-gray-900">
               {((femaleData.reduce((sum, d) => sum + d.followers_count, 0) / totalFollowers) * 100).toFixed(0)}%
@@ -85,7 +85,7 @@ function GroupedBarChart({ data }: { data: DemographicsData[] }) {
         </div>
       </div>
 
-      <div className="relative" style={{ height: `${chartHeight + 60}px` }}>
+      <div className="relative" style={{ height: `${chartHeight + 40}px` }}>
         <div className="absolute left-0 right-0 flex items-end justify-around" style={{ height: `${chartHeight}px` }}>
           {ageRanges.map((age) => {
             const femaleItem = femaleData.find(d => d.age_range === age)
@@ -108,7 +108,7 @@ function GroupedBarChart({ data }: { data: DemographicsData[] }) {
                     style={{
                       width: `${barWidth}px`,
                       height: `${femaleHeight}px`,
-                      backgroundColor: '#93C5FD',
+                      backgroundColor: '#EC4899',
                       borderRadius: '4px 4px 0 0',
                       opacity: hoveredBar && hoveredBar !== `${age}-female` ? 0.3 : 1,
                       transform: hoveredBar === `${age}-female` ? 'translateY(-4px)' : 'translateY(0)'

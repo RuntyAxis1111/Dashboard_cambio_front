@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
+import { supabase } from '../../lib/supabase'
 
 interface BucketData {
   dimension: string
@@ -7,26 +8,18 @@ interface BucketData {
   valor_num: number
 }
 
+interface DemographicsData {
+  age_range: string
+  gender: string
+  followers_count: number
+}
+
 interface DemographicsSectionProps {
   buckets: BucketData[]
+  entidadId: string
+  semanaInicio: string
+  semanaFin: string
 }
-
-const GENDER_COLORS: Record<string, string> = {
-  'Female': '#EC4899',
-  'Male': '#3B82F6',
-  'Not Specified': '#9CA3AF',
-  'Not specified': '#9CA3AF'
-}
-
-const AGE_COLORS = [
-  '#8B5CF6',
-  '#06B6D4',
-  '#10B981',
-  '#F59E0B',
-  '#EF4444',
-  '#EC4899',
-  '#6366F1'
-]
 
 const GEOGRAPHY_COLORS = [
   '#3B82F6',
@@ -41,105 +34,145 @@ const GEOGRAPHY_COLORS = [
   '#A855F7'
 ]
 
-function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
-  const [hoveredSlice, setHoveredSlice] = useState<number | null>(null)
+const AGE_ORDER = ['13-17', '18-24', '25-34', '35-44', '45-54', '55-64', '65+']
 
-  const total = data.reduce((sum, item) => sum + item.valor_num, 0)
-  let currentAngle = -90
+function GroupedBarChart({ data }: { data: DemographicsData[] }) {
+  const [hoveredBar, setHoveredBar] = useState<string | null>(null)
 
-  const slices = data.map((item, idx) => {
-    const percentage = item.valor_num
-    const angle = (percentage / 100) * 360
-    const startAngle = currentAngle
-    const endAngle = currentAngle + angle
-    currentAngle = endAngle
+  const femaleData = data.filter(d => d.gender === 'female')
+  const maleData = data.filter(d => d.gender === 'male')
 
-    return {
-      ...item,
-      color: colors[idx % colors.length],
-      startAngle,
-      endAngle,
-      percentage
-    }
-  })
+  const totalFollowers = data.reduce((sum, d) => sum + d.followers_count, 0)
 
-  const size = 200
-  const center = size / 2
-  const radius = size / 2 - 15
+  const ageRanges = AGE_ORDER.filter(age =>
+    data.some(d => d.age_range === age)
+  )
 
-  const polarToCartesian = (angle: number, r: number) => {
-    const rad = (angle * Math.PI) / 180
-    return {
-      x: center + r * Math.cos(rad),
-      y: center + r * Math.sin(rad)
-    }
+  const getPercentage = (count: number) => {
+    return totalFollowers > 0 ? (count / totalFollowers) * 100 : 0
   }
 
-  const createArc = (startAngle: number, endAngle: number, outerRadius: number) => {
-    const start = polarToCartesian(startAngle, outerRadius)
-    const end = polarToCartesian(endAngle, outerRadius)
-    const largeArc = endAngle - startAngle > 180 ? 1 : 0
-
-    return [
-      `M ${center} ${center}`,
-      `L ${start.x} ${start.y}`,
-      `A ${outerRadius} ${outerRadius} 0 ${largeArc} 1 ${end.x} ${end.y}`,
-      'Z'
-    ].join(' ')
-  }
+  const maxPercentage = Math.max(
+    ...ageRanges.map(age => {
+      const female = femaleData.find(d => d.age_range === age)?.followers_count || 0
+      const male = maleData.find(d => d.age_range === age)?.followers_count || 0
+      return Math.max(getPercentage(female), getPercentage(male))
+    })
+  )
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="relative w-full max-w-[200px] aspect-square">
-        <svg width="100%" height="100%" viewBox={`0 0 ${size} ${size}`} className="transform transition-transform duration-300">
-          {slices.map((slice, idx) => {
-            const isHovered = hoveredSlice === idx
-            const sliceRadius = isHovered ? radius + 8 : radius
-
-            return (
-              <g key={idx}>
-                <path
-                  d={createArc(slice.startAngle, slice.endAngle, sliceRadius)}
-                  fill={slice.color}
-                  stroke="white"
-                  strokeWidth="3"
-                  className="transition-all duration-300 cursor-pointer"
-                  style={{
-                    filter: isHovered ? 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))' : 'none',
-                    opacity: hoveredSlice !== null && !isHovered ? 0.6 : 1
-                  }}
-                  onMouseEnter={() => setHoveredSlice(idx)}
-                  onMouseLeave={() => setHoveredSlice(null)}
-                />
-              </g>
-            )
-          })}
-          <circle
-            cx={center}
-            cy={center}
-            r={radius * 0.5}
-            fill="white"
-            className="pointer-events-none"
-          />
-        </svg>
-
-        {hoveredSlice !== null && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="bg-white rounded-lg shadow-lg px-3 py-2 text-center">
-              <div className="text-xs font-medium text-gray-700">{slices[hoveredSlice].bucket}</div>
-              <div className="text-lg font-bold text-black">{slices[hoveredSlice].percentage.toFixed(1)}%</div>
-            </div>
+    <div className="bg-white border border-gray-300 rounded-2xl p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h4 className="font-semibold text-black text-lg">Age & Gender Distribution</h4>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-[#EC4899]"></div>
+            <span className="text-sm text-gray-600">Female</span>
           </div>
-        )}
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-[#3B82F6]"></div>
+            <span className="text-sm text-gray-600">Male</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-6">
+        {ageRanges.map((age) => {
+          const femaleItem = femaleData.find(d => d.age_range === age)
+          const maleItem = maleData.find(d => d.age_range === age)
+
+          const femaleCount = femaleItem?.followers_count || 0
+          const maleCount = maleItem?.followers_count || 0
+
+          const femalePercentage = getPercentage(femaleCount)
+          const malePercentage = getPercentage(maleCount)
+
+          const femaleWidth = maxPercentage > 0 ? (femalePercentage / maxPercentage) * 100 : 0
+          const maleWidth = maxPercentage > 0 ? (malePercentage / maxPercentage) * 100 : 0
+
+          return (
+            <div key={age} className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-700 w-20">{age}</span>
+                <div className="flex-1 ml-4">
+                  <div className="space-y-1.5">
+                    <div
+                      className="relative group"
+                      onMouseEnter={() => setHoveredBar(`${age}-female`)}
+                      onMouseLeave={() => setHoveredBar(null)}
+                    >
+                      <div
+                        className="h-7 rounded-md transition-all duration-500 ease-out relative"
+                        style={{
+                          width: `${femaleWidth}%`,
+                          backgroundColor: '#EC4899',
+                          opacity: hoveredBar && hoveredBar !== `${age}-female` ? 0.4 : 1
+                        }}
+                      >
+                        {hoveredBar === `${age}-female` && femalePercentage > 0 && (
+                          <div className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-xs font-semibold">
+                            {femalePercentage.toFixed(1)}%
+                          </div>
+                        )}
+                      </div>
+                      {!hoveredBar && femalePercentage >= 5 && (
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-xs font-medium">
+                          {femalePercentage.toFixed(1)}%
+                        </div>
+                      )}
+                    </div>
+
+                    <div
+                      className="relative group"
+                      onMouseEnter={() => setHoveredBar(`${age}-male`)}
+                      onMouseLeave={() => setHoveredBar(null)}
+                    >
+                      <div
+                        className="h-7 rounded-md transition-all duration-500 ease-out relative"
+                        style={{
+                          width: `${maleWidth}%`,
+                          backgroundColor: '#3B82F6',
+                          opacity: hoveredBar && hoveredBar !== `${age}-male` ? 0.4 : 1
+                        }}
+                      >
+                        {hoveredBar === `${age}-male` && malePercentage > 0 && (
+                          <div className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-xs font-semibold">
+                            {malePercentage.toFixed(1)}%
+                          </div>
+                        )}
+                      </div>
+                      {!hoveredBar && malePercentage >= 5 && (
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-xs font-medium">
+                          {malePercentage.toFixed(1)}%
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="mt-6 pt-6 border-t border-gray-200">
+        <div className="grid grid-cols-2 gap-4 text-center">
+          <div>
+            <div className="text-2xl font-bold text-[#EC4899]">
+              {((femaleData.reduce((sum, d) => sum + d.followers_count, 0) / totalFollowers) * 100).toFixed(1)}%
+            </div>
+            <div className="text-sm text-gray-600 mt-1">Female Audience</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-[#3B82F6]">
+              {((maleData.reduce((sum, d) => sum + d.followers_count, 0) / totalFollowers) * 100).toFixed(1)}%
+            </div>
+            <div className="text-sm text-gray-600 mt-1">Male Audience</div>
+          </div>
+        </div>
       </div>
     </div>
   )
-}
-
-function getAgeRangeStart(bucket: string): number {
-  if (bucket === '65+') return 65
-  const match = bucket.match(/^(\d+)/)
-  return match ? parseInt(match[1]) : 0
 }
 
 function GeographyCard({ title, data }: { title: string, data: BucketData[] }) {
@@ -189,8 +222,52 @@ function GeographyCard({ title, data }: { title: string, data: BucketData[] }) {
   )
 }
 
-export function DemographicsSection({ buckets }: DemographicsSectionProps) {
-  if (buckets.length === 0) {
+export function DemographicsSection({ buckets, entidadId, semanaInicio, semanaFin }: DemographicsSectionProps) {
+  const [demographicsData, setDemographicsData] = useState<DemographicsData[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchDemographics() {
+      try {
+        const { data, error } = await supabase
+          .from('reportes_demographics')
+          .select('age_range, gender, followers_count')
+          .eq('entidad_id', entidadId)
+          .eq('semana_inicio', semanaInicio)
+          .eq('semana_fin', semanaFin)
+
+        if (error) throw error
+
+        setDemographicsData(data || [])
+      } catch (error) {
+        console.error('Error fetching demographics:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchDemographics()
+  }, [entidadId, semanaInicio, semanaFin])
+
+  const countryData = buckets
+    .filter(b => b.dimension === 'country')
+    .sort((a, b) => b.valor_num - a.valor_num)
+    .slice(0, 10)
+
+  const cityData = buckets
+    .filter(b => b.dimension === 'city')
+    .sort((a, b) => b.valor_num - a.valor_num)
+    .slice(0, 10)
+
+  if (loading) {
+    return (
+      <div className="bg-gray-50 border border-gray-300 rounded-2xl p-6">
+        <p className="text-gray-500 text-center">Loading demographics data...</p>
+      </div>
+    )
+  }
+
+  if (demographicsData.length === 0 && buckets.length === 0) {
     return (
       <div className="bg-gray-50 border border-gray-300 rounded-2xl p-6">
         <p className="text-gray-500 text-center">No demographics data available yet</p>
@@ -198,89 +275,11 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
     )
   }
 
-  const genderData = buckets.filter(b => b.dimension === 'gender').sort((a, b) => b.valor_num - a.valor_num)
-  const ageData = buckets.filter(b => b.dimension === 'age').sort((a, b) => getAgeRangeStart(a.bucket) - getAgeRangeStart(b.bucket))
-  const countryData = buckets.filter(b => b.dimension === 'country').sort((a, b) => b.valor_num - a.valor_num).slice(0, 10)
-  const cityData = buckets.filter(b => b.dimension === 'city').sort((a, b) => b.valor_num - a.valor_num).slice(0, 10)
-
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      {genderData.length > 0 && (
-        <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6">
-          <h4 className="font-semibold text-black mb-4">Gender Distribution</h4>
-
-          <div className="flex flex-col xl:flex-row gap-4 items-center">
-            <div className="flex-1 w-full space-y-3">
-              {genderData.map((item, idx) => {
-                const color = GENDER_COLORS[item.bucket] || '#9CA3AF'
-
-                return (
-                  <div key={idx}>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-xs sm:text-sm text-gray-700 capitalize">{item.bucket}</span>
-                      <span className="text-xs sm:text-sm font-semibold text-black">{item.valor_num.toFixed(1)}%</span>
-                    </div>
-                    <div className="w-full bg-gray-100 rounded-full h-2.5 sm:h-3 overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-700 ease-out"
-                        style={{
-                          width: `${item.valor_num}%`,
-                          backgroundColor: color
-                        }}
-                      />
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-
-            <div className="flex-shrink-0">
-              <PieChart
-                data={genderData.map(item => ({ ...item, bucket: item.bucket }))}
-                colors={genderData.map(item => GENDER_COLORS[item.bucket] || '#9CA3AF')}
-              />
-            </div>
-          </div>
-        </div>
+      {demographicsData.length > 0 && (
+        <GroupedBarChart data={demographicsData} />
       )}
-
-      {ageData.length > 0 && (
-        <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6">
-          <h4 className="font-semibold text-black mb-4">Age Distribution</h4>
-
-          <div className="flex flex-col xl:flex-row gap-4 items-center">
-            <div className="flex-1 w-full space-y-2.5">
-              {ageData.map((item, idx) => {
-                const color = AGE_COLORS[idx % AGE_COLORS.length]
-
-                return (
-                  <div key={idx}>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-xs sm:text-sm text-gray-700">{item.bucket}</span>
-                      <span className="text-xs sm:text-sm font-semibold text-black">{item.valor_num.toFixed(1)}%</span>
-                    </div>
-                    <div className="w-full bg-gray-100 rounded-full h-2 sm:h-2.5 overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-700 ease-out"
-                        style={{
-                          width: `${item.valor_num}%`,
-                          backgroundColor: color
-                        }}
-                      />
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-
-            <div className="flex-shrink-0">
-              <PieChart data={ageData} colors={AGE_COLORS} />
-            </div>
-          </div>
-        </div>
-      )}
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {countryData.length > 0 && (

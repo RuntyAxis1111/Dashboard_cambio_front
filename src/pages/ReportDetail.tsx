@@ -65,6 +65,28 @@ interface BandReportData {
   sentiment: any[]
 }
 
+function formatLastUpdated(dateString: string): string {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+  const diffMinutes = Math.floor(diffMs / (1000 * 60))
+
+  if (diffMinutes < 60) {
+    return `Hace ${diffMinutes} min`
+  } else if (diffHours < 24) {
+    return `Hace ${diffHours}h`
+  } else {
+    const options: Intl.DateTimeFormatOptions = {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }
+    return date.toLocaleDateString('es', options)
+  }
+}
+
 function exportReportPDF() {
   document.body.classList.add('print-mode')
   window.scrollTo(0, 0)
@@ -79,6 +101,7 @@ export function ReportDetail() {
   const [entity, setEntity] = useState<EntityDetail | null>(null)
   const [reportStatus, setReportStatus] = useState<ReportStatus | null>(null)
   const [bandData, setBandData] = useState<BandReportData | null>(null)
+  const [dspLastUpdated, setDspLastUpdated] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -116,6 +139,16 @@ export function ReportDetail() {
 
         if (statusError) throw statusError
         setReportStatus(statusData || { semana_inicio: null, semana_fin: null, semana_pasada_inicio: null, semana_pasada_fin: null, status: null })
+
+        const { data: dspStatusData, error: dspStatusError } = await supabase
+          .from('dsp_status')
+          .select('ultima_actualizacion')
+          .eq('entidad_id', entityData.id)
+          .maybeSingle()
+
+        if (!dspStatusError && dspStatusData) {
+          setDspLastUpdated(dspStatusData.ultima_actualizacion)
+        }
 
         if (isBandReport(entityData.tipo, entityData.subtipo)) {
           await loadBandReportData(entityData.id)
@@ -465,6 +498,11 @@ export function ReportDetail() {
                               alt="AI"
                               className="w-5 h-5 object-contain"
                             />
+                          )}
+                          {section.seccion_clave === 'dsp_platform_breakdown' && dspLastUpdated && (
+                            <span className="text-[11px] text-gray-400 font-normal">
+                              • Updated {formatLastUpdated(dspLastUpdated)}
+                            </span>
                           )}
                         </h3>
                         {sectionData.component}

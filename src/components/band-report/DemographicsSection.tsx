@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 
 interface BucketData {
   dimension: string
@@ -141,6 +142,53 @@ function getAgeRangeStart(bucket: string): number {
   return match ? parseInt(match[1]) : 0
 }
 
+function GeographyCard({ title, data }: { title: string, data: BucketData[] }) {
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  const displayData = isExpanded ? data : data.slice(0, 3)
+  const hasMore = data.length > 3
+
+  return (
+    <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6">
+      <h4 className="font-semibold text-black mb-4">{title}</h4>
+
+      <div className="space-y-2.5">
+        {displayData.map((item, idx) => {
+          const color = GEOGRAPHY_COLORS[idx % GEOGRAPHY_COLORS.length]
+
+          return (
+            <div key={idx}>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs sm:text-sm text-gray-700">{item.bucket}</span>
+                <span className="text-xs sm:text-sm font-semibold text-black">{item.valor_num.toFixed(1)}%</span>
+              </div>
+              <div className="w-full bg-gray-100 rounded-full h-2 sm:h-2.5 overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-700 ease-out"
+                  style={{
+                    width: `${item.valor_num}%`,
+                    backgroundColor: color
+                  }}
+                />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {hasMore && (
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="mt-4 w-full flex items-center justify-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors py-2 rounded-lg hover:bg-gray-50"
+        >
+          <span>{isExpanded ? 'Show less' : `Show ${data.length - 3} more`}</span>
+          {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </button>
+      )}
+    </div>
+  )
+}
+
 export function DemographicsSection({ buckets }: DemographicsSectionProps) {
   if (buckets.length === 0) {
     return (
@@ -236,75 +284,17 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {countryData.length > 0 && (
-          <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6">
-            <h4 className="font-semibold text-black mb-4">Top Countries</h4>
-
-            <div className="flex flex-col xl:flex-row gap-4 items-center">
-              <div className="flex-1 w-full space-y-2.5">
-                {countryData.map((item, idx) => {
-                  const color = GEOGRAPHY_COLORS[idx % GEOGRAPHY_COLORS.length]
-
-                  return (
-                    <div key={idx}>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs sm:text-sm text-gray-700">{item.bucket}</span>
-                        <span className="text-xs sm:text-sm font-semibold text-black">{item.valor_num.toFixed(1)}%</span>
-                      </div>
-                      <div className="w-full bg-gray-100 rounded-full h-2 sm:h-2.5 overflow-hidden">
-                        <div
-                          className="h-full rounded-full transition-all duration-700 ease-out"
-                          style={{
-                            width: `${item.valor_num}%`,
-                            backgroundColor: color
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-
-              <div className="flex-shrink-0">
-                <PieChart data={countryData} colors={GEOGRAPHY_COLORS} />
-              </div>
-            </div>
-          </div>
+          <GeographyCard
+            title="Top Countries"
+            data={countryData}
+          />
         )}
 
         {cityData.length > 0 && (
-          <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6">
-            <h4 className="font-semibold text-black mb-4">Top Cities</h4>
-
-            <div className="flex flex-col xl:flex-row gap-4 items-center">
-              <div className="flex-1 w-full space-y-2.5">
-                {cityData.map((item, idx) => {
-                  const color = GEOGRAPHY_COLORS[idx % GEOGRAPHY_COLORS.length]
-
-                  return (
-                    <div key={idx}>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs sm:text-sm text-gray-700">{item.bucket}</span>
-                        <span className="text-xs sm:text-sm font-semibold text-black">{item.valor_num.toFixed(1)}%</span>
-                      </div>
-                      <div className="w-full bg-gray-100 rounded-full h-2 sm:h-2.5 overflow-hidden">
-                        <div
-                          className="h-full rounded-full transition-all duration-700 ease-out"
-                          style={{
-                            width: `${item.valor_num}%`,
-                            backgroundColor: color
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-
-              <div className="flex-shrink-0">
-                <PieChart data={cityData} colors={GEOGRAPHY_COLORS} />
-              </div>
-            </div>
-          </div>
+          <GeographyCard
+            title="Top Cities"
+            data={cityData}
+          />
         )}
       </div>
     </div>

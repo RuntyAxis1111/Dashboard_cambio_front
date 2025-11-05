@@ -65,7 +65,7 @@ function GroupedBarChart({ data }: { data: DemographicsData[] }) {
 
   return (
     <div className="bg-white border border-gray-300 rounded-2xl p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-8">
         <h4 className="font-semibold text-black text-lg">Age & Gender Distribution</h4>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">

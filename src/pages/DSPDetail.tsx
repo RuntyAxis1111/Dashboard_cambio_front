@@ -152,7 +152,14 @@ export function DSPDetail() {
       </div>
 
       <div className="max-w-7xl mx-auto p-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Platform Breakdown</h2>
+        <div className="flex items-center gap-3 mb-6">
+          <h2 className="text-xl font-bold text-gray-900">DSP Platform Breakdown</h2>
+          {lastUpdated && (
+            <span className="text-xs text-gray-500">
+              Updated {formatLastUpdated(lastUpdated)}
+            </span>
+          )}
+        </div>
 
         <div className="space-y-6">
           {entityId && <SpotifyMetricsCard entidadId={entityId} />}

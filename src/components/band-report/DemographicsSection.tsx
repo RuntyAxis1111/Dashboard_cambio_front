@@ -49,9 +49,9 @@ function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
     }
   })
 
-  const size = 280
+  const size = 200
   const center = size / 2
-  const radius = size / 2 - 20
+  const radius = size / 2 - 15
 
   const polarToCartesian = (angle: number, r: number) => {
     const rad = (angle * Math.PI) / 180
@@ -75,8 +75,8 @@ function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
   }
 
   return (
-    <div className="mt-6 flex items-center justify-center">
-      <div className="relative w-full max-w-[280px] aspect-square">
+    <div className="flex items-center justify-center">
+      <div className="relative w-full max-w-[200px] aspect-square">
         <svg width="100%" height="100%" viewBox={`0 0 ${size} ${size}`} className="transform transition-transform duration-300">
           {slices.map((slice, idx) => {
             const isHovered = hoveredSlice === idx
@@ -111,9 +111,9 @@ function PieChart({ data, colors }: { data: BucketData[], colors: string[] }) {
 
         {hoveredSlice !== null && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="bg-white rounded-lg shadow-lg px-4 py-3 text-center">
-              <div className="text-sm font-medium text-gray-700">{slices[hoveredSlice].bucket}</div>
-              <div className="text-2xl font-bold text-black">{slices[hoveredSlice].percentage.toFixed(1)}%</div>
+            <div className="bg-white rounded-lg shadow-lg px-3 py-2 text-center">
+              <div className="text-xs font-medium text-gray-700">{slices[hoveredSlice].bucket}</div>
+              <div className="text-lg font-bold text-black">{slices[hoveredSlice].percentage.toFixed(1)}%</div>
             </div>
           </div>
         )}
@@ -141,71 +141,79 @@ export function DemographicsSection({ buckets }: DemographicsSectionProps) {
   const ageData = buckets.filter(b => b.dimension === 'age').sort((a, b) => getAgeRangeStart(a.bucket) - getAgeRangeStart(b.bucket))
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="space-y-4">
       {genderData.length > 0 && (
         <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6">
-          <h4 className="font-semibold text-black mb-4 sm:mb-6">Gender Distribution</h4>
+          <h4 className="font-semibold text-black mb-4">Gender Distribution</h4>
 
-          <div className="space-y-3 sm:space-y-4">
-            {genderData.map((item, idx) => {
-              const color = GENDER_COLORS[item.bucket] || '#9CA3AF'
+          <div className="flex flex-col lg:flex-row gap-6 items-center">
+            <div className="flex-1 w-full space-y-3">
+              {genderData.map((item, idx) => {
+                const color = GENDER_COLORS[item.bucket] || '#9CA3AF'
 
-              return (
-                <div key={idx}>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs sm:text-sm text-gray-700 capitalize">{item.bucket}</span>
-                    <span className="text-xs sm:text-sm font-semibold text-black">{item.valor_num.toFixed(1)}%</span>
+                return (
+                  <div key={idx}>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-xs sm:text-sm text-gray-700 capitalize">{item.bucket}</span>
+                      <span className="text-xs sm:text-sm font-semibold text-black">{item.valor_num.toFixed(1)}%</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-2.5 sm:h-3 overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-700 ease-out"
+                        style={{
+                          width: `${item.valor_num}%`,
+                          backgroundColor: color
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div className="w-full bg-gray-100 rounded-full h-2.5 sm:h-3 overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-700 ease-out"
-                      style={{
-                        width: `${item.valor_num}%`,
-                        backgroundColor: color
-                      }}
-                    />
-                  </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
+
+            <div className="flex-shrink-0">
+              <PieChart
+                data={genderData.map(item => ({ ...item, bucket: item.bucket }))}
+                colors={genderData.map(item => GENDER_COLORS[item.bucket] || '#9CA3AF')}
+              />
+            </div>
           </div>
-
-          <PieChart
-            data={genderData.map(item => ({ ...item, bucket: item.bucket }))}
-            colors={genderData.map(item => GENDER_COLORS[item.bucket] || '#9CA3AF')}
-          />
         </div>
       )}
 
       {ageData.length > 0 && (
         <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6">
-          <h4 className="font-semibold text-black mb-4 sm:mb-6">Age Distribution</h4>
+          <h4 className="font-semibold text-black mb-4">Age Distribution</h4>
 
-          <div className="space-y-2.5 sm:space-y-3">
-            {ageData.map((item, idx) => {
-              const color = AGE_COLORS[idx % AGE_COLORS.length]
+          <div className="flex flex-col lg:flex-row gap-6 items-center">
+            <div className="flex-1 w-full space-y-2.5">
+              {ageData.map((item, idx) => {
+                const color = AGE_COLORS[idx % AGE_COLORS.length]
 
-              return (
-                <div key={idx}>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs sm:text-sm text-gray-700">{item.bucket}</span>
-                    <span className="text-xs sm:text-sm font-semibold text-black">{item.valor_num.toFixed(1)}%</span>
+                return (
+                  <div key={idx}>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-xs sm:text-sm text-gray-700">{item.bucket}</span>
+                      <span className="text-xs sm:text-sm font-semibold text-black">{item.valor_num.toFixed(1)}%</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-2 sm:h-2.5 overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-700 ease-out"
+                        style={{
+                          width: `${item.valor_num}%`,
+                          backgroundColor: color
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div className="w-full bg-gray-100 rounded-full h-2 sm:h-2.5 overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-700 ease-out"
-                      style={{
-                        width: `${item.valor_num}%`,
-                        backgroundColor: color
-                      }}
-                    />
-                  </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
+
+            <div className="flex-shrink-0">
+              <PieChart data={ageData} colors={AGE_COLORS} />
+            </div>
           </div>
-
-          <PieChart data={ageData} colors={AGE_COLORS} />
         </div>
       )}
     </div>

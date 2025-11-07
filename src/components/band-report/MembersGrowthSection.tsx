@@ -1,4 +1,5 @@
 import { formatNumberCompact, formatDeltaNum, formatDeltaPct, getDeltaColor, getDeltaBgColor } from '../../lib/report-utils'
+import { MembersGrowthTable } from './MembersGrowthTable'
 
 interface MemberMetric {
   participante_nombre: string
@@ -10,9 +11,10 @@ interface MemberMetric {
 
 interface MembersGrowthSectionProps {
   members: MemberMetric[]
+  entityId?: string
 }
 
-export function MembersGrowthSection({ members }: MembersGrowthSectionProps) {
+export function MembersGrowthSection({ members, entityId }: MembersGrowthSectionProps) {
   if (members.length === 0) {
     return (
       <div className="bg-gray-50 border border-gray-300 rounded-xl p-8 text-center">
@@ -33,55 +35,59 @@ export function MembersGrowthSection({ members }: MembersGrowthSectionProps) {
   const totalDeltaPct = totalPrev > 0 ? (totalDeltaNum / totalPrev) * 100 : 0
 
   return (
-    <div className="bg-gray-50 border border-gray-300 rounded-xl overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="text-left px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Member</th>
-              <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Current</th>
-              <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Past Week</th>
-              <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Growth</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedMembers.map((member, idx) => (
-              <tr key={idx} className="border-t border-gray-200">
-                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black font-medium whitespace-nowrap">
-                  {member.participante_nombre}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="bg-gray-50 border border-gray-300 rounded-xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="text-left px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Member</th>
+                <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Current</th>
+                <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Past Week</th>
+                <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Growth</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedMembers.map((member, idx) => (
+                <tr key={idx} className="border-t border-gray-200">
+                  <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black font-medium whitespace-nowrap">
+                    {member.participante_nombre}
+                  </td>
+                  <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black text-right font-medium whitespace-nowrap">
+                    {formatNumberCompact(member.valor)}
+                  </td>
+                  <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right whitespace-nowrap">
+                    {formatNumberCompact(member.valor_prev)}
+                  </td>
+                  <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-right whitespace-nowrap">
+                    <span className={getDeltaColor(member.delta_pct)}>
+                      {formatDeltaNum(member.delta_num)} ({formatDeltaPct(member.delta_pct)})
+                    </span>
+                  </td>
+                </tr>
+              ))}
+              <tr className="border-t-2 border-gray-300 bg-gray-100">
+                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black font-bold whitespace-nowrap">
+                  Total
                 </td>
-                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black text-right font-medium whitespace-nowrap">
-                  {formatNumberCompact(member.valor)}
+                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black text-right font-bold whitespace-nowrap">
+                  {formatNumberCompact(totalCurrent)}
                 </td>
-                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right whitespace-nowrap">
-                  {formatNumberCompact(member.valor_prev)}
+                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right font-medium whitespace-nowrap">
+                  {formatNumberCompact(totalPrev)}
                 </td>
-                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-right whitespace-nowrap">
-                  <span className={getDeltaColor(member.delta_pct)}>
-                    {formatDeltaNum(member.delta_num)} ({formatDeltaPct(member.delta_pct)})
+                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-right font-medium whitespace-nowrap">
+                  <span className={getDeltaColor(totalDeltaPct)}>
+                    {formatDeltaNum(totalDeltaNum)} ({formatDeltaPct(totalDeltaPct)})
                   </span>
                 </td>
               </tr>
-            ))}
-            <tr className="border-t-2 border-gray-300 bg-gray-100">
-              <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black font-bold whitespace-nowrap">
-                Total
-              </td>
-              <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black text-right font-bold whitespace-nowrap">
-                {formatNumberCompact(totalCurrent)}
-              </td>
-              <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right font-medium whitespace-nowrap">
-                {formatNumberCompact(totalPrev)}
-              </td>
-              <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-right font-medium whitespace-nowrap">
-                <span className={getDeltaColor(totalDeltaPct)}>
-                  {formatDeltaNum(totalDeltaNum)} ({formatDeltaPct(totalDeltaPct)})
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      {entityId && <MembersGrowthTable entityId={entityId} />}
     </div>
   )
 }

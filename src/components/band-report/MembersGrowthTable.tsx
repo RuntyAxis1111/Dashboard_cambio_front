@@ -42,9 +42,8 @@ export function MembersGrowthTable({ entityId }: MembersGrowthTableProps) {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold mb-4">Members Instagram Growth</h3>
-        <div className="text-gray-500">Loading...</div>
+      <div className="bg-gray-50 border border-gray-300 rounded-xl p-8 text-center">
+        <div className="text-gray-500 text-sm">Loading...</div>
       </div>
     );
   }
@@ -61,41 +60,38 @@ export function MembersGrowthTable({ entityId }: MembersGrowthTableProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200">
-      <div className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Members Instagram Growth</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-200">
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">Member</th>
-                <th className="text-right py-3 px-4 text-sm font-medium text-gray-600">Followers</th>
-                <th className="text-right py-3 px-4 text-sm font-medium text-gray-600">Growth</th>
+    <div className="bg-gray-50 border border-gray-300 rounded-xl overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-gray-200">
+            <tr>
+              <th className="text-left px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Member</th>
+              <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Current</th>
+              <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Past</th>
+              <th className="text-right px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Growth</th>
+            </tr>
+          </thead>
+          <tbody>
+            {members.map((member) => (
+              <tr key={member.id} className="border-t border-gray-200">
+                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black font-medium whitespace-nowrap">
+                  {member.nombre}
+                </td>
+                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-black text-right font-medium whitespace-nowrap">
+                  {formatNumber(member.instagram_followers)}
+                </td>
+                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right whitespace-nowrap">
+                  N/A
+                </td>
+                <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-right whitespace-nowrap">
+                  <span className="text-gray-500">
+                    N/A
+                  </span>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {members.map((member) => (
-                <tr key={member.id} className="border-b border-gray-100 last:border-0">
-                  <td className="py-3 px-4 text-sm font-medium text-gray-900">
-                    {member.nombre}
-                  </td>
-                  <td className="py-3 px-4 text-right text-sm text-gray-900">
-                    {formatNumber(member.instagram_followers)}
-                  </td>
-                  <td className="py-3 px-4 text-right">
-                    <span className={`text-sm font-medium ${
-                      member.instagram_growth >= 0 ? 'text-green-600' : 'text-red-600'
-                    }`}>
-                      {member.instagram_growth >= 0 ? '+' : ''}
-                      {formatNumber(member.instagram_growth)} ({member.instagram_growth >= 0 ? '+' : ''}
-                      {member.instagram_growth_pct}%)
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

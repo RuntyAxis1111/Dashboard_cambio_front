@@ -32,7 +32,7 @@ export function MaintenanceModal({ isOpen, onClose }: MaintenanceModalProps) {
           </h2>
 
           <p className="text-gray-600 mb-6 leading-relaxed">
-            This section is currently undergoing full maintenance to index all artists into a streamlined workflow.
+            We have successfully indexed all artists into a streamlined workflow.
           </p>
 
           <div className="bg-gray-50 rounded-lg p-4 w-full mb-6">

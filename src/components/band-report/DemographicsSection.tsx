@@ -212,14 +212,20 @@ export function DemographicsSection({ buckets, entidadId, semanaInicio, semanaFi
       try {
         const { data, error } = await supabase
           .from('reportes_demographics')
-          .select('age_range, gender, followers_count')
+          .select('age_range, gender, followers_count, semana_inicio')
           .eq('entidad_id', entidadId)
-          .eq('semana_inicio', semanaInicio)
-          .eq('semana_fin', semanaFin)
+          .order('semana_inicio', { ascending: false })
+          .limit(20)
 
         if (error) throw error
 
-        setDemographicsData(data || [])
+        if (data && data.length > 0) {
+          const latestWeek = data[0].semana_inicio
+          const latestData = data.filter(d => d.semana_inicio === latestWeek)
+          setDemographicsData(latestData)
+        } else {
+          setDemographicsData([])
+        }
       } catch (error) {
         console.error('Error fetching demographics:', error)
       } finally {
@@ -228,7 +234,7 @@ export function DemographicsSection({ buckets, entidadId, semanaInicio, semanaFi
     }
 
     fetchDemographics()
-  }, [entidadId, semanaInicio, semanaFin])
+  }, [entidadId])
 
   const countryData = buckets
     .filter(b => b.dimension === 'country')

@@ -19,6 +19,8 @@ export function MakeReport() {
   const [selectedEntity, setSelectedEntity] = useState<string>('')
   const [startDate, setStartDate] = useState<string>('')
   const [endDate, setEndDate] = useState<string>('')
+  const [compareStartDate, setCompareStartDate] = useState<string>('')
+  const [compareEndDate, setCompareEndDate] = useState<string>('')
   const [submitting, setSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState<string>('')
@@ -47,8 +49,16 @@ export function MakeReport() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    const isComparisonReport = reportType === 'week-vs-week' || reportType === 'month-vs-month'
+
     if (!selectedEntity || !startDate || !endDate) {
       setErrorMessage('Please fill in all fields')
+      setSubmitStatus('error')
+      return
+    }
+
+    if (isComparisonReport && (!compareStartDate || !compareEndDate)) {
+      setErrorMessage('Please fill in comparison dates')
       setSubmitStatus('error')
       return
     }
@@ -60,7 +70,7 @@ export function MakeReport() {
     setSubmitStatus('idle')
     setErrorMessage('')
 
-    const payload = {
+    const payload: any = {
       report_type: reportType,
       entity_id: entity.id,
       entity_name: entity.nombre,
@@ -68,6 +78,11 @@ export function MakeReport() {
       start_date: startDate,
       end_date: endDate,
       timestamp: new Date().toISOString()
+    }
+
+    if (isComparisonReport) {
+      payload.compare_start_date = compareStartDate
+      payload.compare_end_date = compareEndDate
     }
 
     try {
@@ -92,6 +107,8 @@ export function MakeReport() {
         setSelectedEntity('')
         setStartDate('')
         setEndDate('')
+        setCompareStartDate('')
+        setCompareEndDate('')
       } else {
         throw new Error('Webhook request failed')
       }
@@ -229,43 +246,93 @@ export function MakeReport() {
                   </select>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-2">
-                      Start Date
-                    </label>
-                    <div className="relative">
-                      <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                      <input
-                        type="date"
-                        id="startDate"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        required
-                        disabled={submitting}
-                      />
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 mb-3">
+                    {reportType === 'week-vs-week' ? 'First Week' : reportType === 'month-vs-month' ? 'First Month' : 'Date Range'}
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="startDate" className="block text-xs font-medium text-gray-600 mb-2">
+                        Start Date
+                      </label>
+                      <div className="relative">
+                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <input
+                          type="date"
+                          id="startDate"
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
+                          className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          required
+                          disabled={submitting}
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div>
-                    <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-2">
-                      End Date
-                    </label>
-                    <div className="relative">
-                      <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                      <input
-                        type="date"
-                        id="endDate"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        required
-                        disabled={submitting}
-                      />
+                    <div>
+                      <label htmlFor="endDate" className="block text-xs font-medium text-gray-600 mb-2">
+                        End Date
+                      </label>
+                      <div className="relative">
+                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <input
+                          type="date"
+                          id="endDate"
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                          className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          required
+                          disabled={submitting}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
+
+                {(reportType === 'week-vs-week' || reportType === 'month-vs-month') && (
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-700 mb-3">
+                      {reportType === 'week-vs-week' ? 'Second Week' : 'Second Month'}
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="compareStartDate" className="block text-xs font-medium text-gray-600 mb-2">
+                          Start Date
+                        </label>
+                        <div className="relative">
+                          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                          <input
+                            type="date"
+                            id="compareStartDate"
+                            value={compareStartDate}
+                            onChange={(e) => setCompareStartDate(e.target.value)}
+                            className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            required
+                            disabled={submitting}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor="compareEndDate" className="block text-xs font-medium text-gray-600 mb-2">
+                          End Date
+                        </label>
+                        <div className="relative">
+                          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                          <input
+                            type="date"
+                            id="compareEndDate"
+                            value={compareEndDate}
+                            onChange={(e) => setCompareEndDate(e.target.value)}
+                            className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            required
+                            disabled={submitting}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {submitStatus === 'success' && (
                   <div className="flex items-start gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">

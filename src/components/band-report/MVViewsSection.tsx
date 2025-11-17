@@ -17,6 +17,7 @@ interface YouTubeGeneralData {
   total_watch_time: number
   total_likes: number
   total_comments: number
+  total_monetized?: number
 }
 
 interface MVViewsSectionProps {
@@ -39,7 +40,7 @@ export function MVViewsSection({ items, entidadId, onUpdate }: MVViewsSectionPro
       try {
         const { data, error } = await supabase
           .from('reportes_youtube_general')
-          .select('subscribers, total_views, total_watch_time, total_likes, total_comments')
+          .select('subscribers, total_views, total_watch_time, total_likes, total_comments, total_monetized')
           .eq('entidad_id', entidadId)
           .maybeSingle()
 
@@ -61,7 +62,8 @@ export function MVViewsSection({ items, entidadId, onUpdate }: MVViewsSectionPro
       total_views: 0,
       total_watch_time: 0,
       total_likes: 0,
-      total_comments: 0
+      total_comments: 0,
+      total_monetized: 0
     })
     setIsEditingKPIs(true)
   }
@@ -164,8 +166,14 @@ export function MVViewsSection({ items, entidadId, onUpdate }: MVViewsSectionPro
     { label: 'Total Views', value: 'total_views', displayValue: youtubeData?.total_views || 0 },
     { label: 'Total Watch Time', value: 'total_watch_time', displayValue: youtubeData?.total_watch_time || 0 },
     { label: 'Total Likes', value: 'total_likes', displayValue: youtubeData?.total_likes || 0 },
-    { label: 'Total Comments', value: 'total_comments', displayValue: youtubeData?.total_comments || 0 }
-  ]
+    { label: 'Total Comments', value: 'total_comments', displayValue: youtubeData?.total_comments || 0 },
+    { label: 'Total Monetized', value: 'total_monetized', displayValue: youtubeData?.total_monetized || 0 }
+  ].filter(kpi => {
+    if (kpi.value === 'total_monetized') {
+      return youtubeData?.total_monetized && youtubeData.total_monetized > 0
+    }
+    return true
+  })
 
   return (
     <div className="bg-gray-50 border border-gray-300 rounded-xl overflow-hidden">
@@ -233,7 +241,7 @@ export function MVViewsSection({ items, entidadId, onUpdate }: MVViewsSectionPro
       </div>
 
       <div className="p-6">
-        <div className="grid grid-cols-5 gap-3 mb-6">
+        <div className={`grid gap-3 mb-6 ${kpiCards.length === 6 ? 'grid-cols-6' : 'grid-cols-5'}`}>
           {kpiCards.map((kpi, idx) => (
             <div key={idx} className="bg-white border border-gray-200 rounded-lg p-3">
               <div className="text-xs text-gray-500 mb-1">{kpi.label}</div>

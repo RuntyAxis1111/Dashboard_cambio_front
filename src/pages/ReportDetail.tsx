@@ -292,7 +292,7 @@ export function ReportDetail() {
     'dsp_last_song_tracking': { component: <LastSongTracking entidadId={entity.id} /> },
     'pr_press': { component: bandData ? <PRPressSection items={bandData.prPress} entidadId={entity.id} /> : null },
     'weekly_content': { component: bandData ? <WeeklyContentSection items={bandData.weeklyContent} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
-    'top_posts': { component: bandData ? <TopPostsSection posts={bandData.topPosts} /> : null }
+    'top_posts': { component: bandData ? <TopPostsSection posts={bandData.topPosts} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null }
   }
 
   return (

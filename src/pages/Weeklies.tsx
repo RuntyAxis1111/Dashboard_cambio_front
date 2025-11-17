@@ -43,13 +43,7 @@ export function Weeklies() {
 
         if (error) throw error
 
-        const sortedData = (data || []).sort((a, b) => {
-          if (a.status === 'ready' && b.status !== 'ready') return -1
-          if (a.status !== 'ready' && b.status === 'ready') return 1
-          return a.nombre.localeCompare(b.nombre)
-        })
-
-        setLiveReports(sortedData)
+        setLiveReports(data || [])
       } catch (error) {
         console.error('Error loading live reports:', error)
         setLiveReports([])
@@ -160,9 +154,21 @@ export function Weeklies() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {liveReports.map((report) => {
-              const dspData = dspEntities.find(d => d.entity_id === report.entidad_id)
-              return (
+            {liveReports
+              .map((report) => {
+                const dspData = dspEntities.find(d => d.entity_id === report.entidad_id)
+                return {
+                  report,
+                  monthlyListeners: dspData?.total_listeners || 0,
+                  dspData
+                }
+              })
+              .sort((a, b) => {
+                if (a.report.status === 'ready' && b.report.status !== 'ready') return -1
+                if (a.report.status !== 'ready' && b.report.status === 'ready') return 1
+                return b.monthlyListeners - a.monthlyListeners
+              })
+              .map(({ report, dspData }) => (
                 <ReportCard
                   key={report.entidad_id}
                   artistId={report.slug}
@@ -173,8 +179,7 @@ export function Weeklies() {
                   followers={dspData?.total_followers}
                   monthlyListeners={dspData?.total_listeners}
                 />
-              )
-            })}
+              ))}
           </div>
         )}
 

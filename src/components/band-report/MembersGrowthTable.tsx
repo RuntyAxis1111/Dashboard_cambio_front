@@ -176,6 +176,11 @@ export function MembersGrowthTable({ entityId }: MembersGrowthTableProps) {
   }
 
   const displayMembers = isEditing ? editedMembers : members
+
+  const sortedMembers = [...displayMembers].sort((a, b) => {
+    return b.instagram_followers - a.instagram_followers
+  })
+
   const totalCurrent = displayMembers.reduce((sum, m) => sum + m.instagram_followers, 0)
   const totalGrowth = displayMembers.reduce((sum, m) => sum + m.instagram_growth, 0)
   const prevTotal = totalCurrent - totalGrowth
@@ -228,7 +233,7 @@ export function MembersGrowthTable({ entityId }: MembersGrowthTableProps) {
             </tr>
           </thead>
           <tbody>
-            {displayMembers.map((member, idx) => (
+            {sortedMembers.map((member, idx) => (
               <MemberRow
                 key={member.id}
                 member={member}

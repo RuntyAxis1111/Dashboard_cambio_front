@@ -18,6 +18,7 @@ import { Weeklies } from './pages/Weeklies'
 import { WeeklyDetail } from './pages/WeeklyDetail'
 import { ReportDetail } from './pages/ReportDetail'
 import { DSPDetail } from './pages/DSPDetail'
+import { MakeReport } from './pages/MakeReport'
 
 export default function App() {
   console.log('🎯 App component rendering...')
@@ -42,6 +43,7 @@ export default function App() {
                   <Route path="/subscriptions" element={<Subscriptions />} />
                   <Route path="/data" element={<DataExplorer />} />
                   <Route path="/reports" element={<Reports />} />
+                  <Route path="/reports/make" element={<MakeReport />} />
                   <Route path="/reports/weeklies" element={<Weeklies />} />
                   <Route path="/reports/weeklies/:artistId" element={<WeeklyDetail />} />
                   <Route path="/reports/:slug" element={<ReportDetail />} />

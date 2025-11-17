@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { FileText, TrendingUp, Calendar, Search } from 'lucide-react'
+import { TrendingUp, Calendar, Search, FileEdit } from 'lucide-react'
 
 export function Reports() {
   return (
@@ -42,18 +42,18 @@ export function Reports() {
             </span>
           </div>
 
-          <div className="group bg-gray-100 border border-gray-300 rounded-2xl p-6 sm:p-8 opacity-50 cursor-not-allowed">
-            <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-green-600/20 rounded-xl mb-4 sm:mb-6">
-              <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-green-400" />
+          <Link
+            to="/reports/make"
+            className="group bg-gray-100 border border-gray-300 rounded-2xl p-6 sm:p-8 hover:border-gray-400 transition-all duration-200 hover:scale-105"
+          >
+            <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-green-600/20 rounded-xl mb-4 sm:mb-6 group-hover:bg-green-600/30 transition-colors">
+              <FileEdit className="w-6 h-6 sm:w-8 sm:h-8 text-green-400" />
             </div>
-            <h3 className="text-lg sm:text-xl font-semibold text-black mb-2 sm:mb-3">Campaign Reports</h3>
+            <h3 className="text-lg sm:text-xl font-semibold text-black mb-2 sm:mb-3">Make Your Report</h3>
             <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-              Detailed campaign performance reports with ROI analysis and recommendations.
+              Generate custom performance reports for any artist and date range.
             </p>
-            <span className="inline-block mt-4 text-xs font-medium text-gray-500 bg-gray-200 px-3 py-1 rounded-full">
-              Coming Soon
-            </span>
-          </div>
+          </Link>
 
           <div className="group bg-gray-100 border border-gray-300 rounded-2xl p-6 sm:p-8 opacity-50 cursor-not-allowed">
             <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-orange-600/20 rounded-xl mb-4 sm:mb-6">

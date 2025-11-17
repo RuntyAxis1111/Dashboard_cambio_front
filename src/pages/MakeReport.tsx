@@ -122,14 +122,14 @@ export function MakeReport() {
       name: 'Week vs Week',
       description: 'Compare performance across different weeks',
       icon: GitCompare,
-      available: false
+      available: true
     },
     {
       id: 'month-vs-month' as ReportType,
       name: 'Month vs Month',
       description: 'Compare performance across different months',
       icon: BarChart3,
-      available: false
+      available: true
     },
     {
       id: 'artist-vs-artist' as ReportType,

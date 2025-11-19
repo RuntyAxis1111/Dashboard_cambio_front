@@ -21,21 +21,18 @@ async function getWeeklyReportFromReportesEntidades(
   weekEnd?: string
 ): Promise<WeeklyReport | null> {
   try {
-    // Get the report status/dates
-    let statusQuery = supabase
+    console.log('[getWeeklyReportFromReportesEntidades] Called with:', { entidad, weekEnd })
+
+    // Get the report status/dates - just get the most recent one for now
+    const { data: statusData, error: statusError } = await supabase
       .from('reportes_estado')
       .select('*')
       .eq('entidad_id', entidad.id)
-
-    if (weekEnd) {
-      // Find report where weekEnd falls within the week range or matches semana_fin
-      statusQuery = statusQuery.or(`semana_fin.eq.${weekEnd},and(semana_inicio.lte.${weekEnd},semana_fin.gte.${weekEnd})`)
-    }
-
-    const { data: statusData } = await statusQuery
       .order('semana_inicio', { ascending: false })
       .limit(1)
       .maybeSingle()
+
+    console.log('[getWeeklyReportFromReportesEntidades] statusData:', statusData, 'error:', statusError)
 
     if (!statusData) {
       return null
@@ -116,24 +113,34 @@ async function getWeeklyReportFromNewSchema(
   weekEnd?: string
 ): Promise<WeeklyReport | null> {
   try {
+    console.log('[getWeeklyReportFromNewSchema] Called with:', { artistSlug, weekEnd })
+
     const { data: artists } = await supabase
       .from('artistas_registry')
       .select('id, nombre')
       .ilike('nombre', `%${artistSlug.replace(/-/g, ' ')}%`)
 
+    console.log('[getWeeklyReportFromNewSchema] Found in artistas_registry:', artists)
+
     // If not found in artistas_registry, try reportes_entidades
     if (!artists || artists.length === 0) {
-      const { data: entidades } = await supabase
+      console.log('[getWeeklyReportFromNewSchema] Not found in artistas_registry, trying reportes_entidades')
+
+      const { data: entidades, error: entidadesError } = await supabase
         .from('reportes_entidades')
         .select('id, nombre, slug')
-        .or(`slug.eq.${artistSlug},nombre.ilike.%${artistSlug.replace(/-/g, ' ')}%`)
         .eq('activo', true)
+        .or(`slug.eq.${artistSlug},nombre.ilike.%${artistSlug.replace(/-/g, ' ')}%`)
+
+      console.log('[getWeeklyReportFromNewSchema] Found in reportes_entidades:', entidades, 'error:', entidadesError)
 
       if (!entidades || entidades.length === 0) {
+        console.log('[getWeeklyReportFromNewSchema] Not found anywhere, returning null')
         return null
       }
 
       // For reportes_entidades, we need to fetch from reportes_items, not reports table
+      console.log('[getWeeklyReportFromNewSchema] Calling getWeeklyReportFromReportesEntidades')
       return await getWeeklyReportFromReportesEntidades(entidades[0], weekEnd)
     }
 
@@ -341,19 +348,30 @@ export async function getWeeklyReportDetailed(
   weekEnd?: string,
   fallbackSample?: WeeklyReport | null
 ): Promise<WeeklyReport | null> {
-  if (!isDbReportsEnabled()) {
+  console.log('[getWeeklyReportDetailed] Called with:', { artistSlug, weekEnd, hasSample: !!fallbackSample })
+
+  const dbEnabled = isDbReportsEnabled()
+  console.log('[getWeeklyReportDetailed] DB Reports enabled:', dbEnabled)
+
+  if (!dbEnabled) {
+    console.log('[getWeeklyReportDetailed] DB disabled, returning fallback sample')
     return fallbackSample || null
   }
 
+  console.log('[getWeeklyReportDetailed] Trying newReport from new schema')
   const newReport = await getWeeklyReportFromNewSchema(artistSlug, weekEnd)
   if (newReport) {
+    console.log('[getWeeklyReportDetailed] Found newReport, returning it')
     return newReport
   }
 
+  console.log('[getWeeklyReportDetailed] No newReport, trying old schema')
   const oldReport = await getWeeklyReportFromOldSchema(artistSlug, weekEnd)
   if (oldReport) {
+    console.log('[getWeeklyReportDetailed] Found oldReport, returning it')
     return oldReport
   }
 
+  console.log('[getWeeklyReportDetailed] Nothing found, returning fallback sample')
   return fallbackSample || null
 }

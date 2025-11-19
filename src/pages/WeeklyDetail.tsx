@@ -697,9 +697,11 @@ function getSampleForArtist(artistId?: string): WeeklyReport | null {
 }
 
 export function WeeklyDetail() {
+  console.log('[WeeklyDetail] Component rendering')
   const { artistId } = useParams<{ artistId: string }>()
   const [searchParams] = useSearchParams()
   const weekEnd = searchParams.get('week') || undefined
+  console.log('[WeeklyDetail] artistId:', artistId, 'weekEnd:', weekEnd)
 
   const [report, setReport] = useState<WeeklyReport | null>(null)
   const [loading, setLoading] = useState(true)

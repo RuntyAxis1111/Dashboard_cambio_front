@@ -709,8 +709,11 @@ export function WeeklyDetail() {
 
   useEffect(() => {
     async function loadReport() {
+      console.log('[WeeklyDetail] Starting loadReport for:', artistId, 'weekEnd:', weekEnd)
       const sample = getSampleForArtist(artistId)
+      console.log('[WeeklyDetail] Got sample:', sample ? 'YES' : 'NO')
       const dbReport = await getWeeklyReportDetailed(artistId || '', weekEnd, sample)
+      console.log('[WeeklyDetail] Got dbReport:', dbReport)
       setReport(dbReport)
 
       if (artistId) {
@@ -719,6 +722,7 @@ export function WeeklyDetail() {
           .select('id')
           .eq('slug', artistId)
           .maybeSingle()
+        console.log('[WeeklyDetail] Got entidad data:', data)
         if (data) {
           setEntidadId(data.id)
         }

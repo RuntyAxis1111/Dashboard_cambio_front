@@ -154,7 +154,16 @@ export function PlatformGrowthSection({ metrics, entidadId, onUpdate }: Platform
   }
 
   const displayMetrics = isEditing ? editedMetrics : metrics
-  const regularMetrics = displayMetrics.filter(m => m.plataforma !== 'total')
+  let regularMetrics = displayMetrics.filter(m => m.plataforma !== 'total')
+
+  if (!isEditing) {
+    regularMetrics = regularMetrics.filter(m => {
+      if (m.plataforma === 'weverse') {
+        return m.valor > 0 || (m.valor_prev && m.valor_prev > 0)
+      }
+      return true
+    })
+  }
 
   const sortedMetrics = [...regularMetrics].sort((a, b) => {
     const deltaA = a.delta_num || 0

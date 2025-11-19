@@ -28,7 +28,8 @@ async function getWeeklyReportFromReportesEntidades(
       .eq('entidad_id', entidad.id)
 
     if (weekEnd) {
-      statusQuery = statusQuery.eq('semana_fin', weekEnd)
+      // Find report where weekEnd falls within the week range or matches semana_fin
+      statusQuery = statusQuery.or(`semana_fin.eq.${weekEnd},and(semana_inicio.lte.${weekEnd},semana_fin.gte.${weekEnd})`)
     }
 
     const { data: statusData } = await statusQuery

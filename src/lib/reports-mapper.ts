@@ -16,6 +16,100 @@ function slugify(text: string): string {
     .replace(/^-|-$/g, '')
 }
 
+async function getWeeklyReportFromReportesEntidades(
+  entidad: { id: string; nombre: string; slug: string },
+  weekEnd?: string
+): Promise<WeeklyReport | null> {
+  try {
+    // Get the report status/dates
+    let statusQuery = supabase
+      .from('reportes_estado')
+      .select('*')
+      .eq('entidad_id', entidad.id)
+
+    if (weekEnd) {
+      statusQuery = statusQuery.eq('semana_fin', weekEnd)
+    }
+
+    const { data: statusData } = await statusQuery
+      .order('semana_inicio', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (!statusData) {
+      return null
+    }
+
+    // Get all items for this entity
+    const { data: items } = await supabase
+      .from('reportes_items')
+      .select('*')
+      .eq('entidad_id', entidad.id)
+      .order('posicion', { ascending: true })
+
+    if (!items) {
+      return null
+    }
+
+    const result: WeeklyReport = {
+      artist: entidad.nombre.toUpperCase(),
+      week_start: statusData.semana_inicio,
+      week_end: statusData.semana_fin,
+      highlights: []
+    }
+
+    // Group items by categoria
+    items.forEach((item: any) => {
+      switch (item.categoria) {
+        case 'highlights':
+        case 'highlight':
+          if (item.texto) {
+            result.highlights = result.highlights || []
+            result.highlights.push(item.texto)
+          }
+          break
+
+        case 'sentiment':
+        case 'fan_sentiment':
+          if (item.texto) {
+            result.fan_sentiment = (result.fan_sentiment || '') + item.texto + '\n\n'
+          }
+          break
+
+        case 'top_posts':
+          // Implementation for top_posts
+          break
+
+        case 'mv_totales':
+          // Implementation for mv_views
+          break
+
+        case 'spotify_insights':
+          // Implementation for spotify insights
+          break
+
+        case 'pr':
+          // Implementation for PR/press
+          break
+
+        case 'weekly_recap':
+          // Implementation for weekly content
+          break
+      }
+    })
+
+    // Clean up fan_sentiment trailing newlines
+    if (result.fan_sentiment) {
+      result.fan_sentiment = result.fan_sentiment.trim()
+    }
+
+    return result
+  } catch (error) {
+    console.error('Error fetching from reportes_entidades:', error)
+    return null
+  }
+}
+
 async function getWeeklyReportFromNewSchema(
   artistSlug: string,
   weekEnd?: string
@@ -26,8 +120,20 @@ async function getWeeklyReportFromNewSchema(
       .select('id, nombre')
       .ilike('nombre', `%${artistSlug.replace(/-/g, ' ')}%`)
 
+    // If not found in artistas_registry, try reportes_entidades
     if (!artists || artists.length === 0) {
-      return null
+      const { data: entidades } = await supabase
+        .from('reportes_entidades')
+        .select('id, nombre, slug')
+        .or(`slug.eq.${artistSlug},nombre.ilike.%${artistSlug.replace(/-/g, ' ')}%`)
+        .eq('activo', true)
+
+      if (!entidades || entidades.length === 0) {
+        return null
+      }
+
+      // For reportes_entidades, we need to fetch from reportes_items, not reports table
+      return await getWeeklyReportFromReportesEntidades(entidades[0], weekEnd)
     }
 
     const artistId = artists[0].id

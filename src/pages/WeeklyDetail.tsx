@@ -698,10 +698,18 @@ export function getSampleForArtist(artistId?: string): WeeklyReport | null {
 
 export function WeeklyDetail() {
   console.log('[WeeklyDetail] Component rendering')
-  const { artistId } = useParams<{ artistId: string }>()
+  const { artistId: paramArtistId } = useParams<{ artistId: string }>()
   const [searchParams] = useSearchParams()
   const weekEnd = searchParams.get('week') || undefined
-  console.log('[WeeklyDetail] artistId:', artistId, 'weekEnd:', weekEnd)
+
+  // Extract artist from URL path if not in params (e.g., /reports/destino-test)
+  const pathname = window.location.pathname
+  const pathMatch = pathname.match(/\/reports\/([^/]+)(-test)?/)
+  const artistFromPath = pathMatch ? pathMatch[1] : undefined
+
+  const artistId = paramArtistId || artistFromPath
+
+  console.log('[WeeklyDetail] artistId:', artistId, 'weekEnd:', weekEnd, 'pathname:', pathname)
 
   const [report, setReport] = useState<WeeklyReport | null>(null)
   const [loading, setLoading] = useState(true)

@@ -46,6 +46,8 @@ export default function App() {
                   <Route path="/reports/make" element={<MakeReport />} />
                   <Route path="/reports/weeklies" element={<Weeklies />} />
                   <Route path="/reports/weeklies/:artistId" element={<WeeklyDetail />} />
+                  <Route path="/reports/destino-test" element={<WeeklyDetail />} />
+                  <Route path="/reports/musza-test" element={<WeeklyDetail />} />
                   <Route path="/reports/:slug" element={<ReportDetail />} />
                   <Route path="/weeklies/dsp/:entityId" element={<DSPDetail />} />
                   <Route path="/about" element={<About />} />

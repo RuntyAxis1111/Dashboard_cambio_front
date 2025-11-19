@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { Calendar, Database, Download } from 'lucide-react'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { supabase } from '../lib/supabase'
@@ -23,6 +23,7 @@ import { WeeklyContentSection } from '../components/band-report/WeeklyContentSec
 import { TopPostsSection } from '../components/band-report/TopPostsSection'
 import { SpotifyMetricsCard } from '../components/dsp/SpotifyMetricsCard'
 import { LastSongTracking } from '../components/dsp/LastSongTracking'
+import { getSampleForArtist } from './WeeklyDetail'
 
 interface EntityDetail {
   id: string
@@ -98,6 +99,7 @@ function exportReportPDF() {
 
 export function ReportDetail() {
   const { slug } = useParams<{ slug: string }>()
+  const navigate = useNavigate()
   const [entity, setEntity] = useState<EntityDetail | null>(null)
   const [reportStatus, setReportStatus] = useState<ReportStatus | null>(null)
   const [bandData, setBandData] = useState<BandReportData | null>(null)
@@ -124,6 +126,13 @@ export function ReportDetail() {
 
         if (entityError) throw entityError
         if (!entityData) {
+          console.log('[ReportDetail] Entity not found in DB, checking mock data for slug:', slug)
+          const mockData = getSampleForArtist(slug)
+          if (mockData) {
+            console.log('[ReportDetail] Found mock data, redirecting to /reports/weeklies/' + slug)
+            navigate(`/reports/weeklies/${slug}`, { replace: true })
+            return
+          }
           setError('Entity not found')
           setLoading(false)
           return

@@ -671,7 +671,7 @@ function exportWeeklyPDF() {
   }
 }
 
-function getSampleForArtist(artistId?: string): WeeklyReport | null {
+export function getSampleForArtist(artistId?: string): WeeklyReport | null {
   if (!artistId) return null
 
   switch (artistId) {

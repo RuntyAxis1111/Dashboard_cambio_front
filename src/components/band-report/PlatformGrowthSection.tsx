@@ -159,7 +159,9 @@ export function PlatformGrowthSection({ metrics, entidadId, onUpdate }: Platform
   if (!isEditing) {
     regularMetrics = regularMetrics.filter(m => {
       if (m.plataforma === 'weverse') {
-        return m.valor > 0 || (m.valor_prev && m.valor_prev > 0)
+        const currentValue = typeof m.valor === 'string' ? parseFloat(m.valor) : m.valor
+        const prevValue = m.valor_prev ? (typeof m.valor_prev === 'string' ? parseFloat(m.valor_prev) : m.valor_prev) : 0
+        return currentValue > 0 || prevValue > 0
       }
       return true
     })

@@ -57,11 +57,13 @@ async function getWeeklyReportFromReportesEntidades(
     }
 
     // Group items by categoria
+    const mvBullets: string[] = []
+
     items.forEach((item: any) => {
       switch (item.categoria) {
         case 'highlights':
         case 'highlight':
-          if (item.texto) {
+          if (item.texto && item.texto !== 'No data') {
             result.highlights = result.highlights || []
             result.highlights.push(item.texto)
           }
@@ -69,32 +71,28 @@ async function getWeeklyReportFromReportesEntidades(
 
         case 'sentiment':
         case 'fan_sentiment':
-          if (item.texto) {
+          if (item.texto && item.texto !== 'No data') {
             result.fan_sentiment = (result.fan_sentiment || '') + item.texto + '\n\n'
           }
           break
 
-        case 'top_posts':
-          // Implementation for top_posts
-          break
-
         case 'mv_totales':
-          // Implementation for mv_views
-          break
-
-        case 'spotify_insights':
-          // Implementation for spotify insights
-          break
-
-        case 'pr':
-          // Implementation for PR/press
-          break
-
-        case 'weekly_recap':
-          // Implementation for weekly content
+          if (item.titulo && item.texto) {
+            mvBullets.push(`${item.titulo}: ${item.texto}`)
+          }
           break
       }
     })
+
+    // Add mv_views if we have any
+    if (mvBullets.length > 0) {
+      result.mv_views = [{
+        section: 'MV Views',
+        bullets: mvBullets
+      }]
+    }
+
+    console.log('[getWeeklyReportFromReportesEntidades] Mapped result:', result)
 
     // Clean up fan_sentiment trailing newlines
     if (result.fan_sentiment) {

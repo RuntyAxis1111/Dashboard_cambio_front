@@ -92,12 +92,16 @@ async function getWeeklyReportFromReportesEntidades(
       }]
     }
 
-    console.log('[getWeeklyReportFromReportesEntidades] Mapped result:', result)
+    console.log('[getWeeklyReportFromReportesEntidades] Mapped result:', JSON.stringify(result, null, 2))
 
     // Clean up fan_sentiment trailing newlines
     if (result.fan_sentiment) {
       result.fan_sentiment = result.fan_sentiment.trim()
     }
+
+    console.log('[getWeeklyReportFromReportesEntidades] FINAL result before return:', result)
+    console.log('[getWeeklyReportFromReportesEntidades] highlights length:', result.highlights?.length)
+    console.log('[getWeeklyReportFromReportesEntidades] mv_views length:', result.mv_views?.length)
 
     return result
   } catch (error) {

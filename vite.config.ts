@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 // https://vitejs.dev/config/
+// Trigger Vercel Preview Deployment
 export default defineConfig({
   plugins: [react()],
   base: '/',
@@ -21,8 +22,8 @@ export default defineConfig({
       }
     }
   },
-  preview: { 
-    headers: { 'Permissions-Policy': 'camera=(self)' } 
+  preview: {
+    headers: { 'Permissions-Policy': 'camera=(self)' }
   },
   build: {
     outDir: 'dist',

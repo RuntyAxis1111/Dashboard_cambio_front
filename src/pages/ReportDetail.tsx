@@ -14,8 +14,6 @@ import { StreamingTrendsSection } from '../components/band-report/StreamingTrend
 import { TikTokTrendsSection } from '../components/band-report/TikTokTrendsSection'
 import { MVViewsSection } from '../components/band-report/MVViewsSection'
 import { DemographicsSection } from '../components/band-report/DemographicsSection'
-import { TopCountriesSection } from '../components/band-report/TopCountriesSection'
-import { TopCitiesSection } from '../components/band-report/TopCitiesSection'
 import { MembersGrowthSection } from '../components/band-report/MembersGrowthSection'
 import { PlatformGrowthSection } from '../components/band-report/PlatformGrowthSection'
 import { SourcesSection } from '../components/band-report/SourcesSection'
@@ -57,8 +55,6 @@ interface BandReportData {
   tiktokTrends: any[]
   mvItems: any[]
   demographics: any[]
-  topCountries: any[]
-  topCities: any[]
   membersGrowth: any[]
   platformGrowth: any[]
   sources: any[]
@@ -182,8 +178,6 @@ export function ReportDetail() {
           tiktokTrendsRes,
           mvItemsRes,
           demographicsRes,
-          topCountriesRes,
-          topCitiesRes,
           membersRes,
           platformGrowthRes,
           sourcesRes,
@@ -199,8 +193,6 @@ export function ReportDetail() {
           supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'tiktok_trends').eq('plataforma', 'tiktok').order('orden'),
           supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'mv_totales').order('posicion'),
           supabase.from('reportes_buckets').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'demographics'),
-          supabase.from('reportes_buckets').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'top_countries').eq('dimension', 'country').eq('metrica_clave', 'listeners_28d').order('posicion'),
-          supabase.from('reportes_buckets').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'top_countries').eq('dimension', 'city').eq('metrica_clave', 'listeners_28d').order('posicion'),
           supabase.from('reportes_metricas').select('*, participante:reportes_participantes!inner(nombre, orden)').eq('entidad_id', entidadId).eq('seccion_clave', 'members_growth').eq('metrica_clave', 'ig_followers').eq('plataforma', 'instagram').order('participante(orden)'),
           supabase.from('reportes_metricas').select('*').eq('entidad_id', entidadId).eq('seccion_clave', 'social_growth').is('participante_id', null).order('orden'),
           supabase.from('reportes_fuentes').select('*').eq('entidad_id', entidadId),
@@ -223,8 +215,6 @@ export function ReportDetail() {
           tiktokTrends: tiktokTrendsRes.data || [],
           mvItems: mvItemsRes.data || [],
           demographics: demographicsRes.data || [],
-          topCountries: topCountriesRes.data || [],
-          topCities: topCitiesRes.data || [],
           membersGrowth: membersData,
           platformGrowth: platformGrowthRes.data || [],
           sources: sourcesRes.data || [],
@@ -297,8 +287,6 @@ export function ReportDetail() {
     'tiktok_trends': { component: bandData ? <TikTokTrendsSection metrics={bandData.tiktokTrends} /> : null },
     'mv_totales': { component: bandData ? <MVViewsSection items={bandData.mvItems} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
     'demographics': { component: bandData && reportStatus ? <DemographicsSection buckets={bandData.demographics} entidadId={entity.id} semanaInicio={reportStatus.semana_inicio || ''} semanaFin={reportStatus.semana_fin || ''} /> : null },
-    'top_countries': { component: bandData ? <TopCountriesSection buckets={bandData.topCountries} /> : null },
-    'top_cities': { component: bandData ? <TopCitiesSection buckets={bandData.topCities} /> : null },
     'ig_members': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} entityId={entity.id} /> : null },
     'members_growth': { component: bandData ? <MembersGrowthSection members={bandData.membersGrowth} entityId={entity.id} /> : null },
     'social_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },

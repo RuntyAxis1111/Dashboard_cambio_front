@@ -12,7 +12,7 @@ export function Layout({ children }: LayoutProps) {
   console.log('🏗️ Layout component rendering...')
   const [isVoiceAgentOpen, setIsVoiceAgentOpen] = useState(false)
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true)
   const { user } = useAuth()
 
   try {

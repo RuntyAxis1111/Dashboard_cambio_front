@@ -8,13 +8,20 @@ interface SidebarProps {
   user: User | null
   isMobileOpen?: boolean
   onMobileClose?: () => void
+  isCollapsed?: boolean
+  onToggleCollapse?: (collapsed: boolean) => void
 }
 
-export function Sidebar({ user, isMobileOpen = false, onMobileClose }: SidebarProps) {
+export function Sidebar({ user, isMobileOpen = false, onMobileClose, isCollapsed = false, onToggleCollapse }: SidebarProps) {
   const location = useLocation()
   const { signOut } = useAuth()
-  const [isCollapsed, setIsCollapsed] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+
+  const handleToggleCollapse = () => {
+    if (onToggleCollapse) {
+      onToggleCollapse(!isCollapsed)
+    }
+  }
   
   const isActive = (path: string) => {
     return location.pathname === path
@@ -73,7 +80,7 @@ export function Sidebar({ user, isMobileOpen = false, onMobileClose }: SidebarPr
           <X className="w-5 h-5 text-gray-600" />
         </button>
         <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={handleToggleCollapse}
           className="hidden lg:block p-2 hover:bg-gray-200 rounded-lg transition-colors"
           title={isCollapsed ? 'Expandir sidebar' : 'Colapsar sidebar'}
         >

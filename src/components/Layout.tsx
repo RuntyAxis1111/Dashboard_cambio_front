@@ -12,17 +12,20 @@ export function Layout({ children }: LayoutProps) {
   console.log('🏗️ Layout component rendering...')
   const [isVoiceAgentOpen, setIsVoiceAgentOpen] = useState(false)
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const { user } = useAuth()
 
   try {
     return (
-      <div className="h-screen bg-white text-black lg:grid lg:grid-cols-[260px_1fr] overflow-hidden">
+      <div className="h-screen bg-white text-black flex overflow-hidden">
         <Sidebar
           user={user}
           isMobileOpen={isMobileSidebarOpen}
           onMobileClose={() => setIsMobileSidebarOpen(false)}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={setIsSidebarCollapsed}
         />
-        <div className="flex flex-col overflow-hidden h-screen">
+        <div className="flex flex-col overflow-hidden h-screen flex-1">
           <Topbar
             user={user}
             onMobileMenuToggle={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}

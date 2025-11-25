@@ -58,6 +58,10 @@ async function getWeeklyReportFromReportesEntidades(
 
     // Group items by categoria
     const mvBullets: string[] = []
+    const mvTopContent: string[] = []
+    const tiktokPostsByTrack: Record<string, string[]> = {}
+    const youtubePostsByTrack: Record<string, string[]> = {}
+    const instagramPostsByTrack: Record<string, string[]> = {}
 
     items.forEach((item: any) => {
       switch (item.categoria) {
@@ -81,15 +85,50 @@ async function getWeeklyReportFromReportesEntidades(
             mvBullets.push(`${item.titulo}: ${item.texto}`)
           }
           break
+
+        case 'weekly_recap':
+          if (item.texto && item.titulo) {
+            mvTopContent.push(`${item.titulo} — ${item.texto}`)
+          }
+          break
+
+        case 'top_posts':
+          if (item.texto && item.texto !== 'No data this week' && item.titulo !== 'No data this week') {
+            const postText = item.titulo ? `${item.titulo} — ${item.texto}` : item.texto
+
+            if (item.plataforma === 'tiktok') {
+              const track = 'General'
+              if (!tiktokPostsByTrack[track]) tiktokPostsByTrack[track] = []
+              tiktokPostsByTrack[track].push(postText)
+            } else if (item.plataforma === 'youtube') {
+              const track = 'General'
+              if (!youtubePostsByTrack[track]) youtubePostsByTrack[track] = []
+              youtubePostsByTrack[track].push(postText)
+            } else if (item.plataforma === 'instagram') {
+              const track = 'General'
+              if (!instagramPostsByTrack[track]) instagramPostsByTrack[track] = []
+              instagramPostsByTrack[track].push(postText)
+            }
+          }
+          break
       }
     })
 
     // Add mv_views if we have any
-    if (mvBullets.length > 0) {
+    if (mvBullets.length > 0 || mvTopContent.length > 0) {
       result.mv_views = [{
         section: 'MV Views',
-        bullets: mvBullets
+        bullets: mvBullets,
+        top_content: mvTopContent.length > 0 ? mvTopContent : undefined
       }]
+    }
+
+    // Add tiktok_trends if we have any
+    if (Object.keys(tiktokPostsByTrack).length > 0) {
+      result.tiktok_trends = Object.entries(tiktokPostsByTrack).map(([track, posts]) => ({
+        track,
+        top_posts: posts
+      }))
     }
 
     console.log('[getWeeklyReportFromReportesEntidades] Mapped result:', JSON.stringify(result, null, 2))

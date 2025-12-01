@@ -1,4 +1,5 @@
-import { AlertTriangle, Music } from 'lucide-react'
+import { AlertTriangle, Music, ChevronDown } from 'lucide-react'
+import { useState } from 'react'
 import { useLastSongTracking } from '../../hooks/useLastSongTracking'
 import { formatNumber, formatDeltaWithAbs, getDeltaColor } from '../../lib/format-utils'
 
@@ -92,6 +93,7 @@ function MetricCard({ platform, logo, metrics, additionalInfo }: MetricCardProps
 
 export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
   const { data, loading, error } = useLastSongTracking(entidadId)
+  const [selectedTrackIndex, setSelectedTrackIndex] = useState(0)
 
   if (loading) {
     return (
@@ -154,12 +156,12 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
     })
   }
 
-  const getTrackLabel = (index: number, total: number) => {
-    if (total === 1) return null
-    if (index === 0) return 'Latest Release'
-    return 'Previous Release'
+  const getTrackVersionLabel = (index: number) => {
+    if (index === 0) return 'New Version'
+    return 'Old Version'
   }
 
+  const selectedTrack = data[selectedTrackIndex]
   const getPlatformMetrics = (songData: typeof data[0]) => [
     {
       platform: 'Spotify',
@@ -371,105 +373,115 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
     }
   ]
 
-  return (
-    <div className="space-y-8">
-      {data.map((songData, index) => {
-        const trackLabel = getTrackLabel(index, data.length)
-        const platformMetrics = getPlatformMetrics(songData)
+  const platformMetrics = getPlatformMetrics(selectedTrack)
 
-        return (
-          <div key={songData.last_song_id} className="bg-white border border-gray-200 rounded-2xl p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <Music className="w-6 h-6 text-gray-700" />
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">
-                  {trackLabel || 'Latest Song Release Tracking'}
-                </h3>
-                {trackLabel && (
-                  <p className="text-sm text-gray-500 mt-0.5">{songData.name_song}</p>
+  return (
+    <div className="bg-white border border-gray-200 rounded-2xl p-6">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <Music className="w-6 h-6 text-gray-700" />
+          <h3 className="text-xl font-bold text-gray-900">Latest Song Release Tracking</h3>
+        </div>
+
+        {data.length > 1 && (
+          <div className="flex gap-2">
+            {data.map((track, index) => (
+              <button
+                key={track.last_song_id}
+                onClick={() => setSelectedTrackIndex(index)}
+                className={`
+                  px-4 py-2 rounded-lg border-2 font-medium text-sm
+                  transition-all duration-200 flex items-center gap-2
+                  ${selectedTrackIndex === index
+                    ? 'border-gray-900 bg-gray-900 text-white'
+                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                  }
+                `}
+              >
+                {getTrackVersionLabel(index)}
+                <ChevronDown className={`w-4 h-4 transition-transform ${selectedTrackIndex === index ? 'rotate-180' : ''}`} />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
+        <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
+          <div className="aspect-square w-full mb-4 rounded-lg overflow-hidden bg-gray-200">
+            {selectedTrack.image_url ? (
+              <img
+                src={selectedTrack.image_url}
+                alt={selectedTrack.name_song}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <Music className="w-16 h-16 text-gray-400" />
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-3">
+            <div>
+              <h4 className="font-bold text-lg text-gray-900 mb-1">{selectedTrack.name_song}</h4>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {selectedTrack.explicit && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-900 text-white">
+                    Explicit
+                  </span>
+                )}
+                {selectedTrack.track_tier !== null && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                    Tier {selectedTrack.track_tier}
+                  </span>
                 )}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
-                <div className="aspect-square w-full mb-4 rounded-lg overflow-hidden bg-gray-200">
-                  {songData.image_url ? (
-                    <img
-                      src={songData.image_url}
-                      alt={songData.name_song}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Music className="w-16 h-16 text-gray-400" />
-                    </div>
-                  )}
+            <div className="space-y-2 text-sm">
+              {selectedTrack.isrc && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">ISRC:</span>
+                  <span className="text-gray-900 font-medium">{selectedTrack.isrc}</span>
                 </div>
-
-                <div className="space-y-3">
-                  <div>
-                    <h4 className="font-bold text-lg text-gray-900 mb-1">{songData.name_song}</h4>
-                    <div className="flex flex-wrap gap-2 mb-2">
-                      {songData.explicit && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-900 text-white">
-                          Explicit
-                        </span>
-                      )}
-                      {songData.track_tier !== null && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                          Tier {songData.track_tier}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2 text-sm">
-                    {songData.isrc && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">ISRC:</span>
-                        <span className="text-gray-900 font-medium">{songData.isrc}</span>
-                      </div>
-                    )}
-                    {songData.release_date && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Release:</span>
-                        <span className="text-gray-900 font-medium">{formatDate(songData.release_date)}</span>
-                      </div>
-                    )}
-                    {songData.album_label && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Label:</span>
-                        <span className="text-gray-900 font-medium">{songData.album_label}</span>
-                      </div>
-                    )}
-                    {songData.duration_ms !== null && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Duration:</span>
-                        <span className="text-gray-900 font-medium">
-                          {Math.floor(songData.duration_ms / 60000)}:{String(Math.floor((songData.duration_ms % 60000) / 1000)).padStart(2, '0')}
-                        </span>
-                      </div>
-                    )}
-                  </div>
+              )}
+              {selectedTrack.release_date && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Release:</span>
+                  <span className="text-gray-900 font-medium">{formatDate(selectedTrack.release_date)}</span>
                 </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {platformMetrics.map((platform) => (
-                  <MetricCard
-                    key={platform.platform}
-                    platform={platform.platform}
-                    logo={platform.logo}
-                    metrics={platform.metrics}
-                    additionalInfo={platform.additionalInfo}
-                  />
-                ))}
-              </div>
+              )}
+              {selectedTrack.album_label && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Label:</span>
+                  <span className="text-gray-900 font-medium">{selectedTrack.album_label}</span>
+                </div>
+              )}
+              {selectedTrack.duration_ms !== null && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Duration:</span>
+                  <span className="text-gray-900 font-medium">
+                    {Math.floor(selectedTrack.duration_ms / 60000)}:{String(Math.floor((selectedTrack.duration_ms % 60000) / 1000)).padStart(2, '0')}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
-        )
-      })}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {platformMetrics.map((platform) => (
+            <MetricCard
+              key={platform.platform}
+              platform={platform.platform}
+              logo={platform.logo}
+              metrics={platform.metrics}
+              additionalInfo={platform.additionalInfo}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

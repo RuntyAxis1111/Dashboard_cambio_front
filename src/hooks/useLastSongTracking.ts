@@ -117,12 +117,12 @@ export interface LastSongData {
 }
 
 export function useLastSongTracking(entidadId: string) {
-  const [data, setData] = useState<LastSongData | null>(null)
+  const [data, setData] = useState<LastSongData[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    async function loadLastSong() {
+    async function loadLastSongs() {
       try {
         setLoading(true)
         setError(null)
@@ -131,13 +131,13 @@ export function useLastSongTracking(entidadId: string) {
           .from('dsp_last_song')
           .select('*')
           .eq('entidad_id', entidadId)
-          .maybeSingle()
+          .order('dsp_status_id', { ascending: true })
 
         if (songError) throw songError
 
-        setData(songData)
+        setData(songData || [])
       } catch (err) {
-        console.error('Error loading last song:', err)
+        console.error('Error loading last songs:', err)
         setError(err instanceof Error ? err.message : 'Error desconocido')
       } finally {
         setLoading(false)
@@ -145,7 +145,7 @@ export function useLastSongTracking(entidadId: string) {
     }
 
     if (entidadId) {
-      loadLastSong()
+      loadLastSongs()
     }
   }, [entidadId])
 

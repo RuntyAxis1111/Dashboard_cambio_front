@@ -121,12 +121,12 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
     )
   }
 
-  if (!data) {
+  if (!data || data.length === 0) {
     return (
       <div className="bg-white border border-gray-200 rounded-2xl p-6">
         <div className="flex items-center gap-3 mb-4">
           <Music className="w-6 h-6 text-gray-400" />
-          <h3 className="text-xl font-bold text-gray-900">Last Song Tracking</h3>
+          <h3 className="text-xl font-bold text-gray-900">Latest Song Release Tracking</h3>
         </div>
         <div className="text-center py-12 text-gray-500">
           <p className="text-sm">No hay datos de canciones disponibles</p>
@@ -154,39 +154,45 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
     })
   }
 
-  const platformMetrics = [
+  const getTrackLabel = (index: number, total: number) => {
+    if (total === 1) return null
+    if (index === 0) return 'Latest Release'
+    return 'Previous Release'
+  }
+
+  const getPlatformMetrics = (songData: typeof data[0]) => [
     {
       platform: 'Spotify',
       logo: '/assets/spotify.png',
       metrics: [
         {
           label: 'Popularity',
-          value: data.sp_popularity,
-          d7: data.sp_popularity_d7,
-          d7_pct: data.sp_popularity_d7_pct,
-          d30: data.sp_popularity_d30,
-          d30_pct: data.sp_popularity_d30_pct
+          value: songData.sp_popularity,
+          d7: songData.sp_popularity_d7,
+          d7_pct: songData.sp_popularity_d7_pct,
+          d30: songData.sp_popularity_d30,
+          d30_pct: songData.sp_popularity_d30_pct
         },
         {
           label: 'Playlist Reach',
-          value: data.sp_playlist_reach,
-          d7: data.sp_playlist_reach_d7,
-          d7_pct: data.sp_playlist_reach_d7_pct,
-          d30: data.sp_playlist_reach_d30,
-          d30_pct: data.sp_playlist_reach_d30_pct
+          value: songData.sp_playlist_reach,
+          d7: songData.sp_playlist_reach_d7,
+          d7_pct: songData.sp_playlist_reach_d7_pct,
+          d30: songData.sp_playlist_reach_d30,
+          d30_pct: songData.sp_playlist_reach_d30_pct
         },
         {
           label: 'Streams',
-          value: data.sp_streams,
-          d7: data.sp_streams_d7,
-          d7_pct: data.sp_streams_d7_pct,
-          d30: data.sp_streams_d30,
-          d30_pct: data.sp_streams_d30_pct
+          value: songData.sp_streams,
+          d7: songData.sp_streams_d7,
+          d7_pct: songData.sp_streams_d7_pct,
+          d30: songData.sp_streams_d30,
+          d30_pct: songData.sp_streams_d30_pct
         }
       ],
       additionalInfo: [
-        { label: 'Playlists', value: data.num_sp_playlists },
-        { label: 'Editorial', value: data.num_sp_editorial_playlists }
+        { label: 'Playlists', value: songData.num_sp_playlists },
+        { label: 'Editorial', value: songData.num_sp_editorial_playlists }
       ]
     },
     {
@@ -195,32 +201,32 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
       metrics: [
         {
           label: 'Views',
-          value: data.youtube_views,
-          d7: data.youtube_views_d7,
-          d7_pct: data.youtube_views_d7_pct,
-          d30: data.youtube_views_d30,
-          d30_pct: data.youtube_views_d30_pct
+          value: songData.youtube_views,
+          d7: songData.youtube_views_d7,
+          d7_pct: songData.youtube_views_d7_pct,
+          d30: songData.youtube_views_d30,
+          d30_pct: songData.youtube_views_d30_pct
         },
         {
           label: 'Likes',
-          value: data.youtube_likes,
-          d7: data.youtube_likes_d7,
-          d7_pct: data.youtube_likes_d7_pct,
-          d30: data.youtube_likes_d30,
-          d30_pct: data.youtube_likes_d30_pct
+          value: songData.youtube_likes,
+          d7: songData.youtube_likes_d7,
+          d7_pct: songData.youtube_likes_d7_pct,
+          d30: songData.youtube_likes_d30,
+          d30_pct: songData.youtube_likes_d30_pct
         },
         {
           label: 'Comments',
-          value: data.youtube_comments,
-          d7: data.youtube_comments_d7,
-          d7_pct: data.youtube_comments_d7_pct,
-          d30: data.youtube_comments_d30,
-          d30_pct: data.youtube_comments_d30_pct
+          value: songData.youtube_comments,
+          d7: songData.youtube_comments_d7,
+          d7_pct: songData.youtube_comments_d7_pct,
+          d30: songData.youtube_comments_d30,
+          d30_pct: songData.youtube_comments_d30_pct
         }
       ],
       additionalInfo: [
-        { label: 'Playlists', value: data.num_yt_playlists },
-        { label: 'Editorial', value: data.num_yt_editorial_playlists }
+        { label: 'Playlists', value: songData.num_yt_playlists },
+        { label: 'Editorial', value: songData.num_yt_editorial_playlists }
       ]
     },
     {
@@ -229,27 +235,27 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
       metrics: [
         {
           label: 'Videos',
-          value: data.tiktok_videos,
-          d7: data.tiktok_videos_d7,
-          d7_pct: data.tiktok_videos_d7_pct,
-          d30: data.tiktok_videos_d30,
-          d30_pct: data.tiktok_videos_d30_pct
+          value: songData.tiktok_videos,
+          d7: songData.tiktok_videos_d7,
+          d7_pct: songData.tiktok_videos_d7_pct,
+          d30: songData.tiktok_videos_d30,
+          d30_pct: songData.tiktok_videos_d30_pct
         },
         {
           label: 'Top Likes',
-          value: data.tiktok_top_likes,
-          d7: data.tiktok_top_likes_d7,
-          d7_pct: data.tiktok_top_likes_d7_pct,
-          d30: data.tiktok_top_likes_d30,
-          d30_pct: data.tiktok_top_likes_d30_pct
+          value: songData.tiktok_top_likes,
+          d7: songData.tiktok_top_likes_d7,
+          d7_pct: songData.tiktok_top_likes_d7_pct,
+          d30: songData.tiktok_top_likes_d30,
+          d30_pct: songData.tiktok_top_likes_d30_pct
         },
         {
           label: 'Top Views',
-          value: data.tiktok_top_views,
-          d7: data.tiktok_top_views_d7,
-          d7_pct: data.tiktok_top_views_d7_pct,
-          d30: data.tiktok_top_views_d30,
-          d30_pct: data.tiktok_top_views_d30_pct
+          value: songData.tiktok_top_views,
+          d7: songData.tiktok_top_views_d7,
+          d7_pct: songData.tiktok_top_views_d7_pct,
+          d30: songData.tiktok_top_views_d30,
+          d30_pct: songData.tiktok_top_views_d30_pct
         }
       ]
     },
@@ -259,11 +265,11 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
       metrics: [
         {
           label: 'Count',
-          value: data.shazam_count,
-          d7: data.shazam_count_d7,
-          d7_pct: data.shazam_count_d7_pct,
-          d30: data.shazam_count_d30,
-          d30_pct: data.shazam_count_d30_pct
+          value: songData.shazam_count,
+          d7: songData.shazam_count_d7,
+          d7_pct: songData.shazam_count_d7_pct,
+          d30: songData.shazam_count_d30,
+          d30_pct: songData.shazam_count_d30_pct
         }
       ]
     },
@@ -273,16 +279,16 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
       metrics: [
         {
           label: 'Playlist Reach',
-          value: data.deezer_playlist_reach,
-          d7: data.deezer_playlist_reach_d7,
-          d7_pct: data.deezer_playlist_reach_d7_pct,
-          d30: data.deezer_playlist_reach_d30,
-          d30_pct: data.deezer_playlist_reach_d30_pct
+          value: songData.deezer_playlist_reach,
+          d7: songData.deezer_playlist_reach_d7,
+          d7_pct: songData.deezer_playlist_reach_d7_pct,
+          d30: songData.deezer_playlist_reach_d30,
+          d30_pct: songData.deezer_playlist_reach_d30_pct
         }
       ],
       additionalInfo: [
-        { label: 'Playlists', value: data.num_de_playlists },
-        { label: 'Editorial', value: data.num_de_editorial_playlists }
+        { label: 'Playlists', value: songData.num_de_playlists },
+        { label: 'Editorial', value: songData.num_de_editorial_playlists }
       ]
     },
     {
@@ -291,19 +297,19 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
       metrics: [
         {
           label: 'Streams',
-          value: data.pandora_streams,
-          d7: data.pandora_streams_d7,
-          d7_pct: data.pandora_streams_d7_pct,
-          d30: data.pandora_streams_d30,
-          d30_pct: data.pandora_streams_d30_pct
+          value: songData.pandora_streams,
+          d7: songData.pandora_streams_d7,
+          d7_pct: songData.pandora_streams_d7_pct,
+          d30: songData.pandora_streams_d30,
+          d30_pct: songData.pandora_streams_d30_pct
         },
         {
           label: 'Stations',
-          value: data.pandora_stations,
-          d7: data.pandora_stations_d7,
-          d7_pct: data.pandora_stations_d7_pct,
-          d30: data.pandora_stations_d30,
-          d30_pct: data.pandora_stations_d30_pct
+          value: songData.pandora_stations,
+          d7: songData.pandora_stations_d7,
+          d7_pct: songData.pandora_stations_d7_pct,
+          d30: songData.pandora_stations_d30,
+          d30_pct: songData.pandora_stations_d30_pct
         }
       ]
     },
@@ -313,11 +319,11 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
       metrics: [
         {
           label: 'Plays',
-          value: data.soundcloud_plays,
-          d7: data.soundcloud_plays_d7,
-          d7_pct: data.soundcloud_plays_d7_pct,
-          d30: data.soundcloud_plays_d30,
-          d30_pct: data.soundcloud_plays_d30_pct
+          value: songData.soundcloud_plays,
+          d7: songData.soundcloud_plays_d7,
+          d7_pct: songData.soundcloud_plays_d7_pct,
+          d30: songData.soundcloud_plays_d30,
+          d30_pct: songData.soundcloud_plays_d30_pct
         }
       ]
     },
@@ -327,11 +333,11 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
       metrics: [
         {
           label: 'Page Views',
-          value: data.genius_views,
-          d7: data.genius_views_d7,
-          d7_pct: data.genius_views_d7_pct,
-          d30: data.genius_views_d30,
-          d30_pct: data.genius_views_d30_pct
+          value: songData.genius_views,
+          d7: songData.genius_views_d7,
+          d7_pct: songData.genius_views_d7_pct,
+          d30: songData.genius_views_d30,
+          d30_pct: songData.genius_views_d30_pct
         }
       ]
     },
@@ -341,11 +347,11 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
       metrics: [
         {
           label: 'Likes',
-          value: data.melon_likes,
-          d7: data.melon_likes_d7,
-          d7_pct: data.melon_likes_d7_pct,
-          d30: data.melon_likes_d30,
-          d30_pct: data.melon_likes_d30_pct
+          value: songData.melon_likes,
+          d7: songData.melon_likes_d7,
+          d7_pct: songData.melon_likes_d7_pct,
+          d30: songData.melon_likes_d30,
+          d30_pct: songData.melon_likes_d30_pct
         }
       ]
     },
@@ -355,99 +361,115 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
       metrics: [
         {
           label: 'Streams',
-          value: data.airplay_streams,
-          d7: data.airplay_streams_d7,
-          d7_pct: data.airplay_streams_d7_pct,
-          d30: data.airplay_streams_d30,
-          d30_pct: data.airplay_streams_d30_pct
+          value: songData.airplay_streams,
+          d7: songData.airplay_streams_d7,
+          d7_pct: songData.airplay_streams_d7_pct,
+          d30: songData.airplay_streams_d30,
+          d30_pct: songData.airplay_streams_d30_pct
         }
       ]
     }
   ]
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <Music className="w-6 h-6 text-gray-700" />
-        <h3 className="text-xl font-bold text-gray-900">Latest Song Release Tracking</h3>
-      </div>
+    <div className="space-y-8">
+      {data.map((songData, index) => {
+        const trackLabel = getTrackLabel(index, data.length)
+        const platformMetrics = getPlatformMetrics(songData)
 
-      <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
-        <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
-          <div className="aspect-square w-full mb-4 rounded-lg overflow-hidden bg-gray-200">
-            {data.image_url ? (
-              <img
-                src={data.image_url}
-                alt={data.name_song}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Music className="w-16 h-16 text-gray-400" />
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-3">
-            <div>
-              <h4 className="font-bold text-lg text-gray-900 mb-1">{data.name_song}</h4>
-              <div className="flex flex-wrap gap-2 mb-2">
-                {data.explicit && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-900 text-white">
-                    Explicit
-                  </span>
-                )}
-                {data.track_tier !== null && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                    Tier {data.track_tier}
-                  </span>
+        return (
+          <div key={songData.last_song_id} className="bg-white border border-gray-200 rounded-2xl p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <Music className="w-6 h-6 text-gray-700" />
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">
+                  {trackLabel || 'Latest Song Release Tracking'}
+                </h3>
+                {trackLabel && (
+                  <p className="text-sm text-gray-500 mt-0.5">{songData.name_song}</p>
                 )}
               </div>
             </div>
 
-            <div className="space-y-2 text-sm">
-              {data.isrc && (
-                <div className="flex justify-between">
-                  <span className="text-gray-600">ISRC:</span>
-                  <span className="text-gray-900 font-medium">{data.isrc}</span>
+            <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
+                <div className="aspect-square w-full mb-4 rounded-lg overflow-hidden bg-gray-200">
+                  {songData.image_url ? (
+                    <img
+                      src={songData.image_url}
+                      alt={songData.name_song}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Music className="w-16 h-16 text-gray-400" />
+                    </div>
+                  )}
                 </div>
-              )}
-              {data.release_date && (
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Release:</span>
-                  <span className="text-gray-900 font-medium">{formatDate(data.release_date)}</span>
+
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="font-bold text-lg text-gray-900 mb-1">{songData.name_song}</h4>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {songData.explicit && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-900 text-white">
+                          Explicit
+                        </span>
+                      )}
+                      {songData.track_tier !== null && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                          Tier {songData.track_tier}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 text-sm">
+                    {songData.isrc && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">ISRC:</span>
+                        <span className="text-gray-900 font-medium">{songData.isrc}</span>
+                      </div>
+                    )}
+                    {songData.release_date && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Release:</span>
+                        <span className="text-gray-900 font-medium">{formatDate(songData.release_date)}</span>
+                      </div>
+                    )}
+                    {songData.album_label && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Label:</span>
+                        <span className="text-gray-900 font-medium">{songData.album_label}</span>
+                      </div>
+                    )}
+                    {songData.duration_ms !== null && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Duration:</span>
+                        <span className="text-gray-900 font-medium">
+                          {Math.floor(songData.duration_ms / 60000)}:{String(Math.floor((songData.duration_ms % 60000) / 1000)).padStart(2, '0')}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              )}
-              {data.album_label && (
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Label:</span>
-                  <span className="text-gray-900 font-medium">{data.album_label}</span>
-                </div>
-              )}
-              {data.duration_ms !== null && (
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Duration:</span>
-                  <span className="text-gray-900 font-medium">
-                    {Math.floor(data.duration_ms / 60000)}:{String(Math.floor((data.duration_ms % 60000) / 1000)).padStart(2, '0')}
-                  </span>
-                </div>
-              )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {platformMetrics.map((platform) => (
+                  <MetricCard
+                    key={platform.platform}
+                    platform={platform.platform}
+                    logo={platform.logo}
+                    metrics={platform.metrics}
+                    additionalInfo={platform.additionalInfo}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {platformMetrics.map((platform) => (
-            <MetricCard
-              key={platform.platform}
-              platform={platform.platform}
-              logo={platform.logo}
-              metrics={platform.metrics}
-              additionalInfo={platform.additionalInfo}
-            />
-          ))}
-        </div>
-      </div>
+        )
+      })}
     </div>
   )
 }

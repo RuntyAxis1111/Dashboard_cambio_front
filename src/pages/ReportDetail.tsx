@@ -157,7 +157,14 @@ export function ReportDetail() {
           setDspLastUpdated(dspStatusData.ultima_actualizacion)
         }
 
-        if (isBandReport(entityData.tipo, entityData.subtipo)) {
+        const isBand = isBandReport(entityData.tipo, entityData.subtipo)
+        console.log('[ReportDetail] Entity loaded:', {
+          slug: entityData.slug,
+          tipo: entityData.tipo,
+          subtipo: entityData.subtipo,
+          isBandReport: isBand
+        })
+        if (isBand) {
           await loadBandReportData(entityData.id)
         }
       } catch (err) {
@@ -207,7 +214,7 @@ export function ReportDetail() {
           participante_nombre: m.participante?.nombre || 'Unknown'
         }))
 
-        setBandData({
+        const bandReportData = {
           sections: sectionsRes.data || [],
           highlights: highlightsRes.data || [],
           instagramKPIs: instagramKPIsRes.data || [],
@@ -222,7 +229,19 @@ export function ReportDetail() {
           weeklyContent: weeklyContentRes.data || [],
           topPosts: topPostsRes.data || [],
           sentiment: sentimentRes.data || []
+        }
+        console.log('[ReportDetail] Band Report Data Loaded:', {
+          entidadId,
+          sectionsCount: bandReportData.sections.length,
+          sections: bandReportData.sections,
+          highlightsCount: bandReportData.highlights.length,
+          mvItemsCount: bandReportData.mvItems.length,
+          prPressCount: bandReportData.prPress.length,
+          weeklyContentCount: bandReportData.weeklyContent.length,
+          topPostsCount: bandReportData.topPosts.length,
+          sentimentCount: bandReportData.sentiment.length
         })
+        setBandData(bandReportData)
       } catch (err) {
         console.error('Error loading band report data:', err)
       }
@@ -279,6 +298,12 @@ export function ReportDetail() {
   }
 
   const showBandReport = isBandReport(entity.tipo, entity.subtipo)
+  console.log('[ReportDetail] Render state:', {
+    showBandReport,
+    hasBandData: !!bandData,
+    sectionsCount: bandData?.sections?.length || 0,
+    entitySlug: entity.slug
+  })
   const sectionMap: Record<string, { component: JSX.Element | null }> = {
     'highlights': { component: bandData ? <HighlightsSection items={bandData.highlights} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
     'fan_sentiment': { component: bandData ? <FanSentimentSection items={bandData.sentiment} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },

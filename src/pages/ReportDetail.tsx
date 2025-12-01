@@ -21,7 +21,7 @@ import { PRPressSection } from '../components/band-report/PRPressSection'
 import { WeeklyContentSection } from '../components/band-report/WeeklyContentSection'
 import { TopPostsSection } from '../components/band-report/TopPostsSection'
 import { SpotifyMetricsCard } from '../components/dsp/SpotifyMetricsCard'
-import { LastSongTracking } from '../components/dsp/LastSongTracking'
+import { LastSongTracking, TrackVersionSelector, useLastSongTracking } from '../components/dsp/LastSongTracking'
 import { getSampleForArtist } from './WeeklyDetail'
 
 interface EntityDetail {
@@ -104,8 +104,10 @@ export function ReportDetail() {
   const [dspLastUpdated, setDspLastUpdated] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedTrackIndex, setSelectedTrackIndex] = useState(0)
 
   const { hiddenSections, toggleSection, resetToDefault, isSectionVisible } = useReportPreferences(entity?.id || '')
+  const { data: trackData } = useLastSongTracking(entity?.id || '')
 
   useEffect(() => {
     async function loadReportDetail() {
@@ -304,7 +306,7 @@ export function ReportDetail() {
     sectionsCount: bandData?.sections?.length || 0,
     entitySlug: entity.slug
   })
-  const sectionMap: Record<string, { component: JSX.Element | null }> = {
+  const sectionMap: Record<string, { component: JSX.Element | null; extraHeaderContent?: JSX.Element }> = {
     'highlights': { component: bandData ? <HighlightsSection items={bandData.highlights} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
     'fan_sentiment': { component: bandData ? <FanSentimentSection items={bandData.sentiment} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
     'instagram_kpis': { component: bandData ? <InstagramKPIsSection metrics={bandData.instagramKPIs} /> : null },
@@ -317,7 +319,14 @@ export function ReportDetail() {
     'social_growth': { component: bandData ? <PlatformGrowthSection metrics={bandData.platformGrowth} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
     'sources': { component: bandData ? <SourcesSection sources={bandData.sources} /> : null },
     'dsp_platform_breakdown': { component: <SpotifyMetricsCard entidadId={entity.id} /> },
-    'dsp_last_song_tracking': { component: <LastSongTracking entidadId={entity.id} /> },
+    'dsp_last_song_tracking': {
+      component: <LastSongTracking entidadId={entity.id} selectedTrackIndex={selectedTrackIndex} />,
+      extraHeaderContent: <TrackVersionSelector
+        trackCount={trackData.length}
+        selectedIndex={selectedTrackIndex}
+        onSelectIndex={setSelectedTrackIndex}
+      />
+    },
     'pr_press': { component: bandData ? <PRPressSection items={bandData.prPress} entidadId={entity.id} /> : null },
     'weekly_content': { component: bandData ? <WeeklyContentSection items={bandData.weeklyContent} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
     'top_posts': { component: bandData ? <TopPostsSection posts={bandData.topPosts} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null }
@@ -511,12 +520,13 @@ export function ReportDetail() {
 
                     return (
                       <div key={section.seccion_clave}>
-                        <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
-                          {displayTitle}
-                          {platformLogo && (
-                            <img
-                              src={platformLogo}
-                              alt="Platform"
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-xl font-bold text-black flex items-center gap-2">
+                            {displayTitle}
+                            {platformLogo && (
+                              <img
+                                src={platformLogo}
+                                alt="Platform"
                               className="w-5 h-5 object-contain"
                             />
                           )}
@@ -533,6 +543,10 @@ export function ReportDetail() {
                             </span>
                           )}
                         </h3>
+                        {sectionData.extraHeaderContent && (
+                          <div>{sectionData.extraHeaderContent}</div>
+                        )}
+                        </div>
                         {sectionData.component}
                       </div>
                     )

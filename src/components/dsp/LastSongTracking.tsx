@@ -1,11 +1,50 @@
 import { AlertTriangle, Music, ChevronDown } from 'lucide-react'
-import { useState } from 'react'
 import { useLastSongTracking } from '../../hooks/useLastSongTracking'
 import { formatNumber, formatDeltaWithAbs, getDeltaColor } from '../../lib/format-utils'
 
 interface LastSongTrackingProps {
   entidadId: string
+  selectedTrackIndex?: number
 }
+
+interface TrackVersionSelectorProps {
+  trackCount: number
+  selectedIndex: number
+  onSelectIndex: (index: number) => void
+}
+
+function getTrackVersionLabel(index: number) {
+  if (index === 0) return 'New Version'
+  return 'Old Version'
+}
+
+export function TrackVersionSelector({ trackCount, selectedIndex, onSelectIndex }: TrackVersionSelectorProps) {
+  if (trackCount <= 1) return null
+
+  return (
+    <div className="flex gap-2">
+      {Array.from({ length: trackCount }).map((_, index) => (
+        <button
+          key={index}
+          onClick={() => onSelectIndex(index)}
+          className={`
+            px-4 py-2 rounded-lg border-2 font-medium text-sm
+            transition-all duration-200 flex items-center gap-2
+            ${selectedIndex === index
+              ? 'border-gray-900 bg-gray-900 text-white'
+              : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+            }
+          `}
+        >
+          {getTrackVersionLabel(index)}
+          <ChevronDown className={`w-4 h-4 transition-transform ${selectedIndex === index ? 'rotate-180' : ''}`} />
+        </button>
+      ))}
+    </div>
+  )
+}
+
+export { useLastSongTracking }
 
 interface MetricCardProps {
   platform: string
@@ -91,9 +130,8 @@ function MetricCard({ platform, logo, metrics, additionalInfo }: MetricCardProps
   )
 }
 
-export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
+export function LastSongTracking({ entidadId, selectedTrackIndex = 0 }: LastSongTrackingProps) {
   const { data, loading, error } = useLastSongTracking(entidadId)
-  const [selectedTrackIndex, setSelectedTrackIndex] = useState(0)
 
   if (loading) {
     return (
@@ -154,11 +192,6 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
       hour: '2-digit',
       minute: '2-digit'
     })
-  }
-
-  const getTrackVersionLabel = (index: number) => {
-    if (index === 0) return 'New Version'
-    return 'Old Version'
   }
 
   const selectedTrack = data[selectedTrackIndex]
@@ -377,35 +410,6 @@ export function LastSongTracking({ entidadId }: LastSongTrackingProps) {
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <Music className="w-6 h-6 text-gray-700" />
-          <h3 className="text-xl font-bold text-gray-900">Latest Song Release Tracking</h3>
-        </div>
-
-        {data.length > 1 && (
-          <div className="flex gap-2">
-            {data.map((track, index) => (
-              <button
-                key={track.last_song_id}
-                onClick={() => setSelectedTrackIndex(index)}
-                className={`
-                  px-4 py-2 rounded-lg border-2 font-medium text-sm
-                  transition-all duration-200 flex items-center gap-2
-                  ${selectedTrackIndex === index
-                    ? 'border-gray-900 bg-gray-900 text-white'
-                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
-                  }
-                `}
-              >
-                {getTrackVersionLabel(index)}
-                <ChevronDown className={`w-4 h-4 transition-transform ${selectedTrackIndex === index ? 'rotate-180' : ''}`} />
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
         <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
           <div className="aspect-square w-full mb-4 rounded-lg overflow-hidden bg-gray-200">

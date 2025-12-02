@@ -22,22 +22,22 @@ export function TrackVersionSelector({ trackCount, selectedIndex, onSelectIndex 
   if (trackCount <= 1) return null
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-3">
       {Array.from({ length: trackCount }).map((_, index) => (
         <button
           key={index}
           onClick={() => onSelectIndex(index)}
           className={`
-            px-4 py-2 rounded-lg border-2 font-medium text-sm
-            transition-all duration-200 flex items-center gap-2
+            px-6 py-2.5 rounded-lg border-2 font-semibold text-base
+            transition-all duration-200 flex items-center gap-2 shadow-sm
             ${selectedIndex === index
-              ? 'border-gray-900 bg-gray-900 text-white'
-              : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+              ? 'border-black bg-black text-white shadow-md'
+              : 'border-gray-400 bg-white text-gray-900 hover:border-gray-600 hover:shadow'
             }
           `}
         >
           {getTrackVersionLabel(index)}
-          <ChevronDown className={`w-4 h-4 transition-transform ${selectedIndex === index ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`w-5 h-5 transition-transform ${selectedIndex === index ? 'rotate-180' : ''}`} />
         </button>
       ))}
     </div>

@@ -109,6 +109,8 @@ export function ReportDetail() {
   const { hiddenSections, toggleSection, resetToDefault, isSectionVisible } = useReportPreferences(entity?.id || '')
   const { data: trackData } = useLastSongTracking(entity?.id || '')
 
+  console.log('TrackData length:', trackData?.length, 'Track data:', trackData)
+
   useEffect(() => {
     async function loadReportDetail() {
       if (!slug) {
@@ -321,11 +323,13 @@ export function ReportDetail() {
     'dsp_platform_breakdown': { component: <SpotifyMetricsCard entidadId={entity.id} /> },
     'dsp_last_song_tracking': {
       component: <LastSongTracking entidadId={entity.id} selectedTrackIndex={selectedTrackIndex} />,
-      extraHeaderContent: <TrackVersionSelector
-        trackCount={trackData.length}
-        selectedIndex={selectedTrackIndex}
-        onSelectIndex={setSelectedTrackIndex}
-      />
+      extraHeaderContent: trackData && trackData.length > 0 ? (
+        <TrackVersionSelector
+          trackCount={trackData.length}
+          selectedIndex={selectedTrackIndex}
+          onSelectIndex={setSelectedTrackIndex}
+        />
+      ) : undefined
     },
     'pr_press': { component: bandData ? <PRPressSection items={bandData.prPress} entidadId={entity.id} /> : null },
     'weekly_content': { component: bandData ? <WeeklyContentSection items={bandData.weeklyContent} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },

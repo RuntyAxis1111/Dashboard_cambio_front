@@ -14,8 +14,8 @@ interface TrackVersionSelectorProps {
 }
 
 function getTrackVersionLabel(index: number) {
-  if (index === 0) return 'New Version'
-  return 'Old Version'
+  if (index === 0) return 'Portuguese Version'
+  return 'Spanish Version'
 }
 
 export function TrackVersionSelector({ trackCount, selectedIndex, onSelectIndex }: TrackVersionSelectorProps) {

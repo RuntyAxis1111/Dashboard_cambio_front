@@ -323,13 +323,13 @@ export function ReportDetail() {
     'dsp_platform_breakdown': { component: <SpotifyMetricsCard entidadId={entity.id} /> },
     'dsp_last_song_tracking': {
       component: <LastSongTracking entidadId={entity.id} selectedTrackIndex={selectedTrackIndex} />,
-      extraHeaderContent: trackData && trackData.length > 0 ? (
+      extraHeaderContent: (
         <TrackVersionSelector
-          trackCount={trackData.length}
+          trackCount={trackData?.length || 0}
           selectedIndex={selectedTrackIndex}
           onSelectIndex={setSelectedTrackIndex}
         />
-      ) : undefined
+      )
     },
     'pr_press': { component: bandData ? <PRPressSection items={bandData.prPress} entidadId={entity.id} /> : null },
     'weekly_content': { component: bandData ? <WeeklyContentSection items={bandData.weeklyContent} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },
@@ -525,31 +525,33 @@ export function ReportDetail() {
                     return (
                       <div key={section.seccion_clave}>
                         <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-xl font-bold text-black flex items-center gap-2">
-                            {displayTitle}
-                            {platformLogo && (
+                          <div className="flex items-center gap-3">
+                            <h3 className="text-xl font-bold text-black flex items-center gap-2">
+                              {displayTitle}
+                              {platformLogo && (
+                                <img
+                                  src={platformLogo}
+                                  alt="Platform"
+                                className="w-5 h-5 object-contain"
+                              />
+                            )}
+                            {(showAIIcon || forceShowAI) && (
                               <img
-                                src={platformLogo}
-                                alt="Platform"
-                              className="w-5 h-5 object-contain"
-                            />
+                                src="/assets/artificial-intelligence.png"
+                                alt="AI"
+                                className="w-5 h-5 object-contain"
+                              />
+                            )}
+                            {section.seccion_clave === 'dsp_platform_breakdown' && dspLastUpdated && (
+                              <span className="text-[11px] text-gray-400 font-normal">
+                                • Updated {formatLastUpdated(dspLastUpdated)}
+                              </span>
+                            )}
+                          </h3>
+                          {sectionData.extraHeaderContent && (
+                            <div className="ml-3">{sectionData.extraHeaderContent}</div>
                           )}
-                          {(showAIIcon || forceShowAI) && (
-                            <img
-                              src="/assets/artificial-intelligence.png"
-                              alt="AI"
-                              className="w-5 h-5 object-contain"
-                            />
-                          )}
-                          {section.seccion_clave === 'dsp_platform_breakdown' && dspLastUpdated && (
-                            <span className="text-[11px] text-gray-400 font-normal">
-                              • Updated {formatLastUpdated(dspLastUpdated)}
-                            </span>
-                          )}
-                        </h3>
-                        {sectionData.extraHeaderContent && (
-                          <div>{sectionData.extraHeaderContent}</div>
-                        )}
+                          </div>
                         </div>
                         {sectionData.component}
                       </div>

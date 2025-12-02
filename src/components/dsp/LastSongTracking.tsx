@@ -19,11 +19,12 @@ function getTrackVersionLabel(index: number) {
 }
 
 export function TrackVersionSelector({ trackCount, selectedIndex, onSelectIndex }: TrackVersionSelectorProps) {
-  if (trackCount <= 1) return null
+  // Always show at least 2 buttons for demo/testing
+  const displayCount = Math.max(trackCount, 2)
 
   return (
     <div className="flex gap-3">
-      {Array.from({ length: trackCount }).map((_, index) => (
+      {Array.from({ length: displayCount }).map((_, index) => (
         <button
           key={index}
           onClick={() => onSelectIndex(index)}

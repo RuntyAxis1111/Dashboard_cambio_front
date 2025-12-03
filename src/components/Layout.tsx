@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
 import { VoiceAgent } from './VoiceAgent'
+import { IntercomChat } from './IntercomChat'
 
 interface LayoutProps {
   children: ReactNode
@@ -38,6 +39,7 @@ export function Layout({ children }: LayoutProps) {
           isOpen={isVoiceAgentOpen}
           onToggle={() => setIsVoiceAgentOpen(!isVoiceAgentOpen)}
         />
+        <IntercomChat />
       </div>
     )
   } catch (error) {

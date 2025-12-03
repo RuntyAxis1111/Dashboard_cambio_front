@@ -689,6 +689,7 @@ export function getSampleForArtist(artistId?: string): WeeklyReport | null {
       return SAMPLE_DESTINO
     case 'musza':
       return SAMPLE_MUSZA
+    case 'lowclika':
     case 'low-clika':
       return SAMPLE_LOW_CLIKA
     default:

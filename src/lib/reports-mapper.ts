@@ -23,14 +23,19 @@ async function getWeeklyReportFromReportesEntidades(
   try {
     console.log('[getWeeklyReportFromReportesEntidades] Called with:', { entidad, weekEnd })
 
-    // Get the report status/dates - just get the most recent one for now
-    const { data: statusData, error: statusError } = await supabase
+    // Get the report status/dates
+    let statusQuery = supabase
       .from('reportes_estado')
       .select('*')
       .eq('entidad_id', entidad.id)
-      .order('semana_inicio', { ascending: false })
-      .limit(1)
-      .maybeSingle()
+
+    if (weekEnd) {
+      statusQuery = statusQuery.eq('semana_fin', weekEnd)
+    } else {
+      statusQuery = statusQuery.order('semana_inicio', { ascending: false }).limit(1)
+    }
+
+    const { data: statusData, error: statusError } = await statusQuery.maybeSingle()
 
     console.log('[getWeeklyReportFromReportesEntidades] statusData:', statusData, 'error:', statusError)
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { Calendar, Send, CheckCircle2, AlertCircle, Loader2, FileText, GitCompare, BarChart3, Users } from 'lucide-react'
 
 interface Entity {
@@ -13,6 +14,7 @@ interface Entity {
 type ReportType = 'simple' | 'week-vs-week' | 'month-vs-month' | 'artist-vs-artist'
 
 export function MakeReport() {
+  const { user } = useAuth()
   const [entities, setEntities] = useState<Entity[]>([])
   const [loading, setLoading] = useState(true)
   const [reportType, setReportType] = useState<ReportType>('simple')
@@ -77,6 +79,11 @@ export function MakeReport() {
       entity_slug: entity.slug,
       start_date: startDate,
       end_date: endDate,
+      requested_by: {
+        user_id: user?.id,
+        email: user?.email,
+        name: user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email
+      },
       timestamp: new Date().toISOString()
     }
 

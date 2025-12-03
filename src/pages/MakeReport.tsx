@@ -109,7 +109,18 @@ export function MakeReport() {
         body: JSON.stringify(payload)
       })
 
-      const result = await response.json()
+      let result
+      const contentType = response.headers.get('content-type')
+
+      if (contentType && contentType.includes('application/json')) {
+        result = await response.json()
+      } else {
+        const text = await response.text()
+        console.error('Non-JSON response:', text)
+        throw new Error('Invalid response from server')
+      }
+
+      console.log('Edge Function response:', result)
 
       if (response.ok && result.success) {
         setSubmitStatus('success')

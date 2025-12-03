@@ -28,6 +28,13 @@ export function MakeReport() {
   const [errorMessage, setErrorMessage] = useState<string>('')
 
   useEffect(() => {
+    console.log('Environment check:', {
+      VITE_SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
+      VITE_SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Present' : 'Missing',
+    })
+  }, [])
+
+  useEffect(() => {
     async function loadEntities() {
       try {
         const { data, error } = await supabase
@@ -98,7 +105,16 @@ export function MakeReport() {
         throw new Error('Not authenticated')
       }
 
+      if (!import.meta.env.VITE_SUPABASE_URL) {
+        throw new Error('Configuration error: VITE_SUPABASE_URL is not defined. Please refresh the page.')
+      }
+
       const edgeFunctionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/report-webhook-proxy`
+
+      console.log('Submitting to Edge Function:', {
+        url: edgeFunctionUrl,
+        payload,
+      })
 
       const response = await fetch(edgeFunctionUrl, {
         method: 'POST',

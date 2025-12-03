@@ -15,7 +15,7 @@ export function reportKindLabel(tipo?: string | null, subtipo?: string | null): 
 
 export function isBandReport(tipo?: string | null, subtipo?: string | null): boolean {
   const norm = (s?: string | null) => (s ?? '').toLowerCase()
-  return norm(subtipo) === 'banda' || norm(tipo) === 'banda'
+  return norm(tipo) === 'artist' || norm(subtipo) === 'banda' || norm(tipo) === 'banda'
 }
 
 export const METRIC_LABELS: Record<string, string> = {

@@ -2,7 +2,6 @@ import { ReactNode, useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
-import { VoiceAgent } from './VoiceAgent'
 import { IntercomChat } from './IntercomChat'
 
 interface LayoutProps {
@@ -11,7 +10,6 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   console.log('🏗️ Layout component rendering...')
-  const [isVoiceAgentOpen, setIsVoiceAgentOpen] = useState(false)
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true)
   const { user } = useAuth()
@@ -35,10 +33,6 @@ export function Layout({ children }: LayoutProps) {
             {children}
           </main>
         </div>
-        <VoiceAgent
-          isOpen={isVoiceAgentOpen}
-          onToggle={() => setIsVoiceAgentOpen(!isVoiceAgentOpen)}
-        />
         <IntercomChat />
       </div>
     )

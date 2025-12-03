@@ -93,23 +93,25 @@ export function MakeReport() {
     }
 
     try {
-      const testWebhook = 'https://runtyaxis.app.n8n.cloud/webhook-test/1461e877-1770-4fd8-a9f0-0321161c51a1'
-      const prodWebhook = 'https://runtyaxis.app.n8n.cloud/webhook/1461e877-1770-4fd8-a9f0-0321161c51a1'
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        throw new Error('Not authenticated')
+      }
 
-      const [testResponse, prodResponse] = await Promise.all([
-        fetch(testWebhook, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        }),
-        fetch(prodWebhook, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        })
-      ])
+      const edgeFunctionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/report-webhook-proxy`
 
-      if (testResponse.ok && prodResponse.ok) {
+      const response = await fetch(edgeFunctionUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(payload)
+      })
+
+      const result = await response.json()
+
+      if (response.ok && result.success) {
         setSubmitStatus('success')
         setSelectedEntity('')
         setStartDate('')
@@ -117,11 +119,11 @@ export function MakeReport() {
         setCompareStartDate('')
         setCompareEndDate('')
       } else {
-        throw new Error('Webhook request failed')
+        throw new Error(result.error || 'Failed to submit report request')
       }
     } catch (err) {
       console.error('Error submitting report request:', err)
-      setErrorMessage('Failed to submit report request. Please try again.')
+      setErrorMessage(err instanceof Error ? err.message : 'Failed to submit report request. Please try again.')
       setSubmitStatus('error')
     } finally {
       setSubmitting(false)

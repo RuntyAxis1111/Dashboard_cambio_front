@@ -79,7 +79,10 @@ export function FanSentimentSection({ items, entidadId, onUpdate }: FanSentiment
     )
   }
 
-  const sortedItems = [...items].sort((a, b) => a.posicion - b.posicion)
+  const sortedItems = [...items]
+    .filter(item => item.texto && item.texto.trim() !== '')
+    .sort((a, b) => a.posicion - b.posicion)
+
   const editableItems: EditableItem[] = sortedItems.map(item => ({
     titulo: item.titulo || '',
     texto: item.texto,

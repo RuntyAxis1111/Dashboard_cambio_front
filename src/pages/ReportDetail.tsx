@@ -210,7 +210,7 @@ export function ReportDetail() {
           supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'pr').order('posicion'),
           supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'weekly_recap').order('posicion'),
           supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'top_posts').order('posicion'),
-          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).eq('categoria', 'sentiment').order('posicion')
+          supabase.from('reportes_items').select('*').eq('entidad_id', entidadId).in('categoria', ['sentiment', 'fan_sentiment']).order('posicion')
         ])
 
         const membersData = (membersRes.data || []).map((m: any) => ({

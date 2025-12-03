@@ -453,8 +453,13 @@ export function ReportDetail() {
             <div className="space-y-8">
               {bandData.sections.length > 0 && (
                 bandData.sections
-                  .filter(section => isSectionVisible(section.seccion_clave))
+                  .filter(section => {
+                    const isVisible = isSectionVisible(section.seccion_clave)
+                    console.log('[ReportDetail] Section filter:', section.seccion_clave, 'visible:', isVisible)
+                    return isVisible
+                  })
                   .map((section, idx) => {
+                    console.log('[ReportDetail] Rendering section:', section.seccion_clave, 'has component:', !!sectionMap[section.seccion_clave])
                     const allVisibleSections = bandData.sections.filter(s => isSectionVisible(s.seccion_clave))
                     const prevSection = allVisibleSections[idx - 1]
                     const isPlatform = section.seccion_clave === 'social_growth' || section.seccion_clave === 'platform_growth'

@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import Intercom from '@intercom/messenger-js-sdk'
 import { useAuth } from '../contexts/AuthContext'
 
 export function IntercomChat() {
@@ -9,24 +8,26 @@ export function IntercomChat() {
   const isHomePage = location.pathname === '/'
 
   useEffect(() => {
-    if (isHomePage) {
+    const checkIntercom = setInterval(() => {
       if (window.Intercom) {
-        window.Intercom('shutdown')
-      }
-      return
-    }
+        clearInterval(checkIntercom)
 
-    Intercom({
-      app_id: 'aeot3qeo',
-      user_id: user?.id,
-      email: user?.email,
-      name: user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User',
-    })
+        if (isHomePage) {
+          window.Intercom('hide')
+        } else {
+          window.Intercom('boot', {
+            app_id: 'aeot3qeo',
+            user_id: user?.id,
+            email: user?.email,
+            name: user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User',
+          })
+          window.Intercom('show')
+        }
+      }
+    }, 100)
 
     return () => {
-      if (window.Intercom) {
-        window.Intercom('shutdown')
-      }
+      clearInterval(checkIntercom)
     }
   }, [isHomePage, user])
 

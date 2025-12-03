@@ -44,13 +44,17 @@ async function getWeeklyReportFromReportesEntidades(
     }
 
     // Get all items for this entity
-    const { data: items } = await supabase
+    const { data: items, error: itemsError } = await supabase
       .from('reportes_items')
       .select('*')
       .eq('entidad_id', entidad.id)
       .order('posicion', { ascending: true })
 
-    if (!items) {
+    console.log('[getWeeklyReportFromReportesEntidades] items:', items, 'error:', itemsError)
+    console.log('[getWeeklyReportFromReportesEntidades] items length:', items?.length)
+
+    if (!items || items.length === 0) {
+      console.log('[getWeeklyReportFromReportesEntidades] No items found, returning null')
       return null
     }
 
@@ -69,12 +73,15 @@ async function getWeeklyReportFromReportesEntidades(
     const instagramPostsByTrack: Record<string, string[]> = {}
 
     items.forEach((item: any) => {
+      console.log('[getWeeklyReportFromReportesEntidades] Processing item:', { categoria: item.categoria, titulo: item.titulo?.substring(0, 50), texto: item.texto?.substring(0, 50) })
+
       switch (item.categoria) {
         case 'highlights':
         case 'highlight':
           if (item.texto && item.texto !== 'No data') {
             result.highlights = result.highlights || []
             result.highlights.push(item.texto)
+            console.log('[getWeeklyReportFromReportesEntidades] Added highlight, total count:', result.highlights.length)
           }
           break
 
@@ -82,6 +89,7 @@ async function getWeeklyReportFromReportesEntidades(
         case 'fan_sentiment':
           if (item.texto && item.texto !== 'No data') {
             result.fan_sentiment = (result.fan_sentiment || '') + item.texto + '\n\n'
+            console.log('[getWeeklyReportFromReportesEntidades] Added fan_sentiment, length:', result.fan_sentiment.length)
           }
           break
 

@@ -16,67 +16,76 @@ Deno.serve(async (req: Request) => {
 
   try {
     const payload = await req.json();
-    
+
     const testWebhook = 'https://runtyaxis.app.n8n.cloud/webhook-test/1461e877-1770-4fd8-a9f0-0321161c51a1';
     const prodWebhook = 'https://runtyaxis.app.n8n.cloud/webhook/1461e877-1770-4fd8-a9f0-0321161c51a1';
 
-    console.log('Sending payload to webhooks:', payload);
+    console.log('Received payload:', JSON.stringify(payload, null, 2));
+    console.log('Sending to test webhook:', testWebhook);
+    console.log('Sending to prod webhook:', prodWebhook);
 
-    const results = await Promise.allSettled([
-      fetch(testWebhook, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      }),
-      fetch(prodWebhook, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      }),
-    ]);
+    const testPromise = fetch(testWebhook, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    }).then(async (res) => {
+      const text = await res.text();
+      console.log(`Test webhook - Status: ${res.status}, Body: ${text}`);
+      return { res, text };
+    }).catch((err) => {
+      console.error('Test webhook error:', err);
+      throw err;
+    });
+
+    const prodPromise = fetch(prodWebhook, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    }).then(async (res) => {
+      const text = await res.text();
+      console.log(`Prod webhook - Status: ${res.status}, Body: ${text}`);
+      return { res, text };
+    }).catch((err) => {
+      console.error('Prod webhook error:', err);
+      throw err;
+    });
+
+    const results = await Promise.allSettled([testPromise, prodPromise]);
 
     const [testResult, prodResult] = results;
 
     let testResponseBody = null;
+    let testStatusCode = null;
     let prodResponseBody = null;
+    let prodStatusCode = null;
 
     if (testResult.status === 'fulfilled') {
-      try {
-        const text = await testResult.value.text();
-        testResponseBody = text;
-        console.log('Test webhook response:', text);
-      } catch (e) {
-        console.error('Error reading test webhook response:', e);
-      }
+      testResponseBody = testResult.value.text;
+      testStatusCode = testResult.value.res.status;
     }
 
     if (prodResult.status === 'fulfilled') {
-      try {
-        const text = await prodResult.value.text();
-        prodResponseBody = text;
-        console.log('Prod webhook response:', text);
-      } catch (e) {
-        console.error('Error reading prod webhook response:', e);
-      }
+      prodResponseBody = prodResult.value.text;
+      prodStatusCode = prodResult.value.res.status;
     }
-    
+
     const response = {
       success: true,
       test_webhook: {
         status: testResult.status === 'fulfilled' ? 'success' : 'failed',
-        status_code: testResult.status === 'fulfilled' ? testResult.value.status : null,
+        status_code: testStatusCode,
         response: testResponseBody,
-        error: testResult.status === 'rejected' ? testResult.reason.message : null,
+        error: testResult.status === 'rejected' ? (testResult.reason?.message || String(testResult.reason)) : null,
       },
       prod_webhook: {
         status: prodResult.status === 'fulfilled' ? 'success' : 'failed',
-        status_code: prodResult.status === 'fulfilled' ? prodResult.value.status : null,
+        status_code: prodStatusCode,
         response: prodResponseBody,
-        error: prodResult.status === 'rejected' ? prodResult.reason.message : null,
+        error: prodResult.status === 'rejected' ? (prodResult.reason?.message || String(prodResult.reason)) : null,
       },
       timestamp: new Date().toISOString(),
     };

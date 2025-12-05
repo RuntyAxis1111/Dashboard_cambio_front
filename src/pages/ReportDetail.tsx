@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { Calendar, Database, Download } from 'lucide-react'
+import { useParams, useNavigate, Link } from 'react-router-dom'
+import { Calendar, Database, Download, FileText } from 'lucide-react'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { supabase } from '../lib/supabase'
 import { reportKindLabel, isBandReport } from '../lib/report-utils'
@@ -370,6 +370,13 @@ export function ReportDetail() {
                 onToggleSection={toggleSection}
                 onResetToDefault={resetToDefault}
               />
+              <Link
+                to="/reports/my-reports"
+                className="px-4 py-2 bg-white border border-gray-300 text-black rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 text-sm font-medium"
+              >
+                <FileText className="w-4 h-4" />
+                My Reports
+              </Link>
               <button
                 onClick={exportReportPDF}
                 className="export-btn px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 text-sm font-medium"

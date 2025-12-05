@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
-import { Download, ExternalLink } from 'lucide-react'
+import { useParams, useSearchParams, Link } from 'react-router-dom'
+import { Download, ExternalLink, FileText } from 'lucide-react'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { WeeklyReport } from '../types/weekly-report'
 import { getWeeklyReportDetailed } from '../lib/reports-mapper'
@@ -806,6 +806,13 @@ export function WeeklyDetail() {
                   onResetToDefault={resetToDefault}
                 />
               )}
+              <Link
+                to="/reports/my-reports"
+                className="px-4 py-2 bg-white border border-gray-300 text-black rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 text-sm font-medium"
+              >
+                <FileText className="w-4 h-4" />
+                My Reports
+              </Link>
               <button
                 onClick={exportWeeklyPDF}
                 className="export-btn px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 text-sm font-medium"

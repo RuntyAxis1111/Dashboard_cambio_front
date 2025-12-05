@@ -1,4 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,10 +18,41 @@ Deno.serve(async (req: Request) => {
   try {
     const payload = await req.json();
 
+    // Get user_id from Authorization header
+    const authHeader = req.headers.get('Authorization');
+    let userId = null;
+
+    if (authHeader) {
+      try {
+        const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+        const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
+        const token = authHeader.replace('Bearer ', '');
+        const { data: { user }, error } = await supabase.auth.getUser(token);
+
+        if (!error && user) {
+          userId = user.id;
+          console.log('User authenticated:', userId);
+        } else {
+          console.log('User authentication failed or no user found');
+        }
+      } catch (authError) {
+        console.error('Error extracting user from auth header:', authError);
+      }
+    }
+
+    // Add user_id to payload
+    const enrichedPayload = {
+      ...payload,
+      created_by_user_id: userId,
+    };
+
     const testWebhook = 'https://runtyaxis.app.n8n.cloud/webhook-test/1461e877-1770-4fd8-a9f0-0321161c51a1';
     const prodWebhook = 'https://runtyaxis.app.n8n.cloud/webhook/1461e877-1770-4fd8-a9f0-0321161c51a1';
 
     console.log('Received payload:', JSON.stringify(payload, null, 2));
+    console.log('Enriched payload with user_id:', JSON.stringify(enrichedPayload, null, 2));
     console.log('Sending to test webhook:', testWebhook);
     console.log('Sending to prod webhook:', prodWebhook);
 
@@ -29,7 +61,7 @@ Deno.serve(async (req: Request) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(enrichedPayload),
     }).then(async (res) => {
       const text = await res.text();
       console.log(`Test webhook - Status: ${res.status}, Body: ${text}`);
@@ -44,7 +76,7 @@ Deno.serve(async (req: Request) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(enrichedPayload),
     }).then(async (res) => {
       const text = await res.text();
       console.log(`Prod webhook - Status: ${res.status}, Body: ${text}`);

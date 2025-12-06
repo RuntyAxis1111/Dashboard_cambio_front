@@ -5,14 +5,15 @@ import { Breadcrumb } from '../components/Breadcrumb'
 import { FileText, Calendar, User } from 'lucide-react'
 
 interface ReportItem {
-  report_id: string
-  artist_id: string
-  artist_name: string
-  week_start: string
-  week_end: string
-  report_title: string | null
-  status: string
+  id: string
+  user_id: string
+  title: string
+  html_content: string
+  artist_name: string | null
+  week_start: string | null
+  week_end: string | null
   created_at: string
+  updated_at: string
 }
 
 export function MyReports() {
@@ -32,9 +33,9 @@ export function MyReports() {
         }
 
         const { data, error } = await supabase
-          .from('spotify_report_weekly')
+          .from('my_reports')
           .select('*')
-          .eq('created_by_user_id', user.id)
+          .eq('user_id', user.id)
           .order('created_at', { ascending: false })
 
         if (error) {
@@ -111,39 +112,31 @@ export function MyReports() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {reports.map((report) => (
               <Link
-                key={report.report_id}
-                to={`/reports/${report.artist_id}?week=${report.week_end}`}
+                key={report.id}
+                to={`/my-reports/${report.id}`}
                 className="block bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-gray-300 transition-all"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
                     <h3 className="text-lg font-bold text-black mb-1">
-                      {report.artist_name}
+                      {report.title}
                     </h3>
-                    {report.report_title && (
-                      <p className="text-sm text-gray-600">{report.report_title}</p>
+                    {report.artist_name && (
+                      <p className="text-sm text-gray-600">{report.artist_name}</p>
                     )}
                   </div>
-                  <span
-                    className={`px-2 py-1 text-xs font-medium rounded ${
-                      report.status === 'ready'
-                        ? 'bg-green-100 text-green-800'
-                        : report.status === 'published'
-                        ? 'bg-blue-100 text-blue-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}
-                  >
-                    {report.status}
-                  </span>
+                  <FileText className="w-5 h-5 text-gray-400" />
                 </div>
 
                 <div className="space-y-2">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    <span>
-                      {report.week_start} — {report.week_end}
-                    </span>
-                  </div>
+                  {report.week_start && report.week_end && (
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Calendar className="w-4 h-4 mr-2" />
+                      <span>
+                        {report.week_start} — {report.week_end}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex items-center text-sm text-gray-500">
                     <User className="w-4 h-4 mr-2" />
                     <span>

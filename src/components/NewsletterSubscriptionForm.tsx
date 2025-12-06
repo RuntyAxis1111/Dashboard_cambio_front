@@ -1,98 +1,139 @@
-import { useState } from 'react'
-import { Mail, User, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Mail, CheckCircle2, AlertCircle, Loader2, Check, X } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 
-type FormState = 'idle' | 'loading' | 'success' | 'error'
-
-interface FormData {
-  email: string
-  nombre: string
-}
+type SubscriptionStatus = 'checking' | 'not_subscribed' | 'subscribed' | 'subscribing' | 'error'
 
 export function NewsletterSubscriptionForm() {
-  const [formData, setFormData] = useState<FormData>({ email: '', nombre: '' })
-  const [acceptedTerms, setAcceptedTerms] = useState(false)
-  const [formState, setFormState] = useState<FormState>('idle')
+  const { user } = useAuth()
+  const [status, setStatus] = useState<SubscriptionStatus>('checking')
   const [errorMessage, setErrorMessage] = useState('')
   const [subscriberCount, setSubscriberCount] = useState<number | null>(null)
+  const [subscriptionData, setSubscriptionData] = useState<any>(null)
+  const [isProcessing, setIsProcessing] = useState(false)
 
-  useState(() => {
-    const fetchSubscriberCount = async () => {
+  useEffect(() => {
+    const checkSubscriptionAndCount = async () => {
+      if (!user?.email) return
+
+      // Verificar si ya está suscrito
+      const { data: existingSubscription } = await supabase
+        .from('subscriptores_newsletter_general')
+        .select('*')
+        .eq('email', user.email.toLowerCase())
+        .maybeSingle()
+
+      // Obtener conteo de suscriptores activos
       const { count } = await supabase
         .from('subscriptores_newsletter_general')
         .select('*', { count: 'exact', head: true })
         .eq('estado', 'activo')
 
-      if (count !== null) {
-        setSubscriberCount(count)
+      setSubscriberCount(count)
+
+      if (existingSubscription) {
+        setSubscriptionData(existingSubscription)
+        setStatus('subscribed')
+      } else {
+        setStatus('not_subscribed')
       }
     }
-    fetchSubscriberCount()
-  })
 
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
-    return emailRegex.test(email)
-  }
+    checkSubscriptionAndCount()
+  }, [user])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!validateEmail(formData.email)) {
-      setFormState('error')
-      setErrorMessage('Por favor ingresa un email válido')
+  const handleSubscribe = async () => {
+    if (!user?.email) {
+      setStatus('error')
+      setErrorMessage('No se pudo obtener tu email. Por favor intenta nuevamente.')
       return
     }
 
-    if (!acceptedTerms) {
-      setFormState('error')
-      setErrorMessage('Debes aceptar los términos y condiciones')
-      return
-    }
-
-    setFormState('loading')
+    setStatus('subscribing')
     setErrorMessage('')
 
     try {
+      const userName = user.user_metadata?.full_name || user.user_metadata?.name || null
+
       const { error } = await supabase
         .from('subscriptores_newsletter_general')
         .insert([
           {
-            email: formData.email.toLowerCase().trim(),
-            nombre: formData.nombre.trim() || null,
-            acepto_terminos: acceptedTerms,
+            email: user.email.toLowerCase(),
+            nombre: userName,
+            acepto_terminos: true,
           },
         ])
 
       if (error) {
         if (error.code === '23505') {
-          setFormState('error')
-          setErrorMessage('Este email ya está suscrito a nuestro newsletter')
+          setStatus('subscribed')
         } else {
-          setFormState('error')
+          setStatus('error')
           setErrorMessage('Ocurrió un error al procesar tu suscripción. Por favor intenta nuevamente.')
         }
       } else {
-        setFormState('success')
+        setStatus('subscribed')
         if (subscriberCount !== null) {
           setSubscriberCount(subscriberCount + 1)
         }
       }
     } catch (error) {
       console.error('Subscription error:', error)
-      setFormState('error')
+      setStatus('error')
       setErrorMessage('Ocurrió un error inesperado. Por favor intenta nuevamente.')
     }
   }
 
-  const handleReset = () => {
-    setFormData({ email: '', nombre: '' })
-    setAcceptedTerms(false)
-    setFormState('idle')
+  const handleUnsubscribe = async () => {
+    if (!user?.email) return
+
+    setIsProcessing(true)
     setErrorMessage('')
+
+    try {
+      const { error } = await supabase
+        .from('subscriptores_newsletter_general')
+        .update({
+          estado: 'cancelado',
+          fecha_cancelacion: new Date().toISOString()
+        })
+        .eq('email', user.email.toLowerCase())
+
+      if (error) {
+        setStatus('error')
+        setErrorMessage('Ocurrió un error al cancelar tu suscripción.')
+      } else {
+        setStatus('not_subscribed')
+        setSubscriptionData(null)
+        if (subscriberCount !== null && subscriberCount > 0) {
+          setSubscriberCount(subscriberCount - 1)
+        }
+      }
+    } catch (error) {
+      console.error('Unsubscribe error:', error)
+      setStatus('error')
+      setErrorMessage('Ocurrió un error inesperado.')
+    } finally {
+      setIsProcessing(false)
+    }
   }
 
-  if (formState === 'success') {
+  if (status === 'checking') {
+    return (
+      <div className="max-w-md mx-auto">
+        <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+          <div className="text-center">
+            <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
+            <p className="text-gray-600">Verificando estado de suscripción...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (status === 'subscribed') {
     return (
       <div className="max-w-md mx-auto">
         <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
@@ -101,20 +142,63 @@ export function NewsletterSubscriptionForm() {
               <CheckCircle2 className="w-10 h-10 text-green-600" />
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">
-              ¡Suscripción exitosa!
+              Ya estás suscrito
             </h3>
             <p className="text-gray-600 mb-1">
-              Te has suscrito exitosamente a nuestro newsletter
+              Recibes nuestro newsletter semanalmente
             </p>
             <p className="text-sm text-gray-500 mb-6">
-              Recibirás actualizaciones en <strong>{formData.email}</strong>
+              en <strong>{user?.email}</strong>
             </p>
-            <button
-              onClick={handleReset}
-              className="px-6 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
-            >
-              Suscribir otro email
-            </button>
+
+            {subscriptionData && subscriptionData.estado === 'activo' && (
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-lg">
+                  <Check className="w-4 h-4 text-green-600" />
+                  <span className="text-green-700 text-sm font-medium">Suscripción Activa</span>
+                </div>
+
+                <button
+                  onClick={handleUnsubscribe}
+                  disabled={isProcessing}
+                  className="mt-4 px-6 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mx-auto"
+                >
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Procesando...
+                    </>
+                  ) : (
+                    <>
+                      <X className="w-4 h-4" />
+                      Cancelar suscripción
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">¿Qué estás recibiendo?</h3>
+            <ul className="space-y-2 text-sm text-gray-600">
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                <span>Análisis semanal de métricas y tendencias</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                <span>Insights exclusivos sobre la industria musical</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                <span>Reportes de performance de artistas destacados</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                <span>Actualizaciones de nuevas funcionalidades de la plataforma</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -131,97 +215,50 @@ export function NewsletterSubscriptionForm() {
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Suscríbete a nuestro Newsletter
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-600 mb-4">
             Recibe las últimas actualizaciones, insights y análisis directamente en tu inbox
           </p>
+
+          <div className="bg-gray-50 rounded-lg p-3 mb-4">
+            <p className="text-sm text-gray-600">
+              Suscripción para:
+            </p>
+            <p className="text-base font-semibold text-gray-900 mt-1">
+              {user?.email}
+            </p>
+          </div>
+
           {subscriberCount !== null && subscriberCount > 0 && (
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-gray-500">
               Únete a {subscriberCount} personas que ya reciben nuestro newsletter
             </p>
           )}
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                id="email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className={`w-full pl-10 pr-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                  formState === 'error' && errorMessage.includes('email')
-                    ? 'border-red-300 bg-red-50'
-                    : 'border-gray-300'
-                }`}
-                placeholder="tu@email.com"
-                disabled={formState === 'loading'}
-              />
-            </div>
+        {status === 'error' && errorMessage && (
+          <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg mb-4">
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-red-800">{errorMessage}</p>
           </div>
+        )}
 
-          <div>
-            <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">
-              Nombre <span className="text-gray-400 text-xs">(opcional)</span>
-            </label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                id="nombre"
-                type="text"
-                value={formData.nombre}
-                onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                placeholder="Tu nombre"
-                disabled={formState === 'loading'}
-              />
-            </div>
-          </div>
-
-          <div className="flex items-start gap-2">
-            <input
-              id="terms"
-              type="checkbox"
-              checked={acceptedTerms}
-              onChange={(e) => setAcceptedTerms(e.target.checked)}
-              className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
-              disabled={formState === 'loading'}
-            />
-            <label htmlFor="terms" className="text-sm text-gray-600">
-              Acepto recibir el newsletter semanal y entiendo que puedo cancelar mi suscripción en cualquier momento
-            </label>
-          </div>
-
-          {formState === 'error' && errorMessage && (
-            <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-800">{errorMessage}</p>
-            </div>
+        <button
+          onClick={handleSubscribe}
+          disabled={status === 'subscribing'}
+          className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          {status === 'subscribing' ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              Suscribiendo...
+            </>
+          ) : (
+            <>
+              <Mail className="w-5 h-5" />
+              Suscribirme con un click
+            </>
           )}
-
-          <button
-            type="submit"
-            disabled={formState === 'loading' || !formData.email || !acceptedTerms}
-            className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {formState === 'loading' ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Suscribiendo...
-              </>
-            ) : (
-              <>
-                <Mail className="w-5 h-5" />
-                Suscribirse
-              </>
-            )}
-          </button>
-        </form>
+        </button>
 
         <div className="mt-6 pt-6 border-t border-gray-200">
           <h3 className="text-sm font-semibold text-gray-900 mb-3">¿Qué recibirás?</h3>
@@ -244,7 +281,7 @@ export function NewsletterSubscriptionForm() {
             </li>
           </ul>
           <p className="text-xs text-gray-500 mt-4">
-            Frecuencia: Semanal. Puedes cancelar tu suscripción en cualquier momento desde cualquier email que recibas.
+            Frecuencia: Semanal. Al suscribirte aceptas recibir el newsletter y puedes cancelar en cualquier momento.
           </p>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 
 export interface DSPMetricLatest {
@@ -54,39 +54,7 @@ export function useDSPMetrics(
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (!entidadId) {
-      setLoading(false)
-      return
-    }
-
-    loadMetrics()
-
-    const interval = setInterval(loadMetrics, 15 * 60 * 1000)
-
-    const channel = supabase
-      .channel('dsp_metrics_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'dsp_series',
-          filter: `entidad_id=eq.${entidadId}`
-        },
-        () => {
-          loadMetrics()
-        }
-      )
-      .subscribe()
-
-    return () => {
-      clearInterval(interval)
-      channel.unsubscribe()
-    }
-  }, [entidadId, platform, daysRange])
-
-  async function loadMetrics() {
+  const loadMetrics = useCallback(async () => {
     if (!entidadId) return
 
     try {
@@ -175,7 +143,39 @@ export function useDSPMetrics(
     } finally {
       setLoading(false)
     }
-  }
+  }, [entidadId, platform, daysRange])
+
+  useEffect(() => {
+    if (!entidadId) {
+      setLoading(false)
+      return
+    }
+
+    loadMetrics()
+
+    const interval = setInterval(loadMetrics, 15 * 60 * 1000)
+
+    const channel = supabase
+      .channel('dsp_metrics_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'dsp_series',
+          filter: `entidad_id=eq.${entidadId}`
+        },
+        () => {
+          loadMetrics()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      clearInterval(interval)
+      channel.unsubscribe()
+    }
+  }, [entidadId, loadMetrics])
 
   return { ...data, loading, error, refresh: loadMetrics }
 }

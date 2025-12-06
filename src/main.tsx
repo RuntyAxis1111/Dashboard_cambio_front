@@ -5,43 +5,26 @@ import { SpeedInsights } from '@vercel/speed-insights/react'
 import App from './App'
 import './index.css'
 
-// Enhanced debug logging
-console.log('🚀 HYBE App starting...')
-console.log('Environment:', import.meta.env.MODE)
-console.log('Base URL:', import.meta.env.BASE_URL)
-console.log('Vite env vars:', import.meta.env)
-console.log('Window location:', window.location.href)
-console.log('User agent:', navigator.userAgent)
-
-// Enhanced error handling
+// Global error handling for production
 window.addEventListener('error', (e) => {
-  console.error('❌ Global JavaScript error:', e.error)
-  console.error('Error details:', {
-    message: e.message,
-    filename: e.filename,
-    lineno: e.lineno,
-    colno: e.colno,
-    stack: e.error?.stack
-  })
+  if (import.meta.env.DEV) {
+    console.error('Global error:', e.error)
+  }
 })
 
 window.addEventListener('unhandledrejection', (e) => {
-  console.error('❌ Unhandled promise rejection:', e.reason)
-  console.error('Promise rejection details:', e)
+  if (import.meta.env.DEV) {
+    console.error('Unhandled promise rejection:', e.reason)
+  }
 })
 
-// Check if root element exists
+// Mount React app
 const rootElement = document.getElementById('root')
 if (!rootElement) {
-  console.error('❌ Root element not found!')
-  document.body.innerHTML = '<div style="padding: 20px; font-family: Arial;">ERROR: Root element not found. Check HTML structure.</div>'
+  document.body.innerHTML = '<div style="padding: 20px; font-family: Arial;">ERROR: Root element not found.</div>'
 } else {
-  console.log('✅ Root element found, mounting React app...')
-  
   try {
     const root = ReactDOM.createRoot(rootElement)
-    console.log('✅ React root created successfully')
-    
     root.render(
       <React.StrictMode>
         <BrowserRouter>
@@ -50,14 +33,12 @@ if (!rootElement) {
         </BrowserRouter>
       </React.StrictMode>
     )
-    console.log('✅ React app rendered successfully')
   } catch (error) {
-    console.error('❌ Error mounting React app:', error)
+    console.error('Error mounting app:', error)
     rootElement.innerHTML = `
       <div style="padding: 20px; font-family: Arial; color: red;">
-        <h2>React Mount Error</h2>
-        <p>Error: ${error instanceof Error ? error.message : String(error)}</p>
-        <pre>${error instanceof Error ? error.stack : String(error)}</pre>
+        <h2>Application Error</h2>
+        <p>${error instanceof Error ? error.message : 'Unknown error'}</p>
       </div>
     `
   }

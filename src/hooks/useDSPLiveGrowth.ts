@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 
 export interface DSPLatest {
@@ -53,39 +53,7 @@ export function useDSPLiveGrowth(
   const [loading, setLoading] = useState(true)
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null)
 
-  useEffect(() => {
-    if (!entityId) {
-      setLoading(false)
-      return
-    }
-
-    loadData()
-
-    const interval = setInterval(loadData, 15 * 60 * 1000)
-
-    const channel = supabase
-      .channel('dsp_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'reportes_dsp_stbv',
-          filter: `entity_id=eq.${entityId}`
-        },
-        () => {
-          loadData()
-        }
-      )
-      .subscribe()
-
-    return () => {
-      clearInterval(interval)
-      channel.unsubscribe()
-    }
-  }, [entityId, selectedDsps, daysRange])
-
-  async function loadData() {
+  const loadData = useCallback(async () => {
     if (!entityId) return
 
     try {
@@ -147,7 +115,39 @@ export function useDSPLiveGrowth(
     } finally {
       setLoading(false)
     }
-  }
+  }, [entityId, selectedDsps, daysRange])
+
+  useEffect(() => {
+    if (!entityId) {
+      setLoading(false)
+      return
+    }
+
+    loadData()
+
+    const interval = setInterval(loadData, 15 * 60 * 1000)
+
+    const channel = supabase
+      .channel('dsp_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'reportes_dsp_stbv',
+          filter: `entity_id=eq.${entityId}`
+        },
+        () => {
+          loadData()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      clearInterval(interval)
+      channel.unsubscribe()
+    }
+  }, [entityId, loadData])
 
   return { latest, delta24h, delta7d, timeseries, loading, lastUpdate, refresh: loadData }
 }

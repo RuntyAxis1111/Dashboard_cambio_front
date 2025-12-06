@@ -51,9 +51,13 @@ export function DSPDetail() {
           .from('reportes_entidades')
           .select('id, nombre, slug, imagen_url')
           .eq('id', entityId)
-          .single()
+          .maybeSingle()
 
         if (entityError) throw entityError
+        if (!entityData) {
+          console.error('Entity not found')
+          return
+        }
         setEntity(entityData)
 
         const { data: statusData, error: statusError } = await supabase

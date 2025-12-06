@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import DOMPurify from 'dompurify'
 import { supabase } from '../lib/supabase'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { Loader2, ChevronLeft } from 'lucide-react'
@@ -64,6 +65,15 @@ export function MyReportDetail() {
 
     loadReport()
   }, [id])
+
+  // Sanitize HTML content to prevent XSS attacks
+  const sanitizedHTML = useMemo(() => {
+    if (!report?.html_content) return ''
+    return DOMPurify.sanitize(report.html_content, {
+      ALLOWED_TAGS: ['p', 'div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'em', 'u', 'br', 'ul', 'ol', 'li', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'img', 'a'],
+      ALLOWED_ATTR: ['class', 'style', 'href', 'src', 'alt', 'title', 'target'],
+    })
+  }, [report?.html_content])
 
   const breadcrumbItems = [
     { label: 'Reports', href: '/reports' },
@@ -134,7 +144,7 @@ export function MyReportDetail() {
 
         <div
           className="bg-white rounded-lg border border-gray-200 p-8"
-          dangerouslySetInnerHTML={{ __html: report.html_content }}
+          dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
         />
       </div>
     </div>

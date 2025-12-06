@@ -29,18 +29,46 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isAuthorized, setIsAuthorized] = useState(false)
 
-  // Lista de emails autorizados
-  const authorizedEmails = [
-    'jaime@lulofilms.com',
-    'caralf@gmail.com', 
-    'gatito.enano1@gmail.com'
-  ]
+  // Check if user is authorized from database
+  useEffect(() => {
+    async function checkAuthorization() {
+      if (!user?.email) {
+        setIsAuthorized(false)
+        return
+      }
 
-  // Verificar si el usuario está autorizado
-  const isAuthorized = user?.email?.endsWith('@hybecorp.com') || 
-                      authorizedEmails.includes(user?.email || '') || 
-                      false
+      // Check if user has @hybecorp.com domain
+      if (user.email.endsWith('@hybecorp.com')) {
+        setIsAuthorized(true)
+        return
+      }
+
+      // Check if user is in authorized_users table
+      try {
+        const { data, error } = await supabase
+          .from('authorized_users')
+          .select('email, active')
+          .eq('email', user.email)
+          .eq('active', true)
+          .maybeSingle()
+
+        if (error) {
+          console.error('Error checking authorization:', error)
+          setIsAuthorized(false)
+          return
+        }
+
+        setIsAuthorized(!!data)
+      } catch (err) {
+        console.error('Authorization check failed:', err)
+        setIsAuthorized(false)
+      }
+    }
+
+    checkAuthorization()
+  }, [user])
 
   useEffect(() => {
     // Obtener sesión inicial

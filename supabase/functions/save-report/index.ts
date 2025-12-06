@@ -96,7 +96,7 @@ Deno.serve(async (req: Request) => {
         week_end: payload.week_end || null,
       })
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Database error:', error);
@@ -104,6 +104,23 @@ Deno.serve(async (req: Request) => {
         JSON.stringify({
           success: false,
           error: `Failed to save report: ${error.message}`,
+        }),
+        {
+          status: 500,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
+    if (!data) {
+      console.error('No data returned from insert');
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Failed to save report: No data returned',
         }),
         {
           status: 500,

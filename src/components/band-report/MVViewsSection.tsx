@@ -169,7 +169,7 @@ export function MVViewsSection({ items, entidadId, onUpdate }: MVViewsSectionPro
 
   return (
     <div className="bg-gray-50 border border-gray-300 rounded-xl overflow-hidden">
-      <div className="px-4 py-2 border-b border-gray-300 flex justify-end print:hidden">
+      <div className="px-6 py-3 border-b border-gray-300 flex justify-end print:hidden">
         {!isEditingKPIs && !isEditingVideos && (
           <div className="flex gap-2">
             <button

@@ -66,12 +66,14 @@ export function MyReportDetail() {
     loadReport()
   }, [id])
 
-  // Sanitize HTML content to prevent XSS attacks
+  // Sanitize HTML content to prevent XSS attacks while preserving styling
   const sanitizedHTML = useMemo(() => {
     if (!report?.html_content) return ''
     return DOMPurify.sanitize(report.html_content, {
-      ALLOWED_TAGS: ['p', 'div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'em', 'u', 'br', 'ul', 'ol', 'li', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'img', 'a'],
-      ALLOWED_ATTR: ['class', 'style', 'href', 'src', 'alt', 'title', 'target'],
+      ADD_TAGS: ['style'],
+      ADD_ATTR: ['target'],
+      ALLOW_DATA_ATTR: true,
+      KEEP_CONTENT: true,
     })
   }, [report?.html_content])
 

@@ -18,7 +18,7 @@ export function NewsletterSubscriptionForm() {
     const checkSubscriptionAndCount = async () => {
       if (!user?.email) return
 
-      // Verificar si ya está suscrito
+      // Verificar si ya está suscrito Y activo
       const { data: existingSubscription } = await supabase
         .from('subscriptores_newsletter_general')
         .select('*')
@@ -33,7 +33,7 @@ export function NewsletterSubscriptionForm() {
 
       setSubscriberCount(count)
 
-      if (existingSubscription) {
+      if (existingSubscription && existingSubscription.estado === 'activo') {
         setSubscriptionData(existingSubscription)
         setStatus('subscribed')
       } else {
@@ -69,7 +69,37 @@ export function NewsletterSubscriptionForm() {
 
       if (error) {
         if (error.code === '23505') {
-          setStatus('subscribed')
+          const { data: existing } = await supabase
+            .from('subscriptores_newsletter_general')
+            .select('*')
+            .eq('email', user.email.toLowerCase())
+            .maybeSingle()
+
+          if (existing && existing.estado === 'cancelado') {
+            const { error: updateError } = await supabase
+              .from('subscriptores_newsletter_general')
+              .update({
+                estado: 'activo',
+                fecha_cancelacion: null,
+                nombre: userName,
+              })
+              .eq('email', user.email.toLowerCase())
+
+            if (updateError) {
+              setStatus('error')
+              setErrorMessage('Ocurrió un error al reactivar tu suscripción.')
+            } else {
+              setStatus('subscribed')
+              if (subscriberCount !== null) {
+                setSubscriberCount(subscriberCount + 1)
+              }
+            }
+          } else if (existing && existing.estado === 'activo') {
+            setStatus('subscribed')
+          } else {
+            setStatus('error')
+            setErrorMessage('Ocurrió un error al procesar tu suscripción.')
+          }
         } else {
           setStatus('error')
           setErrorMessage('Ocurrió un error al procesar tu suscripción. Por favor intenta nuevamente.')

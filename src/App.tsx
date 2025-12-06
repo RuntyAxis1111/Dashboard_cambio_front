@@ -47,6 +47,7 @@ export default function App() {
                   <Route path="/reports" element={<Reports />} />
                   <Route path="/reports/make" element={<MakeReport />} />
                   <Route path="/reports/my-reports" element={<MyReports />} />
+                  <Route path="/my-reports" element={<MyReports />} />
                   <Route path="/my-reports/:id" element={<MyReportDetail />} />
                   <Route path="/reports/weeklies" element={<Weeklies />} />
                   <Route path="/reports/weeklies/:artistId" element={<WeeklyDetail />} />

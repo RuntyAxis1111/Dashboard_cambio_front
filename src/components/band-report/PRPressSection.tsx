@@ -96,15 +96,7 @@ export function PRPressSection({ items, entidadId }: PRPressSectionProps) {
     fetchMeltwaterData()
   }, [entidadId])
 
-  if (items.length === 0) {
-    return (
-      <div className="bg-gray-50 border border-gray-300 rounded-xl p-6">
-        <p className="text-gray-500 text-center">No data for this section yet</p>
-      </div>
-    )
-  }
-
-  const sortedItems = [...items].sort((a, b) => a.posicion - b.posicion)
+  const sortedItems = items.length > 0 ? [...items].sort((a, b) => a.posicion - b.posicion) : []
   const usPress = sortedItems.filter(item => item.categoria === 'pr_us')
   const krPress = sortedItems.filter(item => item.categoria === 'pr_kr')
   const generalPress = sortedItems.filter(item => !item.categoria || (item.categoria !== 'pr_us' && item.categoria !== 'pr_kr'))
@@ -220,9 +212,11 @@ export function PRPressSection({ items, entidadId }: PRPressSectionProps) {
         </>
       )}
 
-      <h4 className="text-base font-semibold text-black">Most Relevant News</h4>
+      {sortedItems.length > 0 && (
+        <>
+          <h4 className="text-base font-semibold text-black">Most Relevant News</h4>
 
-      <div className="space-y-6">
+          <div className="space-y-6">
         {generalPress.length > 0 && (
           <ul className="space-y-3">
             {generalPress.map((item, idx) => (
@@ -315,7 +309,9 @@ export function PRPressSection({ items, entidadId }: PRPressSectionProps) {
             </ul>
           </div>
         )}
-      </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

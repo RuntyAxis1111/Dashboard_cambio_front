@@ -150,15 +150,7 @@ export function MVViewsSection({ items, entidadId, onUpdate }: MVViewsSectionPro
     ))
   }
 
-  if (items.length === 0) {
-    return (
-      <div className="bg-gray-50 border border-gray-300 rounded-xl p-6">
-        <p className="text-gray-500 text-center">No data available yet</p>
-      </div>
-    )
-  }
-
-  const sortedItems = [...items].sort((a, b) => a.posicion - b.posicion)
+  const sortedItems = items.length > 0 ? [...items].sort((a, b) => a.posicion - b.posicion) : []
   const displayItems = isEditingVideos ? editedItems : sortedItems
 
   const kpiCards = [
@@ -262,9 +254,11 @@ export function MVViewsSection({ items, entidadId, onUpdate }: MVViewsSectionPro
           ))}
         </div>
 
-        <h4 className="text-base font-semibold text-black mb-4">Top 5 Videos In Youtube Of Last Week</h4>
+        {sortedItems.length > 0 && (
+          <>
+            <h4 className="text-base font-semibold text-black mb-4">Top 5 Videos In Youtube Of Last Week</h4>
 
-        {isEditingVideos ? (
+            {isEditingVideos ? (
           <div className="space-y-4">
             {displayItems.map((item, idx) => (
               <div key={idx} className="bg-white border border-gray-200 rounded-lg p-4">
@@ -333,6 +327,8 @@ export function MVViewsSection({ items, entidadId, onUpdate }: MVViewsSectionPro
               </li>
             ))}
           </ul>
+        )}
+          </>
         )}
       </div>
     </div>

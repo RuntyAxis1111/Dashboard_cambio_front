@@ -64,7 +64,7 @@ export function Reports() {
             <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-purple-600/20 rounded-xl mb-4 sm:mb-6 group-hover:bg-purple-600/30 transition-colors">
               <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400" />
             </div>
-            <h3 className="text-lg sm:text-xl font-semibold text-black mb-2 sm:mb-3">My Reports</h3>
+            <h3 className="text-lg sm:text-xl font-semibold text-black mb-2 sm:mb-3">Report Builder</h3>
             <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
               Access all the custom reports you have created and saved.
             </p>

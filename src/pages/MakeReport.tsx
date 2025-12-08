@@ -11,13 +11,13 @@ interface Entity {
   imagen_url: string | null
 }
 
-type ReportType = 'simple' | 'week-vs-week' | 'month-vs-month' | 'artist-vs-artist'
+type ReportType = 'week-vs-week' | 'month-vs-month' | 'artist-vs-artist'
 
 export function MakeReport() {
   const { user } = useAuth()
   const [entities, setEntities] = useState<Entity[]>([])
   const [loading, setLoading] = useState(true)
-  const [reportType, setReportType] = useState<ReportType>('simple')
+  const [reportType, setReportType] = useState<ReportType>('week-vs-week')
   const [selectedEntity, setSelectedEntity] = useState<string>('')
   const [startDate, setStartDate] = useState<string>('')
   const [endDate, setEndDate] = useState<string>('')
@@ -159,17 +159,10 @@ export function MakeReport() {
 
   const breadcrumbItems = [
     { label: 'Reports', href: '/reports' },
-    { label: 'Make Your Report' }
+    { label: 'Report Builder' }
   ]
 
   const reportTypes = [
-    {
-      id: 'simple' as ReportType,
-      name: 'Simple Report',
-      description: 'Standard performance report for a single period',
-      icon: FileText,
-      available: true
-    },
     {
       id: 'week-vs-week' as ReportType,
       name: 'Week vs Week',
@@ -199,7 +192,7 @@ export function MakeReport() {
         <Breadcrumb items={breadcrumbItems} />
 
         <div className="mt-6 mb-8">
-          <h1 className="text-3xl font-bold text-black mb-2">Make Your Report</h1>
+          <h1 className="text-3xl font-bold text-black mb-2">Report Builder</h1>
           <p className="text-gray-600">
             Select a report type, artist, and date range to generate a custom report
           </p>

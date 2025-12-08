@@ -873,24 +873,6 @@ export function WeeklyDetail() {
           </section>
         )}
 
-        {entidadId && isSectionVisible('dsp_platform_breakdown') && (
-          <section className="section page-break-inside-avoid">
-            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-              DSP Platform Breakdown
-            </h2>
-            <SpotifyMetricsCard entidadId={entidadId} />
-          </section>
-        )}
-
-        {entidadId && isSectionVisible('dsp_last_song_tracking') && (
-          <section className="section page-break-inside-avoid">
-            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
-              Latest Song Release Tracking
-            </h2>
-            <LastSongTracking entidadId={entidadId} />
-          </section>
-        )}
-
         {report.fan_sentiment && isSectionVisible('fan_sentiment') && (
           <section className="section page-break-inside-avoid">
             <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
@@ -1661,6 +1643,24 @@ export function WeeklyDetail() {
             ) : (
               <p className="text-gray-600 italic">Social media pending</p>
             )}
+          </section>
+        )}
+
+        {entidadId && isSectionVisible('dsp_platform_breakdown') && (
+          <section className="section page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              DSP Platform Breakdown
+            </h2>
+            <SpotifyMetricsCard entidadId={entidadId} />
+          </section>
+        )}
+
+        {entidadId && isSectionVisible('dsp_last_song_tracking') && (
+          <section className="section page-break-inside-avoid">
+            <h2 className="text-xl font-bold text-black mb-4 pb-2 border-b-2 border-gray-900">
+              Latest Song Release Tracking
+            </h2>
+            <LastSongTracking entidadId={entidadId} />
           </section>
         )}
 

@@ -13,9 +13,9 @@ interface TrackVersionSelectorProps {
   onSelectIndex: (index: number) => void
 }
 
-function getTrackVersionLabel(index: number) {
-  if (index === 0) return 'Portuguese Version'
-  return 'Spanish Version'
+function getTrackVersionLabel(index: number): { label: string; flag: string } {
+  if (index === 0) return { label: 'Spanish Version', flag: '🇲🇽' }
+  return { label: 'Portuguese Version', flag: '🇧🇷' }
 }
 
 export function TrackVersionSelector({ trackCount, selectedIndex, onSelectIndex }: TrackVersionSelectorProps) {
@@ -45,7 +45,8 @@ export function TrackVersionSelector({ trackCount, selectedIndex, onSelectIndex 
               ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
             `}
           >
-            {getTrackVersionLabel(index)}
+            <span className="text-lg">{getTrackVersionLabel(index).flag}</span>
+            {getTrackVersionLabel(index).label}
             <ChevronDown className={`w-5 h-5 transition-transform ${isActive ? 'rotate-180' : ''}`} />
           </button>
         )

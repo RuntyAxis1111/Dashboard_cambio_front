@@ -525,57 +525,6 @@ const SAMPLE_MUSZA: WeeklyReport = {
 Comment snapshots:`
 }
 
-const SAMPLE_LOW_CLIKA: WeeklyReport = {
-  artist: 'LOW CLIKA',
-  week_start: '2025-10-02',
-  week_end: '2025-10-08',
-  highlights: [
-    'Instagram (7d): Reach 75.7K (↑ 421.1% WoW); Video views 142.3K (↑ 752.5%); Profile visits 2,910 (↑ 481.2%); Link clicks 1,054 (—); Interactions 6,046 (↑ 282.7%).',
-    'Facebook (7d): Video views 116.1K (↑ 1,789.5% WoW); Interactions 5,128 (↑ 233.4%); Profile visits 1,732 (↑ 511.2%); Link clicks 196 (—).',
-    'TikTok (7d): Video views 30.2K (↑ 58.3% WoW); Likes 1.6K (↑ 82.5%); Comments 54 (↑ 100.0%); Shares 20 (↓ 20.0%).',
-    'Takeaway: Strong week on IG (viral spike on Oct-8) and FB (large video push). TikTok trending up on views/engagement; shares dipped — test stronger CTAs in captions.'
-  ],
-  billboard_charts: [],
-  spotify_charts: [],
-  streaming_trends: [
-    {
-      track: 'TikTok (last 7 days)',
-      bullets: [
-        'Video views: 30.2K (↑ 58.3% WoW)',
-        'Likes: 1.6K (↑ 82.5%)',
-        'Comments: 54 (↑ 100.0%)',
-        'Shares: 20 (↓ 20.0%)',
-        'Profile views: 991 (↑ 45.5%)'
-      ]
-    },
-    {
-      track: 'Instagram (last 7 days)',
-      bullets: [
-        'Reach: 75,706 (↑ 421.1% WoW)',
-        'Video views: 142,334 (↑ 752.5%)',
-        'Profile visits: 2,910 (↑ 481.2%)',
-        'Link clicks: 1,054 (—)',
-        'Total interactions: 6,046 (↑ 282.7%)',
-        'Followers, net: +58 (↑ 81.2%)'
-      ]
-    },
-    {
-      track: 'Facebook (last 7 days)',
-      bullets: [
-        'Video views: 116,144 (↑ 1,789.5% WoW)',
-        'Viewers/Reach: 1,470 (↑ 173.4%)',
-        'Interactions: 5,128 (↑ 233.4%)',
-        'Profile visits: 1,732 (↑ 511.2%)',
-        'Link clicks: 196 (—)',
-        'Followers, net (28d): +108'
-      ]
-    }
-  ],
-  tiktok_trends: [],
-  mv_views: [],
-  apple_music: [],
-  shazam: []
-}
 
 function getColIndexByHeader(tableEl: HTMLTableElement, headerText = 'notes'): number {
   const ths = tableEl.querySelectorAll('thead th')
@@ -691,9 +640,6 @@ export function getSampleForArtist(artistId?: string): WeeklyReport | null {
       return SAMPLE_DESTINO
     case 'musza':
       return SAMPLE_MUSZA
-    case 'lowclika':
-    case 'low-clika':
-      return SAMPLE_LOW_CLIKA
     default:
       return null
   }
@@ -836,7 +782,7 @@ export function WeeklyDetail() {
             </p>
           </div>
           <img
-            src={report.artist === 'DESTINO' ? '/assets/image copy copy copy copy copy copy copy copy.png' : report.artist === 'MUSZA' ? '/assets/image copy copy copy copy copy copy copy copy copy.png' : report.artist === 'LOW CLIKA' ? '/assets/image copy copy copy copy copy copy copy copy copy copy.png' : '/assets/pinguinohybe.png'}
+            src={report.artist === 'DESTINO' ? '/assets/image copy copy copy copy copy copy copy copy.png' : report.artist === 'MUSZA' ? '/assets/image copy copy copy copy copy copy copy copy copy.png' : report.artist === 'LOWCLIKA' ? '/assets/image copy copy copy copy copy copy copy copy copy copy.png' : '/assets/pinguinohybe.png'}
             alt="HYBE"
             className="h-8"
           />

@@ -9,6 +9,14 @@ import { useReportPreferences } from '../hooks/useReportPreferences'
 import { supabase } from '../lib/supabase'
 import { SpotifyMetricsCard } from '../components/dsp/SpotifyMetricsCard'
 import { LastSongTracking } from '../components/dsp/LastSongTracking'
+import { SourcesSection } from '../components/band-report/SourcesSection'
+
+interface ReportSource {
+  fuente_clave: string
+  etiqueta: string
+  ok: boolean
+  mensaje: string | null
+}
 
 const SAMPLE_KATSEYE: WeeklyReport = {
   artist: 'KATSEYE',
@@ -663,6 +671,7 @@ export function WeeklyDetail() {
   const [report, setReport] = useState<WeeklyReport | null>(null)
   const [loading, setLoading] = useState(true)
   const [entidadId, setEntidadId] = useState<string>('')
+  const [sources, setSources] = useState<ReportSource[]>([])
 
   const { hiddenSections, toggleSection, resetToDefault, isSectionVisible } = useReportPreferences(entidadId)
 
@@ -684,6 +693,15 @@ export function WeeklyDetail() {
         console.log('[WeeklyDetail] Got entidad data:', data)
         if (data) {
           setEntidadId(data.id)
+
+          const { data: sourcesData } = await supabase
+            .from('reportes_fuentes')
+            .select('fuente_clave, etiqueta, ok, mensaje')
+            .eq('entidad_id', data.id)
+
+          if (sourcesData) {
+            setSources(sourcesData)
+          }
         }
       }
 
@@ -1747,6 +1765,8 @@ export function WeeklyDetail() {
                 <strong>Instagram Insights:</strong> (Pending) — Reach/Views/Visits/Clicks/Interactions/Followers + CTR & ER.
               </li>
             </ul>
+          ) : sources.length > 0 ? (
+            <SourcesSection sources={sources} />
           ) : (
             <p className="text-gray-600 italic">No sources listed</p>
           )}

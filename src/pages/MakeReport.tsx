@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import { Calendar, Send, CheckCircle2, AlertCircle, Loader2, FileText, GitCompare, BarChart3, Users } from 'lucide-react'
+import { Calendar, Send, AlertCircle, Loader2, FileText, X, ExternalLink } from 'lucide-react'
 
 interface Entity {
   id: string
@@ -11,28 +12,18 @@ interface Entity {
   imagen_url: string | null
 }
 
-type ReportType = 'week-vs-week' | 'month-vs-month' | 'artist-vs-artist'
-
 export function MakeReport() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [entities, setEntities] = useState<Entity[]>([])
   const [loading, setLoading] = useState(true)
-  const [reportType, setReportType] = useState<ReportType>('week-vs-week')
   const [selectedEntity, setSelectedEntity] = useState<string>('')
   const [startDate, setStartDate] = useState<string>('')
   const [endDate, setEndDate] = useState<string>('')
-  const [compareStartDate, setCompareStartDate] = useState<string>('')
-  const [compareEndDate, setCompareEndDate] = useState<string>('')
   const [submitting, setSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState<string>('')
-
-  useEffect(() => {
-    console.log('Environment check:', {
-      VITE_SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
-      VITE_SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Present' : 'Missing',
-    })
-  }, [])
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
 
   useEffect(() => {
     async function loadEntities() {
@@ -58,16 +49,8 @@ export function MakeReport() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const isComparisonReport = reportType === 'week-vs-week' || reportType === 'month-vs-month'
-
     if (!selectedEntity || !startDate || !endDate) {
       setErrorMessage('Please fill in all fields')
-      setSubmitStatus('error')
-      return
-    }
-
-    if (isComparisonReport && (!compareStartDate || !compareEndDate)) {
-      setErrorMessage('Please fill in comparison dates')
       setSubmitStatus('error')
       return
     }
@@ -79,8 +62,8 @@ export function MakeReport() {
     setSubmitStatus('idle')
     setErrorMessage('')
 
-    const payload: any = {
-      report_type: reportType,
+    const payload = {
+      report_type: 'custom',
       entity_id: entity.id,
       entity_name: entity.nombre,
       entity_slug: entity.slug,
@@ -94,11 +77,6 @@ export function MakeReport() {
       timestamp: new Date().toISOString()
     }
 
-    if (isComparisonReport) {
-      payload.compare_start_date = compareStartDate
-      payload.compare_end_date = compareEndDate
-    }
-
     try {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
@@ -110,11 +88,6 @@ export function MakeReport() {
       }
 
       const edgeFunctionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/report-webhook-proxy`
-
-      console.log('Submitting to Edge Function:', {
-        url: edgeFunctionUrl,
-        payload,
-      })
 
       const response = await fetch(edgeFunctionUrl, {
         method: 'POST',
@@ -136,15 +109,12 @@ export function MakeReport() {
         throw new Error('Invalid response from server')
       }
 
-      console.log('Edge Function response:', result)
-
       if (response.ok && result.success) {
         setSubmitStatus('success')
+        setShowSuccessModal(true)
         setSelectedEntity('')
         setStartDate('')
         setEndDate('')
-        setCompareStartDate('')
-        setCompareEndDate('')
       } else {
         throw new Error(result.error || 'Failed to submit report request')
       }
@@ -162,30 +132,6 @@ export function MakeReport() {
     { label: 'Report Builder' }
   ]
 
-  const reportTypes = [
-    {
-      id: 'week-vs-week' as ReportType,
-      name: 'Week vs Week',
-      description: 'Compare performance across different weeks',
-      icon: GitCompare,
-      available: true
-    },
-    {
-      id: 'month-vs-month' as ReportType,
-      name: 'Month vs Month',
-      description: 'Compare performance across different months',
-      icon: BarChart3,
-      available: true
-    },
-    {
-      id: 'artist-vs-artist' as ReportType,
-      name: 'Artist vs Artist',
-      description: 'Compare performance between different artists',
-      icon: Users,
-      available: false
-    }
-  ]
-
   return (
     <div className="p-8 bg-white min-h-screen">
       <div className="max-w-4xl mx-auto">
@@ -194,7 +140,7 @@ export function MakeReport() {
         <div className="mt-6 mb-8">
           <h1 className="text-3xl font-bold text-black mb-2">Report Builder</h1>
           <p className="text-gray-600">
-            Select a report type, artist, and date range to generate a custom report
+            Create your report freely by selecting an artist and date range
           </p>
         </div>
 
@@ -206,48 +152,14 @@ export function MakeReport() {
         ) : (
           <div className="space-y-6">
             <div className="bg-gray-50 border border-gray-300 rounded-2xl p-6">
-              <h2 className="text-lg font-semibold text-black mb-4">Select Report Type</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {reportTypes.map((type) => {
-                  const Icon = type.icon
-                  const isSelected = reportType === type.id
-                  const isDisabled = !type.available
-
-                  return (
-                    <button
-                      key={type.id}
-                      type="button"
-                      onClick={() => type.available && setReportType(type.id)}
-                      disabled={isDisabled}
-                      className={`
-                        relative text-left p-4 border-2 rounded-xl transition-all
-                        ${isSelected && type.available
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-300 bg-white hover:border-gray-400'
-                        }
-                        ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-                      `}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className={`
-                          flex items-center justify-center w-10 h-10 rounded-lg flex-shrink-0
-                          ${isSelected && type.available ? 'bg-blue-100' : 'bg-gray-100'}
-                        `}>
-                          <Icon className={`w-5 h-5 ${isSelected && type.available ? 'text-blue-600' : 'text-gray-600'}`} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-sm font-semibold text-black mb-1">{type.name}</h3>
-                          <p className="text-xs text-gray-600">{type.description}</p>
-                          {isDisabled && (
-                            <span className="inline-block mt-2 text-xs font-medium text-gray-500 bg-gray-200 px-2 py-0.5 rounded">
-                              Coming Soon
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </button>
-                  )
-                })}
+              <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-100">
+                  <FileText className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-black">Create Your Report Freely</h2>
+                  <p className="text-sm text-gray-600">Select an artist and custom date range for your report</p>
+                </div>
               </div>
             </div>
 
@@ -276,9 +188,7 @@ export function MakeReport() {
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-gray-700 mb-3">
-                    {reportType === 'week-vs-week' ? 'First Week' : reportType === 'month-vs-month' ? 'First Month' : 'Date Range'}
-                  </h3>
+                  <h3 className="text-sm font-medium text-gray-700 mb-3">Date Range</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="startDate" className="block text-xs font-medium text-gray-600 mb-2">
@@ -318,61 +228,6 @@ export function MakeReport() {
                   </div>
                 </div>
 
-                {(reportType === 'week-vs-week' || reportType === 'month-vs-month') && (
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-700 mb-3">
-                      {reportType === 'week-vs-week' ? 'Second Week' : 'Second Month'}
-                    </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label htmlFor="compareStartDate" className="block text-xs font-medium text-gray-600 mb-2">
-                          Start Date
-                        </label>
-                        <div className="relative">
-                          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                          <input
-                            type="date"
-                            id="compareStartDate"
-                            value={compareStartDate}
-                            onChange={(e) => setCompareStartDate(e.target.value)}
-                            className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            required
-                            disabled={submitting}
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label htmlFor="compareEndDate" className="block text-xs font-medium text-gray-600 mb-2">
-                          End Date
-                        </label>
-                        <div className="relative">
-                          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                          <input
-                            type="date"
-                            id="compareEndDate"
-                            value={compareEndDate}
-                            onChange={(e) => setCompareEndDate(e.target.value)}
-                            className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            required
-                            disabled={submitting}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {submitStatus === 'success' && (
-                  <div className="flex items-start gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium text-green-900">Report request submitted successfully!</p>
-                      <p className="text-sm text-green-700 mt-1">Your report is being generated and will be available soon.</p>
-                    </div>
-                  </div>
-                )}
-
                 {submitStatus === 'error' && (
                   <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
                     <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
@@ -405,6 +260,50 @@ export function MakeReport() {
           </div>
         )}
       </div>
+
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-black">Report Submitted</h3>
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+
+            <div className="mb-6">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-6 h-6 text-green-600" />
+              </div>
+              <p className="text-gray-700 text-center">
+                Your report will be ready in <span className="font-semibold">2-4 minutes</span> in the "My Reports" section.
+              </p>
+              <p className="text-gray-500 text-sm text-center mt-2">
+                We recommend closing this tab and coming back in a few moments while it loads.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => navigate('/reports/my-reports')}
+                className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Go to My Reports
+              </button>
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -323,13 +323,13 @@ export function ReportDetail() {
     'dsp_platform_breakdown': { component: <SpotifyMetricsCard entidadId={entity.id} /> },
     'dsp_last_song_tracking': {
       component: <LastSongTracking entidadId={entity.id} selectedTrackIndex={selectedTrackIndex} />,
-      extraHeaderContent: (
+      extraHeaderContent: (trackData?.length || 0) > 1 ? (
         <TrackVersionSelector
           trackCount={trackData?.length || 0}
           selectedIndex={selectedTrackIndex}
           onSelectIndex={setSelectedTrackIndex}
         />
-      )
+      ) : undefined
     },
     'pr_press': { component: bandData ? <PRPressSection items={bandData.prPress} entidadId={entity.id} /> : null },
     'weekly_content': { component: bandData ? <WeeklyContentSection items={bandData.weeklyContent} entidadId={entity.id} onUpdate={handleReportUpdate} /> : null },

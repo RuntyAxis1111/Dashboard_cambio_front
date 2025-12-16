@@ -22,11 +22,12 @@ const PLATFORM_LABELS: Record<string, string> = {
   'instagram': 'Instagram',
   'tiktok': 'TikTok',
   'youtube': 'YouTube',
-  'x': 'X',
   'weverse': 'Weverse',
   'spotify': 'Spotify',
   'total': 'Total',
 }
+
+const EXCLUDED_PLATFORMS = ['x', 'total']
 
 const PLATFORM_LOGOS: Record<string, string> = {
   'instagram': '/assets/instagram.png',
@@ -154,7 +155,7 @@ export function PlatformGrowthSection({ metrics, entidadId, onUpdate }: Platform
   }
 
   const displayMetrics = isEditing ? editedMetrics : metrics
-  let regularMetrics = displayMetrics.filter(m => m.plataforma !== 'total')
+  let regularMetrics = displayMetrics.filter(m => !EXCLUDED_PLATFORMS.includes(m.plataforma))
 
   if (!isEditing) {
     regularMetrics = regularMetrics.filter(m => {

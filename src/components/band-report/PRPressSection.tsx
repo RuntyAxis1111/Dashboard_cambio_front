@@ -96,7 +96,11 @@ export function PRPressSection({ items, entidadId }: PRPressSectionProps) {
     fetchMeltwaterData()
   }, [entidadId])
 
-  const sortedItems = items.length > 0 ? [...items].sort((a, b) => a.posicion - b.posicion) : []
+  const sortedItems = items.length > 0
+    ? [...items]
+        .filter(item => (item.titulo && item.titulo.trim()) || (item.texto && item.texto.trim()))
+        .sort((a, b) => a.posicion - b.posicion)
+    : []
   const usPress = sortedItems.filter(item => item.categoria === 'pr_us')
   const krPress = sortedItems.filter(item => item.categoria === 'pr_kr')
   const generalPress = sortedItems.filter(item => !item.categoria || (item.categoria !== 'pr_us' && item.categoria !== 'pr_kr'))

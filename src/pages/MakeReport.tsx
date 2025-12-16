@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import { Calendar, Send, AlertCircle, Loader2, FileText, X, ExternalLink } from 'lucide-react'
+import { Calendar, Send, AlertCircle, Loader2, FileText, X, ExternalLink, Info } from 'lucide-react'
 
 interface Entity {
   id: string
@@ -12,18 +12,54 @@ interface Entity {
   imagen_url: string | null
 }
 
+function calculateDaysDiff(start: string, end: string): number {
+  if (!start || !end) return 0
+  const startDate = new Date(start)
+  const endDate = new Date(end)
+  const diffTime = endDate.getTime() - startDate.getTime()
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1
+  return diffDays
+}
+
+function addDays(dateStr: string, days: number): string {
+  if (!dateStr) return ''
+  const date = new Date(dateStr)
+  date.setDate(date.getDate() + days - 1)
+  return date.toISOString().split('T')[0]
+}
+
+function formatDateRange(start: string, end: string): string {
+  if (!start || !end) return ''
+  const startDate = new Date(start)
+  const endDate = new Date(end)
+  const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' }
+  return `${startDate.toLocaleDateString('en-US', options)} - ${endDate.toLocaleDateString('en-US', options)}`
+}
+
 export function MakeReport() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const [entities, setEntities] = useState<Entity[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedEntity, setSelectedEntity] = useState<string>('')
-  const [startDate, setStartDate] = useState<string>('')
-  const [endDate, setEndDate] = useState<string>('')
+  const [firstStartDate, setFirstStartDate] = useState<string>('')
+  const [firstEndDate, setFirstEndDate] = useState<string>('')
+  const [secondStartDate, setSecondStartDate] = useState<string>('')
   const [submitting, setSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [showSuccessModal, setShowSuccessModal] = useState(false)
+
+  const firstPeriodDays = useMemo(() => {
+    return calculateDaysDiff(firstStartDate, firstEndDate)
+  }, [firstStartDate, firstEndDate])
+
+  const secondEndDate = useMemo(() => {
+    if (!secondStartDate || firstPeriodDays <= 0) return ''
+    return addDays(secondStartDate, firstPeriodDays)
+  }, [secondStartDate, firstPeriodDays])
+
+  const isFirstPeriodComplete = firstStartDate && firstEndDate && firstPeriodDays > 0
 
   useEffect(() => {
     async function loadEntities() {
@@ -49,7 +85,7 @@ export function MakeReport() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!selectedEntity || !startDate || !endDate) {
+    if (!selectedEntity || !firstStartDate || !firstEndDate || !secondStartDate || !secondEndDate) {
       setErrorMessage('Please fill in all fields')
       setSubmitStatus('error')
       return
@@ -67,8 +103,10 @@ export function MakeReport() {
       entity_id: entity.id,
       entity_name: entity.nombre,
       entity_slug: entity.slug,
-      start_date: startDate,
-      end_date: endDate,
+      start_date: firstStartDate,
+      end_date: firstEndDate,
+      compare_start_date: secondStartDate,
+      compare_end_date: secondEndDate,
       requested_by: {
         user_id: user?.id,
         email: user?.email,
@@ -113,8 +151,9 @@ export function MakeReport() {
         setSubmitStatus('success')
         setShowSuccessModal(true)
         setSelectedEntity('')
-        setStartDate('')
-        setEndDate('')
+        setFirstStartDate('')
+        setFirstEndDate('')
+        setSecondStartDate('')
       } else {
         throw new Error(result.error || 'Failed to submit report request')
       }
@@ -132,6 +171,8 @@ export function MakeReport() {
     { label: 'Report Builder' }
   ]
 
+  const isFormValid = selectedEntity && firstStartDate && firstEndDate && secondStartDate && secondEndDate
+
   return (
     <div className="p-8 bg-white min-h-screen">
       <div className="max-w-4xl mx-auto">
@@ -140,7 +181,7 @@ export function MakeReport() {
         <div className="mt-6 mb-8">
           <h1 className="text-3xl font-bold text-black mb-2">Report Builder</h1>
           <p className="text-gray-600">
-            Create your report freely by selecting an artist and date range
+            Create your report freely by comparing two time periods
           </p>
         </div>
 
@@ -158,14 +199,14 @@ export function MakeReport() {
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-black">Create Your Report Freely</h2>
-                  <p className="text-sm text-gray-600">Select an artist and custom date range for your report</p>
+                  <p className="text-sm text-gray-600">Compare two time periods of equal duration for any artist</p>
                 </div>
               </div>
             </div>
 
             <form onSubmit={handleSubmit} className="bg-gray-50 border border-gray-300 rounded-2xl p-6">
               <h2 className="text-lg font-semibold text-black mb-4">Report Details</h2>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div>
                   <label htmlFor="entity" className="block text-sm font-medium text-gray-700 mb-2">
                     Select Artist
@@ -187,20 +228,27 @@ export function MakeReport() {
                   </select>
                 </div>
 
-                <div>
-                  <h3 className="text-sm font-medium text-gray-700 mb-3">Date Range</h3>
+                <div className="border-t border-gray-200 pt-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-medium text-gray-700">First Period (Previous)</h3>
+                    {firstPeriodDays > 0 && (
+                      <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+                        {firstPeriodDays} day{firstPeriodDays !== 1 ? 's' : ''}
+                      </span>
+                    )}
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="startDate" className="block text-xs font-medium text-gray-600 mb-2">
+                      <label htmlFor="firstStartDate" className="block text-xs font-medium text-gray-600 mb-2">
                         Start Date
                       </label>
                       <div className="relative">
                         <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <input
                           type="date"
-                          id="startDate"
-                          value={startDate}
-                          onChange={(e) => setStartDate(e.target.value)}
+                          id="firstStartDate"
+                          value={firstStartDate}
+                          onChange={(e) => setFirstStartDate(e.target.value)}
                           className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           required
                           disabled={submitting}
@@ -209,24 +257,107 @@ export function MakeReport() {
                     </div>
 
                     <div>
-                      <label htmlFor="endDate" className="block text-xs font-medium text-gray-600 mb-2">
+                      <label htmlFor="firstEndDate" className="block text-xs font-medium text-gray-600 mb-2">
                         End Date
                       </label>
                       <div className="relative">
                         <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <input
                           type="date"
-                          id="endDate"
-                          value={endDate}
-                          onChange={(e) => setEndDate(e.target.value)}
+                          id="firstEndDate"
+                          value={firstEndDate}
+                          onChange={(e) => setFirstEndDate(e.target.value)}
+                          min={firstStartDate}
                           className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           required
-                          disabled={submitting}
+                          disabled={submitting || !firstStartDate}
                         />
                       </div>
                     </div>
                   </div>
                 </div>
+
+                <div className="border-t border-gray-200 pt-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-medium text-gray-700">Second Period (Current)</h3>
+                    {secondEndDate && (
+                      <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                        {firstPeriodDays} day{firstPeriodDays !== 1 ? 's' : ''}
+                      </span>
+                    )}
+                  </div>
+
+                  {!isFirstPeriodComplete ? (
+                    <div className="flex items-center gap-2 p-4 bg-gray-100 border border-gray-200 rounded-lg">
+                      <Info className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                      <p className="text-sm text-gray-600">
+                        First, select the first period dates to define the comparison duration.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-100 rounded-lg">
+                        <Info className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                        <p className="text-sm text-blue-700">
+                          Select a start date. The end date will be automatically set to match the {firstPeriodDays}-day duration.
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label htmlFor="secondStartDate" className="block text-xs font-medium text-gray-600 mb-2">
+                            Start Date
+                          </label>
+                          <div className="relative">
+                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <input
+                              type="date"
+                              id="secondStartDate"
+                              value={secondStartDate}
+                              onChange={(e) => setSecondStartDate(e.target.value)}
+                              className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              required
+                              disabled={submitting}
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label htmlFor="secondEndDate" className="block text-xs font-medium text-gray-600 mb-2">
+                            End Date (Auto-calculated)
+                          </label>
+                          <div className="relative">
+                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <input
+                              type="date"
+                              id="secondEndDate"
+                              value={secondEndDate}
+                              className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 bg-gray-100 cursor-not-allowed"
+                              disabled
+                              readOnly
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {isFormValid && (
+                  <div className="bg-gray-100 border border-gray-200 rounded-lg p-4">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Summary</h4>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-gray-500">First Period</p>
+                        <p className="font-medium text-gray-900">{formatDateRange(firstStartDate, firstEndDate)}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-500">Second Period</p>
+                        <p className="font-medium text-gray-900">{formatDateRange(secondStartDate, secondEndDate)}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {submitStatus === 'error' && (
                   <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -240,7 +371,7 @@ export function MakeReport() {
 
                 <button
                   type="submit"
-                  disabled={submitting || !selectedEntity || !startDate || !endDate}
+                  disabled={submitting || !isFormValid}
                   className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {submitting ? (
